@@ -16,9 +16,10 @@ public class CcsController {
 
 		System.out.println("in controller");
 
-		if (!date.equals("World"))
+		if (!date.equals("World")) {
 			System.out.println(date);
-		Date.toMindSphereFormat(date);
+			Date.toMindSphereFormat(date);
+		}
 
 		ModelAndView mv = new ModelAndView("indexprova");
 
