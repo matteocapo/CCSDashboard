@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ccs.provider.MindsphereServiceClient;
 import com.ccs.util.Date;
 
 @Controller
@@ -20,6 +21,8 @@ public class CcsController {
 			System.out.println(date);
 			Date.toMindSphereFormat(date);
 		}
+		
+		MindsphereServiceClient.oeeMedia("prova", "prova");
 
 		ModelAndView mv = new ModelAndView("indexprova");
 
