@@ -9,7 +9,7 @@ public class Provider {
 	
 	public static String buidMindsphereRequestURL(String entity, String propertysetname, String from, String to, String limit, String select){
 		//da completare la struttura della chiamata
-		String url = MINDSPHERE_URL + MINDSPHERE_BASE_URL +"/"+ entity +"/"+ propertysetname; 
+		String url = MINDSPHERE_URL + MINDSPHERE_BASE_URL +"/"+ entity +"/"+ propertysetname +"/"+ from +"/"+ to +"/"+ limit +"/"+ select; 
 		return url;
 	}
 
