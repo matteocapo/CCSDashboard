@@ -23,6 +23,7 @@ public class CcsController {
 		}
 		
 		MindsphereServiceClient.oeeMedia("prova", "prova");
+		MindsphereServiceClient.prodottiEScarti("prova", "prova");
 
 		ModelAndView mv = new ModelAndView("indexprova");
 

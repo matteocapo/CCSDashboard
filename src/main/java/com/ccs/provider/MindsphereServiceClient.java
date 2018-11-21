@@ -119,6 +119,95 @@ public class MindsphereServiceClient {
 	
 	public static int[] prodottiEScarti(String from, String to) {
 		int[] dati = new int[2];
+		final int PezziScartati = 0;
+		final int PezziProdotti = 1;
+		
+		try {
+			/*
+			String timeseriesMindsphereStringUrl = Provider.buidMindsphereRequestURL(entity, propertysetname, from, to, limit, select);
+			
+			URL timeseriesMindsphereUrl = new URL(timeseriesMindsphereStringUrl);
+			
+			HttpURLConnection c = (HttpURLConnection) timeseriesMindsphereUrl.openConnection();
+			c.setRequestMethod("GET");
+			c.setRequestProperty("Content-length", "0");
+			c.setUseCaches(false);
+			c.setAllowUserInteraction(false);
+			c.connect();
+			int status = c.getResponseCode();
+			
+			switch(status) {
+			
+			case 400: //bad request, in case of invalid parameters
+			case 401: //unauthorized
+			case 404: //entity not found 
+				
+			case 200:
+				//array of time series
+				BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream(), "UTF-8"));
+				StringBuilder sb = new StringBuilder();
+				String line;
+				while((line = br.readLine()) !=null) {
+					sb.append(line + "\n");
+				}
+				br.close();
+				
+				if(c != null) {
+					c.disconnect();
+				}
+			
+				
+				JSONObject response = new JSONObject(sb.toString());
+
+				
+				//testare la chiamata di ritorno e il formato json
+				JSONArray forecastDays = response.getJSONObject("forecast").getJSONObject("simpleforecast").getJSONArray("forecastday");
+
+				for (int i=0; i<forecastDays.length(); i++) {
+					JSONObject forecastDay = forecastDays.getJSONObject(i);
+					Date day = new Date(forecastDay.getJSONObject("date").getLong("epoch") * 1000);
+					String dayForecast = forecastDay.getString("conditions");
+					forecast.setDayForecast(day, dayForecast);
+				}
+
+				LOGGER.info("Returning weather service response");
+				return CompletableFuture.completedFuture(forecast);
+				
+			}
+			*/
+			//System.out.println("inizio lettura json"); 
+			File file = ResourceUtils.getFile("classpath:json_example_FromRunToRun.json");				 
+			//File is found
+			//System.out.println("File Found : " + file.exists()); 
+			//Read File Content
+			String content = new String(Files.readAllBytes(file.toPath()));
+			//System.out.println(content);	 
+			//System.out.println("fine lettura json");
+			
+			//JSONObject response = new JSONObject(content);
+			JSONArray responseArray = new JSONArray(content);
+		    
+			int contMedia = 0;
+			
+			
+			for (int i = 0; i < responseArray.length(); i++){
+				
+				if(responseArray.getJSONObject(i).getInt("StopTime")>0) {
+					contMedia++;
+					dati[PezziScartati] += responseArray.getJSONObject(i).getInt("PezziScartati");
+					dati[PezziProdotti] += responseArray.getJSONObject(i).getInt("PezziProdotti");
+				}
+			    //System.out.println(responseArray.getJSONObject(i).getInt("OEE"));			    
+			}
+			dati[PezziScartati] = dati[PezziScartati]/contMedia;
+			dati[PezziProdotti] = dati[PezziProdotti]/contMedia;
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		System.out.println(dati[PezziScartati]);
+		System.out.println(dati[PezziProdotti]);
 		
 		return dati;
 	}
