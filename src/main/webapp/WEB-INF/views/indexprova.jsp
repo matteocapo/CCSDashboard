@@ -271,10 +271,7 @@
 	<script src="${pageContext.request.contextPath}/assets/js/demo.js"></script>
 	
 	<!-- charts -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
-	
-	<script type="text/javascript" src="jsLogic/chart.js"></script>
-	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>	
 	
 
 	<script type="text/javascript">

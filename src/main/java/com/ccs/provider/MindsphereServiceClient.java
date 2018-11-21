@@ -1,18 +1,21 @@
 package com.ccs.provider;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Iterator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.util.ResourceUtils;
 
 import com.ccs.util.Provider;
 
@@ -26,7 +29,7 @@ public class MindsphereServiceClient {
 	
 	public static int oeeMedia(String from, String to) {
 		
-		int oeeMedia;
+		int oeeMedia = 0;
 		
 		try {
 			/*
@@ -81,22 +84,37 @@ public class MindsphereServiceClient {
 				
 			}
 			*/
-			 System.out.println("ciao0");
-			 JSONParser parser = new JSONParser();
-			 JSONArray a = (JSONArray) parser.parse(new FileReader("C:\\Users\\stageute01\\eclipse-workspace-new\\CCSDashboard\\src\\main\\java\\com\\ccs\\provider\\json_example_FromRunToRun.json"));
-			 System.out.println("ciao1");
-			 
-			 for (Object o : a){
-				 System.out.println("ciao2");
-				 }
-
-
+			//System.out.println("inizio lettura json"); 
+			File file = ResourceUtils.getFile("classpath:json_example_FromRunToRun.json");				 
+			//File is found
+			//System.out.println("File Found : " + file.exists()); 
+			//Read File Content
+			String content = new String(Files.readAllBytes(file.toPath()));
+			//System.out.println(content);	 
+			//System.out.println("fine lettura json");
+			
+			//JSONObject response = new JSONObject(content);
+			JSONArray responseArray = new JSONArray(content);
+		    
+			int contMedia = 0;
+			
+			
+			for (int i = 0; i < responseArray.length(); i++){
+				
+				if(responseArray.getJSONObject(i).getInt("OEE")>0) {
+					contMedia++;
+					oeeMedia += responseArray.getJSONObject(i).getInt("OEE");
+				}
+			    //System.out.println(responseArray.getJSONObject(i).getInt("OEE"));			    
+			}
+			oeeMedia = oeeMedia/contMedia;
 			
 		} catch (Exception e) {
-			
+			System.out.println(e);
 		}
 		
-		return 1;
+		//System.out.println(oeeMedia);
+		return oeeMedia;
 	}
 	
 	public static int[] prodottiEScarti(String from, String to) {
