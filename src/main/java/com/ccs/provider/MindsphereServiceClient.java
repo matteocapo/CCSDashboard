@@ -7,22 +7,28 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.Iterator;
 
+import org.apache.http.HttpResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.util.ResourceUtils;
 
+import com.ccs.util.Date;
 import com.ccs.util.Provider;
 import com.siemens.mindsphere.sdk.auth.model.MindsphereCredentials;
 import com.siemens.mindsphere.sdk.core.RestClientConfig;
 import com.siemens.mindsphere.sdk.core.exception.MindsphereException;
 import com.siemens.mindsphere.sdk.iot.timeseries.apiclient.TimeseriesClient;
 import com.siemens.mindsphere.sdk.iot.timeseries.model.TimeseriesData;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 public class MindsphereServiceClient {
 	
@@ -233,5 +239,118 @@ public class MindsphereServiceClient {
 			System.out.println(e);
 		}
 		return timeseriesData;
+	}
+	
+	public static int testUrlDataOee(String date) throws IOException {
+		
+		int oeeMedia = 0;
+		
+		String dateFormat[] = Date.toMindSphereFormat(date);
+		
+		String stringaRisposta;
+		
+		System.out.println(dateFormat[0]);
+		
+		System.out.println(dateFormat[1]);
+
+				
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+		  .url("https://ccs-fleetmanager.eu1.mindsphere.io/api/iottimeseries/v3/timeseries/8037b181ae634a0aa00e01e4afa61005/FromRunToRun?from="+dateFormat[0]+"&to="+dateFormat[1])
+		  .get()
+		  .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+		  .addHeader("Accept-Encoding", "gzip, deflate, br")
+		  .addHeader("Accept-Language", "it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3")
+		  .addHeader("Connection", "keep-alive")
+		  .addHeader("Cache-Control", "max-age=0")
+		  .addHeader("Cookie", "SESSION=fc7f0ce6-b24a-4762-9b2f-4ea534a0cdb2")
+		  .addHeader("Host", "ccs-fleetmanager.eu1.mindsphere.io")
+		  .addHeader("Referer", "https://ccs.uiam.eu1.mindsphere.io/saml/idp/SSO/alias/ccs.uiam.eu1.mindsphere.io")
+		  .addHeader("TE", "Trailers")
+		  .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0")
+		  .addHeader("Upgrade-Insecure-Requests", "0")
+		  .addHeader("cache-control", "no-cache")
+		  .build();
+
+		Response response1 = client.newCall(request).execute();
+		
+		stringaRisposta = response1.body().string();
+		
+		System.out.println(stringaRisposta);
+	
+		
+		JSONArray responseArray = new JSONArray(stringaRisposta);
+	    
+		int contMedia = 0;
+		
+		
+		for (int i = 0; i < responseArray.length(); i++){
+			
+			if(responseArray.getJSONObject(i).getInt("OEE")>0) {
+				contMedia++;
+				oeeMedia += responseArray.getJSONObject(i).getInt("OEE");
+			}
+		    //System.out.println(responseArray.getJSONObject(i).getInt("OEE"));			    
+		}
+		oeeMedia = oeeMedia/contMedia;
+		
+		return oeeMedia;		
+	}
+
+	public static int[] testUrlDataProdottiEScarti(String date) throws IOException {
+		
+		int[] dati = new int[2];
+		final int PezziScartati = 0;
+		final int PezziProdotti = 1;
+		
+		int contMedia = 0;
+
+		String dateFormat[] = Date.toMindSphereFormat(date);
+		String stringaRisposta;
+		
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+		  .url("https://ccs-fleetmanager.eu1.mindsphere.io/api/iottimeseries/v3/timeseries/8037b181ae634a0aa00e01e4afa61005/FromRunToRun?from="+dateFormat[0]+"&to="+dateFormat[1])
+		  .get()
+		  .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+		  .addHeader("Accept-Encoding", "gzip, deflate, br")
+		  .addHeader("Accept-Language", "it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3")
+		  .addHeader("Connection", "keep-alive")
+		  .addHeader("Cache-Control", "max-age=0")
+		  .addHeader("Cookie", "SESSION=fc7f0ce6-b24a-4762-9b2f-4ea534a0cdb2")
+		  .addHeader("Host", "ccs-fleetmanager.eu1.mindsphere.io")
+		  .addHeader("Referer", "https://ccs.uiam.eu1.mindsphere.io/saml/idp/SSO/alias/ccs.uiam.eu1.mindsphere.io")
+		  .addHeader("TE", "Trailers")
+		  .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0")
+		  .addHeader("Upgrade-Insecure-Requests", "0")
+		  .addHeader("cache-control", "no-cache")
+		  .build();
+
+		Response response1 = client.newCall(request).execute();
+		
+		stringaRisposta = response1.body().string();
+		
+		JSONArray responseArray = new JSONArray(stringaRisposta);		
+		
+		System.out.println(stringaRisposta);
+		
+		for (int i = 0; i < responseArray.length(); i++){
+			
+			if(responseArray.getJSONObject(i).getInt("StopTime")>0) {
+				contMedia++;
+				dati[PezziScartati] += responseArray.getJSONObject(i).getInt("PezziScartati");
+				dati[PezziProdotti] += responseArray.getJSONObject(i).getInt("PezziProdotti");
+			}
+		    //System.out.println(responseArray.getJSONObject(i).getInt("OEE"));			    
+		}
+		dati[PezziScartati] = dati[PezziScartati]/contMedia;
+		dati[PezziProdotti] = dati[PezziProdotti]/contMedia;
+		
+		System.out.println(dati[PezziScartati]);
+		System.out.println(dati[PezziProdotti]);
+		
+		return dati;
 	}
 }

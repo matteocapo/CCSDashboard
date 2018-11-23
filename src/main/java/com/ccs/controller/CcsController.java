@@ -1,5 +1,7 @@
 package com.ccs.controller;
 
+import java.io.IOException;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,9 +14,9 @@ import com.ccs.util.Date;
 public class CcsController {
 
 	@RequestMapping("/indexprova")
-	public ModelAndView homepageview(@RequestParam(value = "datetimes", required = false, defaultValue = "World") String date) {
+	public ModelAndView homepageview(@RequestParam(value = "datetimes", required = false, defaultValue = "World") String date) throws IOException {
 		
-		int oee;
+		int oee = 0;
 		int prodottiescarti[] = new int[2];
 		
 		System.out.println("in controller");
@@ -24,9 +26,13 @@ public class CcsController {
 			Date.toMindSphereFormat(date);
 		}
 		
-		oee = MindsphereServiceClient.oeeMedia("prova", "prova");
-		prodottiescarti = MindsphereServiceClient.prodottiEScarti("prova", "prova");
 
+		//oee = MindsphereServiceClient.oeeMedia("prova", "prova");
+		oee = MindsphereServiceClient.testUrlDataOee(date);
+		
+		//prodottiescarti = MindsphereServiceClient.prodottiEScarti("prova", "prova");
+		prodottiescarti = MindsphereServiceClient.testUrlDataProdottiEScarti(date);	
+		
 		ModelAndView mv = new ModelAndView("indexprova");
 
 		// oee

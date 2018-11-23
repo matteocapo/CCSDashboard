@@ -271,10 +271,7 @@
 	<script src="${pageContext.request.contextPath}/assets/js/demo.js"></script>
 	
 	<!-- charts -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
-	
-	<script type="text/javascript" src="jsLogic/chart.js"></script>
-	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>	
 	
 
 	<script type="text/javascript">
@@ -328,7 +325,7 @@
 				"labels":["Total", "Discard"],
 				"datasets":[{
 					"label":"Pieces",
-					"data":[${domenica}, ${lunedì}],
+					"data":[${produzioni}, ${scarti}],
 					"fill":false,
 					"backgroundColor":[
 						"rgba(255, 159, 64, 0.2)",

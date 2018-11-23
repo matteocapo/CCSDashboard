@@ -1,1 +1,5 @@
 com\ccs\controller\CcsController.class
+com\ccs\provider\MindsphereServiceClient.class
+com\ccs\util\Timestamp.class
+com\ccs\util\Date.class
+com\ccs\util\Provider.class
