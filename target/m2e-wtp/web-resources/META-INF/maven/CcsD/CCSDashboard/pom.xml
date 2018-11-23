@@ -45,7 +45,12 @@
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
         </dependency>
-
+        <!-- mindsphere sdk 1.2.0 -->
+		<dependency>
+	    	<groupId>com.siemens.mindsphere</groupId>
+		    <artifactId>mindsphere-sdk</artifactId>
+		    <version>1.2.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>CCSDashboard</finalName>

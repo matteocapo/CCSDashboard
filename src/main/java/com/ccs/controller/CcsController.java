@@ -12,9 +12,11 @@ import com.ccs.util.Date;
 public class CcsController {
 
 	@RequestMapping("/indexprova")
-	public ModelAndView homepageview(
-			@RequestParam(value = "datetimes", required = false, defaultValue = "World") String date) {
-
+	public ModelAndView homepageview(@RequestParam(value = "datetimes", required = false, defaultValue = "World") String date) {
+		
+		int oee;
+		int prodottiescarti[] = new int[2];
+		
 		System.out.println("in controller");
 
 		if (!date.equals("World")) {
@@ -22,20 +24,17 @@ public class CcsController {
 			Date.toMindSphereFormat(date);
 		}
 		
-		MindsphereServiceClient.oeeMedia("prova", "prova");
-		MindsphereServiceClient.prodottiEScarti("prova", "prova");
+		oee = MindsphereServiceClient.oeeMedia("prova", "prova");
+		prodottiescarti = MindsphereServiceClient.prodottiEScarti("prova", "prova");
 
 		ModelAndView mv = new ModelAndView("indexprova");
 
-		mv.addObject("domenica", "350");
-		mv.addObject("lunedì", "340");
-
 		// oee
-		mv.addObject("oee", "80%");
+		mv.addObject("oee", oee + "%");
 
 		// scarti e produzioni
-		mv.addObject("produzioni", "200562");
-		mv.addObject("scarti", "8000");
+		mv.addObject("produzioni", prodottiescarti[1]);
+		mv.addObject("scarti", prodottiescarti[0]);
 
 		// velocità ultima ora
 

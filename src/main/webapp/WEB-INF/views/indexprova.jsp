@@ -325,7 +325,7 @@
 				"labels":["Total", "Discard"],
 				"datasets":[{
 					"label":"Pieces",
-					"data":[${domenica}, ${lunedì}],
+					"data":[${produzioni}, ${scarti}],
 					"fill":false,
 					"backgroundColor":[
 						"rgba(255, 159, 64, 0.2)",

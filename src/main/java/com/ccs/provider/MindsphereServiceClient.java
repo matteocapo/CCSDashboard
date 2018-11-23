@@ -18,6 +18,11 @@ import org.json.simple.parser.ParseException;
 import org.springframework.util.ResourceUtils;
 
 import com.ccs.util.Provider;
+import com.siemens.mindsphere.sdk.auth.model.MindsphereCredentials;
+import com.siemens.mindsphere.sdk.core.RestClientConfig;
+import com.siemens.mindsphere.sdk.core.exception.MindsphereException;
+import com.siemens.mindsphere.sdk.iot.timeseries.apiclient.TimeseriesClient;
+import com.siemens.mindsphere.sdk.iot.timeseries.model.TimeseriesData;
 
 public class MindsphereServiceClient {
 	
@@ -212,4 +217,21 @@ public class MindsphereServiceClient {
 		return dati;
 	}
 
+	public static TimeseriesData getTimeseriesAsObject(String entity, String propertySetName, String token) throws MindsphereException{
+		
+		MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(token).build();
+	
+		RestClientConfig config = RestClientConfig.builder().connectionTimeoutInSeconds(100).build();
+		
+		TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+		
+		TimeseriesData timeseriesData = null;
+		try {
+			timeseriesData = timeseriesClient.getLatestTimeseries(entity, propertySetName);
+		} catch (MindsphereException e) {
+			
+			System.out.println(e);
+		}
+		return timeseriesData;
+	}
 }
