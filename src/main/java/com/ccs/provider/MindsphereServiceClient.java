@@ -412,6 +412,7 @@ public class MindsphereServiceClient {
 			System.out.println(error_code[i].getTimestamp());
 		}
 		
+		
 		return error_code;
 	}
 }
