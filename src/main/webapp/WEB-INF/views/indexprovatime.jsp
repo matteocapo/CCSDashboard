@@ -281,7 +281,7 @@
 	    endDate: moment().startOf('hour').add(32, 'hour'),
 	    timePicker24Hour: true,
 	    locale: {
-	      format: 'MM/DD/YYYY hh:mm A '
+	      format: 'M/DD/YYYY hh:mm A '
 	    }
 	  });
 	});

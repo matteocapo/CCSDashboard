@@ -3,58 +3,40 @@ public class Date {
 	
 	public static String[] toMindSphereFormat(String date) {
 		/* 	Input:
-		 * 		date : string of 35byte with this format 05/06/2018 02:00 PM  - 05/07/2018 05:00 PM 
+		 * 		date : string of 35byte with this format 11/20/2018 02:00  - 11/21/2018 10:00
+		 * 		new date : 								 5/06/2018 02:00 PM  - 5/07/2018 05:00 PM 
 		 * 	Output:
 		 * 		From : string of 24byte with this format YYYY-MM-DDThh:mm:ss.000Z
 		 * 		To	 : string of 24byte with this format YYYY-MM-DDThh:mm:ss.000Z
 		 */
 		
-		Timestamp 	From 		= new Timestamp();
-		Timestamp 	To   		= new Timestamp();
-		String[] 	returnDate 	= new String[2];
-		int 		first_date 	= 0;
-		int 		second_date = 23;
-		final int 	MONTHs 		= 0;
-		final int 	DAYs 		= 3;
-		final int 	YEARs 		= 6;
-		final int 	HOURs 		= 11;
-		final int 	MINUTEs 	= 14;
-		final int 	FORMAT		= 17;
+		Timestamp From = new Timestamp();
+		Timestamp To   = new Timestamp();
+		String[] returnDate = new String[2];
 		
 		/* Processing first part of string */
 		//Set Year
-		From.setYear(date.substring(first_date+YEARs, first_date+YEARs+5));
+		From.setYear(date.substring(6, 10));
 		//Set Month
-		From.setMonth(date.substring(first_date+MONTHs, first_date+MONTHs+2));
+		From.setMonth(date.substring(0, 2));
 		//Set Day
-		From.setDay(date.substring(first_date+DAYs, first_date+DAYs+2));
+		From.setDay(date.substring(3, 5));
 		//Set Hours
-		if (date.substring(first_date + FORMAT, first_date + FORMAT + 2).equals("PM")) {
-			Integer newHours = ( Integer.parseInt(date.substring(first_date + HOURs, first_date + HOURs + 2)) + 12 );
-			String PMHour = new String(newHours.toString());
-			From.setHours(PMHour);
-		} else {
-			From.setHours(date.substring(first_date + HOURs, first_date + HOURs + 2));
-		}
+		From.setHours(date.substring(11, 13));
 		//Set Minutes
-		From.setMinutes(date.substring(first_date + MINUTEs, first_date + MINUTEs + 2));
+		From.setMinutes(date.substring(14, 16));
 		
 		/* Processing second part of string */
 		//Set Year
-		To.setYear(date.substring(second_date+YEARs, second_date+YEARs+5));
+		To.setYear(date.substring(26, 30));
 		//Set Month
-		To.setMonth(date.substring(second_date+MONTHs, second_date+MONTHs+2));
+		To.setMonth(date.substring(20, 22));
 		//Set Day
-		To.setDay(date.substring(second_date+DAYs, second_date+DAYs+2));
+		To.setDay(date.substring(23, 25));
 		//Set Hours
-		if (date.substring(second_date + FORMAT, second_date + FORMAT + 2).equals("PM")) {
-			Integer newHours = ( Integer.parseInt(date.substring(second_date + HOURs, second_date + HOURs + 2)) + 12 );
-			To.setHours(newHours.toString());
-		} else {
-			To.setHours(date.substring(second_date + HOURs, second_date + HOURs + 2));
-		}
+		To.setHours(date.substring(31, 33));
 		//Set Minutes
-		To.setMinutes(date.substring(second_date + MINUTEs, second_date + MINUTEs + 2));
+		To.setMinutes(date.substring(34, 36));
 		
 		String ConvertedFrom = new String(From.date);
 		String ConvertedTo = new String(To.date);
