@@ -37,7 +37,7 @@ public class MindsphereServiceClient {
 	String propertysetname = "";
 	String limit = "";
 	String select = "";
-	private static String URL = "b75b1930-bb8e-4d00-9b25-50bdde5e1b10";
+	private static String URL = "085c3bd1-e1d7-4ed1-ba0f-e95bada0bcb9";
 	
 	public static int oeeMedia(String from, String to) {
 		
@@ -387,7 +387,7 @@ public class MindsphereServiceClient {
 		
 		for (int i = 0; i < responseArray.length(); i++){
 			
-			if(responseArray.getJSONObject(i).getInt("OEE")>0) {
+			if(responseArray.getJSONObject(i).getInt("OEE") == 0) {
 				grandezza_array++;				
 			}
 		}
@@ -396,14 +396,16 @@ public class MindsphereServiceClient {
 		ErrorDataModel[] error_code  = new ErrorDataModel[grandezza_array]; 
 		
 
-		for (int i = 0; i < responseArray.length(); i++){
+		for (int i = 0, j = 0; i < responseArray.length(); i++){
 			
-			if(responseArray.getJSONObject(i).getInt("OEE")>0) {
+			if(responseArray.getJSONObject(i).getInt("OEE") == 0) {
 				ErrorDataModel temp = new ErrorDataModel();
 				temp.setErrorCode(responseArray.getJSONObject(i).getInt("CodeStop"));
 				temp.setTimestamp(responseArray.getJSONObject(i).getString("_time"));
-				error_code[i] = temp;
+				error_code[j] = temp;
+				j++;
 			}
+			
 		}
 		
 		//prova stampa degli elementi
