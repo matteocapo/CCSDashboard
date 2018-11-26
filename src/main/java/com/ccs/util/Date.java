@@ -4,6 +4,7 @@ public class Date {
 	public static String[] toMindSphereFormat(String date) {
 		/* 	Input:
 		 * 		date : string of 35byte with this format 11/20/2018 02:00  - 11/21/2018 10:00
+		 * 		new date : 								 5/06/2018 02:00 PM  - 5/07/2018 05:00 PM 
 		 * 	Output:
 		 * 		From : string of 24byte with this format YYYY-MM-DDThh:mm:ss.000Z
 		 * 		To	 : string of 24byte with this format YYYY-MM-DDThh:mm:ss.000Z

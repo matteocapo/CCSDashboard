@@ -273,7 +273,6 @@
 	</script>
 	
 	<!-- script data -->
-	
 	<script>
 	$(function() {
 	  $('input[name="datetimes"]').daterangepicker({
@@ -282,7 +281,7 @@
 	    endDate: moment().startOf('hour').add(32, 'hour'),
 	    timePicker24Hour: true,
 	    locale: {
-	      format: 'M/D/Y hh:mm '
+	      format: 'M/DD/YYYY hh:mm A '
 	    }
 	  });
 	});
