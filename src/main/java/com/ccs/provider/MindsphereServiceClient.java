@@ -305,8 +305,6 @@ public class MindsphereServiceClient {
 		final int PezziScartati = 0;
 		final int PezziProdotti = 1;
 		
-		int contMedia = 0;
-
 		String dateFormat[] = Date.toMindSphereFormat(date);
 		String stringaRisposta;
 		
@@ -340,14 +338,14 @@ public class MindsphereServiceClient {
 		for (int i = 0; i < responseArray.length(); i++){
 			
 			if(responseArray.getJSONObject(i).getInt("StopTime")>0) {
-				contMedia++;
+				
 				dati[PezziScartati] += responseArray.getJSONObject(i).getInt("PezziScartati");
 				dati[PezziProdotti] += responseArray.getJSONObject(i).getInt("PezziProdotti");
 			}
 		    //System.out.println(responseArray.getJSONObject(i).getInt("OEE"));			    
 		}
-		dati[PezziScartati] = dati[PezziScartati]/contMedia;
-		dati[PezziProdotti] = dati[PezziProdotti]/contMedia;
+		dati[PezziScartati] = dati[PezziScartati];
+		dati[PezziProdotti] = dati[PezziProdotti];
 		
 		System.out.println(dati[PezziScartati]);
 		System.out.println(dati[PezziProdotti]);
