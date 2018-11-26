@@ -12,13 +12,13 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.Iterator;
 
-import org.apache.http.HttpResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.util.ResourceUtils;
 
+import com.ccs.model.ErrorDataModel;
 import com.ccs.util.Date;
 import com.ccs.util.Provider;
 import com.siemens.mindsphere.sdk.auth.model.MindsphereCredentials;
@@ -37,6 +37,7 @@ public class MindsphereServiceClient {
 	String propertysetname = "";
 	String limit = "";
 	String select = "";
+	private static String URL = "b75b1930-bb8e-4d00-9b25-50bdde5e1b10";
 	
 	public static int oeeMedia(String from, String to) {
 		
@@ -264,7 +265,7 @@ public class MindsphereServiceClient {
 		  .addHeader("Accept-Language", "it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3")
 		  .addHeader("Connection", "keep-alive")
 		  .addHeader("Cache-Control", "max-age=0")
-		  .addHeader("Cookie", "SESSION=b75b1930-bb8e-4d00-9b25-50bdde5e1b10")
+		  .addHeader("Cookie", "SESSION=" + URL)
 		  .addHeader("Host", "ccs-fleetmanager.eu1.mindsphere.io")
 		  .addHeader("Referer", "https://ccs.uiam.eu1.mindsphere.io/saml/idp/SSO/alias/ccs.uiam.eu1.mindsphere.io")
 		  .addHeader("TE", "Trailers")
@@ -319,7 +320,7 @@ public class MindsphereServiceClient {
 		  .addHeader("Accept-Language", "it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3")
 		  .addHeader("Connection", "keep-alive")
 		  .addHeader("Cache-Control", "max-age=0")
-		  .addHeader("Cookie", "SESSION=b75b1930-bb8e-4d00-9b25-50bdde5e1b10")
+		  .addHeader("Cookie", "SESSION=" + URL)
 		  .addHeader("Host", "ccs-fleetmanager.eu1.mindsphere.io")
 		  .addHeader("Referer", "https://ccs.uiam.eu1.mindsphere.io/saml/idp/SSO/alias/ccs.uiam.eu1.mindsphere.io")
 		  .addHeader("TE", "Trailers")
@@ -352,5 +353,67 @@ public class MindsphereServiceClient {
 		System.out.println(dati[PezziProdotti]);
 		
 		return dati;
+	}
+	
+	public static ErrorDataModel[] testGetStopCode(String date) throws IOException {
+		
+		String dateFormat[] = Date.toMindSphereFormat(date);
+		String stringaRisposta;
+		int grandezza_array = 0;
+		
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+		  .url("https://ccs-fleetmanager.eu1.mindsphere.io/api/iottimeseries/v3/timeseries/8037b181ae634a0aa00e01e4afa61005/FromRunToRun?from="+dateFormat[0]+"&to="+dateFormat[1])
+		  .get()
+		  .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+		  .addHeader("Accept-Encoding", "gzip, deflate, br")
+		  .addHeader("Accept-Language", "it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3")
+		  .addHeader("Connection", "keep-alive")
+		  .addHeader("Cache-Control", "max-age=0")
+		  .addHeader("Cookie", "SESSION=" + URL)
+		  .addHeader("Host", "ccs-fleetmanager.eu1.mindsphere.io")
+		  .addHeader("Referer", "https://ccs.uiam.eu1.mindsphere.io/saml/idp/SSO/alias/ccs.uiam.eu1.mindsphere.io")
+		  .addHeader("TE", "Trailers")
+		  .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0")
+		  .addHeader("Upgrade-Insecure-Requests", "0")
+		  .addHeader("cache-control", "no-cache")
+		  .build();
+
+		Response response1 = client.newCall(request).execute();
+		
+		stringaRisposta = response1.body().string();
+		
+		JSONArray responseArray = new JSONArray(stringaRisposta);		
+		
+		
+		for (int i = 0; i < responseArray.length(); i++){
+			
+			if(responseArray.getJSONObject(i).getInt("OEE")>0) {
+				grandezza_array++;				
+			}
+		}
+		
+		//deve essere inizializzato dopo che si è contato il numero di errori contenuti nel json di ritorno
+		ErrorDataModel[] error_code  = new ErrorDataModel[grandezza_array]; 
+		
+
+		for (int i = 0; i < responseArray.length(); i++){
+			
+			if(responseArray.getJSONObject(i).getInt("OEE")>0) {
+				ErrorDataModel temp = new ErrorDataModel();
+				temp.setErrorCode(responseArray.getJSONObject(i).getInt("CodeStop"));
+				temp.setTimestamp(responseArray.getJSONObject(i).getString("_time"));
+				error_code[i] = temp;
+			}
+		}
+		
+		//prova stampa degli elementi
+		for (int i = 0; i < grandezza_array; i++) {
+			System.out.println(error_code[i].getErrorCode());
+			System.out.println(error_code[i].getTimestamp());
+		}
+		
+		return error_code;
 	}
 }
