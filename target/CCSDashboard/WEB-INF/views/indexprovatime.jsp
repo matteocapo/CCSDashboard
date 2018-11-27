@@ -61,14 +61,8 @@
 
             <ul class="nav">
                 <li class="active">
-                    <a href="${pageContext.request.contextPath}/indexprova">
-                        <i class="pe-7s-graph"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li>
-                <li class="active">
                     <a href="${pageContext.request.contextPath}">
-                        <i class="pe-7s-bell"></i>
+                        <i class="pe-7s-note"></i>
                         <p>Set interval time</p>
                     </a>
                 </li>
@@ -279,7 +273,6 @@
 	</script>
 	
 	<!-- script data -->
-	
 	<script>
 	$(function() {
 	  $('input[name="datetimes"]').daterangepicker({
@@ -288,7 +281,7 @@
 	    endDate: moment().startOf('hour').add(32, 'hour'),
 	    timePicker24Hour: true,
 	    locale: {
-	      format: 'M/D/Y hh:mm '
+	      format: 'M/DD/YYYY hh:mm A '
 	    }
 	  });
 	});

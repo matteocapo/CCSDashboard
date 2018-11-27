@@ -17,6 +17,11 @@ import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ccs.model.ErrorDataModel;
 import com.ccs.util.Date;
@@ -26,8 +31,10 @@ import com.siemens.mindsphere.sdk.core.RestClientConfig;
 import com.siemens.mindsphere.sdk.core.exception.MindsphereException;
 import com.siemens.mindsphere.sdk.iot.timeseries.apiclient.TimeseriesClient;
 import com.siemens.mindsphere.sdk.iot.timeseries.model.TimeseriesData;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 public class MindsphereServiceClient {
@@ -224,23 +231,57 @@ public class MindsphereServiceClient {
 		return dati;
 	}
 
-	public static TimeseriesData getTimeseriesAsObject(String entity, String propertySetName, String token) throws MindsphereException{
+	public static TimeseriesData getTimeSeriesAsObject(String entity, String propertySetName, String authorization) throws MindsphereException, IOException{
 		
-		MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(token).build();
-	
-		RestClientConfig config = RestClientConfig.builder().connectionTimeoutInSeconds(100).build();
-		
-		TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
-		
-		TimeseriesData timeseriesData = null;
-		try {
-			timeseriesData = timeseriesClient.getLatestTimeseries(entity, propertySetName);
-		} catch (MindsphereException e) {
-			
-			System.out.println(e);
-		}
-		return timeseriesData;
+	    MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(authorization).clientId("itadev-service-credentials").clientSecret("012615b6-a16c-4aaf-86af-6da9060df9fa").tenant("itadev").build();
+
+	    RestClientConfig config = RestClientConfig.builder().build();
+	    
+	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+
+	    TimeseriesData timeseriesData = null;
+	    try {
+	      timeseriesData = timeseriesClient.getLatestTimeseries(entity, propertySetName);
+	    } catch (MindsphereException e) {
+	    	System.out.println(e.getErrorMessage());
+	    	System.out.println(e.getHttpStatus());
+	    }
+
+	    return timeseriesData;
 	}
+
+	public static void testApiSelfMade () throws IOException {
+		
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+		RequestBody body = RequestBody.create(mediaType, "grant_type=client_credentials");
+		Request request = new Request.Builder()
+		  .url("https://itadev.piam.eu1.mindsphere.io/oauth/token")
+		  .post(body)
+		  .addHeader("Host", "itadev.piam.eu1.mindsphere.io")
+		  .addHeader("Content-Type", "application/x-www-form-urlencoded")
+		  .addHeader("Authorization", "Basic aXRhZGV2LXNlcnZpY2UtY3JlZGVudGlhbHM6MDEyNjE1YjYtYTE2Yy00YWFmLTg2YWYtNmRhOTA2MGRmOWZh")
+		  .build();
+		//la parte di authorizazzione deve essere codificata in base64 e inizialmente ha la forma: {ServiceCredentialID: ServiceCredentialSecret}
+		Response response = client.newCall(request).execute();
+		
+		//da modificare con il json
+		String token_chiamata = response.body().string().substring(17, 1223);
+		
+		Request request2 = new Request.Builder()
+		  .url("https://gateway.eu1.mindsphere.io/api/iottimeseries/v3/timeseries/7cb21d4c9b724be5b38c2c9695d9b3c8/demobox?from=&to=&limit=&select=&access_token=" + token_chiamata)
+		  .get()
+		  .addHeader("cache-control", "no-cache")
+		  .build();
+
+		Response response2 = client.newCall(request2).execute();
+		
+		System.out.println(response2.body().string());
+	
+	}
+	
+	
 	
 	public static int testUrlDataOee(String date) throws IOException {
 		
