@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ccs.model.ErrorDataModel;
 import com.ccs.provider.MindsphereServiceClient;
 import com.ccs.util.Date;
 import com.siemens.mindsphere.sdk.core.exception.MindsphereException;
@@ -47,6 +48,8 @@ public class CcsController {
 		
 		MindsphereServiceClient.testApiSelfMade();
 		
+		ErrorDataModel[] error_code = MindsphereServiceClient.testGetStopCodeStaticJson(date);
+		
 		ModelAndView mv = new ModelAndView("indexprova");
 
 		// oee
@@ -66,6 +69,9 @@ public class CcsController {
 		mv.addObject("min6", "350");
 		
 		mv.addObject("date", date);
+		
+		mv.addObject("error_code", error_code);
+
 
 		return mv;
 	}
