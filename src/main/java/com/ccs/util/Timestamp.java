@@ -8,6 +8,7 @@ public class Timestamp {
 		date = "0000-00-00T00:00:00.000Z".toCharArray();
 	}
 	
+	//Set Functions
 	public void setYear(String Year) {
 		char[] yyyy = new char[4];
 		yyyy = Year.toCharArray();
@@ -58,6 +59,28 @@ public class Timestamp {
 	
 	public void setDate(String date) {
 		this.date = date.toCharArray();
+	}
+	
+	//Get Functions
+	
+	public void print() {
+		System.out.println(this.date);
+	}
+	
+	// Controls between dates
+	public boolean before(Timestamp controlDate) {
+		if(this.date.toString().compareTo(controlDate.toString()) <  0) return true;
+		return false;
+	}
+	
+	public boolean after(Timestamp controlDate) {
+		if(this.date.toString().compareTo(controlDate.toString()) >  0) return true;
+		return false;
+	}
+	
+	public boolean equal(Timestamp controlDate) {
+		if(this.date.toString().compareTo(controlDate.toString()) == 0) return true;
+		return false;
 	}
 	
 }

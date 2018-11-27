@@ -47,7 +47,6 @@ public class CcsController {
 		
 		MindsphereServiceClient.testApiSelfMade();
 		
-		
 		ModelAndView mv = new ModelAndView("indexprova");
 
 		// oee
@@ -65,6 +64,8 @@ public class CcsController {
 		mv.addObject("min4", "201");
 		mv.addObject("min5", "320");
 		mv.addObject("min6", "350");
+		
+		mv.addObject("date", date);
 
 		return mv;
 	}

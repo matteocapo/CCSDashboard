@@ -268,7 +268,7 @@ public class MindsphereServiceClient {
 		
 		//da modificare con il json
 		String token_chiamata = response.body().string().substring(17, 1223);
-		
+
 		Request request2 = new Request.Builder()
 		  .url("https://gateway.eu1.mindsphere.io/api/iottimeseries/v3/timeseries/7cb21d4c9b724be5b38c2c9695d9b3c8/demobox?from=&to=&limit=&select=&access_token=" + token_chiamata)
 		  .get()
