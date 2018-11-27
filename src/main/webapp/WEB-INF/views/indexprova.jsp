@@ -87,7 +87,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Ccs Dashboard</a>
+                    <a class="navbar-brand" href="#">Ccs Dashboard - ${date}</a>
                 </div>
                 <div class="collapse navbar-collapse">
                 
@@ -194,6 +194,30 @@
                                 <div class="footer">
                                     <hr>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card ">
+                            <div class="header">
+                                <h4 class="title">lista dinamica</h4>
+                                <p class="category">Lista dinamica da aggiornare</p>
+                            </div>
+                            <div class="content">
+                            	<h4 style="text-align: center; font-size: 80px; font-weight:bold;">${oee}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                	<div class="col-md-6">
+                        <div class="card ">
+                            <div class="header">
+                                <h4 class="title">lista dinamica</h4>
+                                <p class="category">Lista dinamica da aggiornare</p>
+                            </div>
+                            <div class="content">
+                            	<h4 style="text-align: center; font-size: 80px; font-weight:bold;">${oee}</h4>
                             </div>
                         </div>
                     </div>

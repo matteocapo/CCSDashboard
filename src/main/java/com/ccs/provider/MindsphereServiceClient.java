@@ -276,13 +276,11 @@ public class MindsphereServiceClient {
 		  .build();
 
 		Response response2 = client.newCall(request2).execute();
-		
+				
 		System.out.println(response2.body().string());
 	
 	}
-	
-	
-	
+		
 	public static int testUrlDataOee(String date) throws IOException {
 		
 		int oeeMedia = 0;
@@ -456,6 +454,54 @@ public class MindsphereServiceClient {
 		}
 		
 		
+		return error_code;
+	}
+
+	public static ErrorDataModel[] testGetStopCodeStaticJson(String date) throws IOException {
+
+		int grandezza_array = 0;
+		
+		//System.out.println("inizio lettura json"); 
+		File file = ResourceUtils.getFile("classpath:json_example_FromRunToRun.json");				 
+		//File is found
+		//System.out.println("File Found : " + file.exists()); 
+		//Read File Content
+		String content = new String(Files.readAllBytes(file.toPath()));
+		//System.out.println(content);	 
+		//System.out.println("fine lettura json");
+		
+		//JSONObject response = new JSONObject(content);
+		JSONArray responseArray = new JSONArray(content);		
+		
+		
+		for (int i = 0; i < responseArray.length(); i++){
+			
+			if(responseArray.getJSONObject(i).getInt("OEE") == 0) {
+				grandezza_array++;				
+			}
+		}
+		
+		//deve essere inizializzato dopo che si è contato il numero di errori contenuti nel json di ritorno
+		ErrorDataModel[] error_code  = new ErrorDataModel[grandezza_array]; 
+		
+
+		for (int i = 0, j = 0; i < responseArray.length(); i++){
+			
+			if(responseArray.getJSONObject(i).getInt("OEE") == 0) {
+				ErrorDataModel temp = new ErrorDataModel();
+				temp.setErrorCode(responseArray.getJSONObject(i).getInt("CodeStop"));
+				temp.setTimestamp(responseArray.getJSONObject(i).getString("_time"));
+				error_code[j] = temp;
+				j++;
+			}
+			
+		}
+		
+		//prova stampa degli elementi
+		for (int i = 0; i < grandezza_array; i++) {
+			System.out.println(error_code[i].getErrorCode());
+			System.out.println(error_code[i].getTimestamp());
+		}
 		return error_code;
 	}
 }
