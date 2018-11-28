@@ -44,7 +44,7 @@ public class MindsphereServiceClient {
 	String propertysetname = "";
 	String limit = "";
 	String select = "";
-	private static String URL = "085c3bd1-e1d7-4ed1-ba0f-e95bada0bcb9";
+	private static String URL_TOKEN = "099f9908-ed38-4cb5-8e8c-e7c94d377c8d";
 	
 	public static int oeeMedia(String from, String to) {
 		
@@ -289,9 +289,9 @@ public class MindsphereServiceClient {
 		
 		String stringaRisposta;
 		
-		System.out.println(dateFormat[0]);
+		//System.out.println(dateFormat[0]);
 		
-		System.out.println(dateFormat[1]);
+		//System.out.println(dateFormat[1]);
 
 				
 		OkHttpClient client = new OkHttpClient();
@@ -304,7 +304,7 @@ public class MindsphereServiceClient {
 		  .addHeader("Accept-Language", "it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3")
 		  .addHeader("Connection", "keep-alive")
 		  .addHeader("Cache-Control", "max-age=0")
-		  .addHeader("Cookie", "SESSION=" + URL)
+		  .addHeader("Cookie", "SESSION=" + URL_TOKEN)
 		  .addHeader("Host", "ccs-fleetmanager.eu1.mindsphere.io")
 		  .addHeader("Referer", "https://ccs.uiam.eu1.mindsphere.io/saml/idp/SSO/alias/ccs.uiam.eu1.mindsphere.io")
 		  .addHeader("TE", "Trailers")
@@ -317,7 +317,7 @@ public class MindsphereServiceClient {
 		
 		stringaRisposta = response1.body().string();
 		
-		System.out.println(stringaRisposta);
+		//System.out.println(stringaRisposta);
 	
 		
 		JSONArray responseArray = new JSONArray(stringaRisposta);
@@ -333,7 +333,12 @@ public class MindsphereServiceClient {
 			}
 		    //System.out.println(responseArray.getJSONObject(i).getInt("OEE"));			    
 		}
-		oeeMedia = oeeMedia/contMedia;
+		if(contMedia == 0) {
+			oeeMedia = 0;
+		}else {
+			oeeMedia = oeeMedia/contMedia;
+		}
+		
 		
 		return oeeMedia;		
 	}
@@ -357,7 +362,7 @@ public class MindsphereServiceClient {
 		  .addHeader("Accept-Language", "it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3")
 		  .addHeader("Connection", "keep-alive")
 		  .addHeader("Cache-Control", "max-age=0")
-		  .addHeader("Cookie", "SESSION=" + URL)
+		  .addHeader("Cookie", "SESSION=" + URL_TOKEN)
 		  .addHeader("Host", "ccs-fleetmanager.eu1.mindsphere.io")
 		  .addHeader("Referer", "https://ccs.uiam.eu1.mindsphere.io/saml/idp/SSO/alias/ccs.uiam.eu1.mindsphere.io")
 		  .addHeader("TE", "Trailers")
@@ -372,7 +377,7 @@ public class MindsphereServiceClient {
 		
 		JSONArray responseArray = new JSONArray(stringaRisposta);		
 		
-		System.out.println(stringaRisposta);
+		//System.out.println(stringaRisposta);
 		
 		for (int i = 0; i < responseArray.length(); i++){
 			
@@ -386,8 +391,8 @@ public class MindsphereServiceClient {
 		dati[PezziScartati] = dati[PezziScartati];
 		dati[PezziProdotti] = dati[PezziProdotti];
 		
-		System.out.println(dati[PezziScartati]);
-		System.out.println(dati[PezziProdotti]);
+		//System.out.println(dati[PezziScartati]);
+		//System.out.println(dati[PezziProdotti]);
 		
 		return dati;
 	}
@@ -408,7 +413,7 @@ public class MindsphereServiceClient {
 		  .addHeader("Accept-Language", "it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3")
 		  .addHeader("Connection", "keep-alive")
 		  .addHeader("Cache-Control", "max-age=0")
-		  .addHeader("Cookie", "SESSION=" + URL)
+		  .addHeader("Cookie", "SESSION=" + URL_TOKEN)
 		  .addHeader("Host", "ccs-fleetmanager.eu1.mindsphere.io")
 		  .addHeader("Referer", "https://ccs.uiam.eu1.mindsphere.io/saml/idp/SSO/alias/ccs.uiam.eu1.mindsphere.io")
 		  .addHeader("TE", "Trailers")
@@ -448,10 +453,12 @@ public class MindsphereServiceClient {
 		}
 		
 		//prova stampa degli elementi
+		/*
 		for (int i = 0; i < grandezza_array; i++) {
 			System.out.println(error_code[i].getErrorCode());
 			System.out.println(error_code[i].getTimestamp());
 		}
+		*/
 		
 		
 		return error_code;

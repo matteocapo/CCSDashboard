@@ -1,3 +1,5 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>  
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
 <!doctype html>
 <html lang="en">
 <head>
@@ -178,6 +180,9 @@
                             <div class="content">
                             	<h4 style="text-align: center; font-size: 80px; font-weight:bold;">${oee}</h4>
                             </div>
+                            <div class="footer">
+                                    <hr>
+                            </div>
                         </div>
                     </div>
 
@@ -197,27 +202,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-3">
                         <div class="card ">
                             <div class="header">
-                                <h4 class="title">lista dinamica</h4>
-                                <p class="category">Lista dinamica da aggiornare</p>
+                                <h4 class="title">Stop lists</h4>
+                                <c:forEach items="${error_codice}" var="val">
+							    	<p class="category">Stop Code: <c:out value="${val.getErrorCode()}"/> occured at <c:out value="${val.getTimestamp()}"/></p>
+								</c:forEach>
                             </div>
-                            <div class="content">
-                            	<h4 style="text-align: center; font-size: 80px; font-weight:bold;">${oee}</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                	<div class="col-md-6">
-                        <div class="card ">
-                            <div class="header">
-                                <h4 class="title">lista dinamica</h4>
-                                <p class="category">Lista dinamica da aggiornare</p>
-                            </div>
-                            <div class="content">
-                            	<h4 style="text-align: center; font-size: 80px; font-weight:bold;">${oee}</h4>
+                            <div class="footer">
+                                    <hr>
                             </div>
                         </div>
                     </div>

@@ -10,6 +10,12 @@
 		<spring.version>4.0.2.RELEASE</spring.version>
 	</properties>
 	<dependencies>
+		<!-- jstl -->
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>jstl</artifactId>
+		    <version>1.2</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
 		<dependency>
 	       <groupId>org.slf4j</groupId>
