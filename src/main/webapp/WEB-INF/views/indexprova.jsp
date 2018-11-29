@@ -61,7 +61,7 @@
 
             <ul class="nav">
                 <li class="active">
-                    <a href="${pageContext.request.contextPath}">
+                    <a href="${pageContext.request.contextPath}/indexprovatime">
                         <i class="pe-7s-note"></i>
                         <p>Set interval time</p>
                     </a>
@@ -89,7 +89,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Ccs Dashboard - ${date}</a>
+                    <a class="navbar-brand" href="#">Ccs Dashboard - ${date} ${stringa}</a>
                 </div>
                 <div class="collapse navbar-collapse">
                 

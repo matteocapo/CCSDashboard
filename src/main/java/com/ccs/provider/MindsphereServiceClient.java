@@ -44,7 +44,7 @@ public class MindsphereServiceClient {
 	String propertysetname = "";
 	String limit = "";
 	String select = "";
-	private static String URL_TOKEN = "099f9908-ed38-4cb5-8e8c-e7c94d377c8d";
+	private static String URL_TOKEN = "3ba64f46-2fb9-422e-b58d-7ccf563df974";
 	
 	public static int oeeMedia(String from, String to) {
 		
@@ -242,6 +242,7 @@ public class MindsphereServiceClient {
 	    TimeseriesData timeseriesData = null;
 	    try {
 	      timeseriesData = timeseriesClient.getLatestTimeseries(entity, propertySetName);
+
 	    } catch (MindsphereException e) {
 	    	System.out.println(e.getErrorMessage());
 	    	System.out.println(e.getHttpStatus());
@@ -250,6 +251,45 @@ public class MindsphereServiceClient {
 	    return timeseriesData;
 	}
 
+	public static String getTimeSeriesAsObjectTestCloudfoundry() throws IOException {
+		
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+		RequestBody body = RequestBody.create(mediaType, "grant_type=client_credentials");
+		Request request = new Request.Builder()
+		  .url("https://itadev.piam.eu1.mindsphere.io/oauth/token")
+		  .post(body)
+		  .addHeader("Host", "itadev.piam.eu1.mindsphere.io")
+		  .addHeader("Content-Type", "application/x-www-form-urlencoded")
+		  .addHeader("Authorization", "Basic aXRhZGV2LXNlcnZpY2UtY3JlZGVudGlhbHM6MDEyNjE1YjYtYTE2Yy00YWFmLTg2YWYtNmRhOTA2MGRmOWZh")
+		  .build();
+		
+		//la parte di authorizazzione deve essere codificata in base64 e inizialmente ha la forma: {ServiceCredentialID: ServiceCredentialSecret}
+		Response response = client.newCall(request).execute();
+		
+		//da modificare con il json
+		String token_chiamata = response.body().string().substring(17, 1223);
+		
+		MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(token_chiamata).build();
+	
+	    RestClientConfig config = RestClientConfig.builder().build();
+	    
+	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+
+	    TimeseriesData timeseriesData = null;
+	    try {
+	      timeseriesData = timeseriesClient.getLatestTimeseries("7cb21d4c9b724be5b38c2c9695d9b3c8", "demobox");
+
+	    } catch (MindsphereException e) {
+	    	System.out.println(e.getErrorMessage());
+	    	System.out.println(e.getHttpStatus());
+	    	return "Eccezione sollevata"+ e.getErrorMessage() + e.getHttpStatus();
+	    }
+
+	    return "Chiamata effettuata e dati di ritorno corretti";
+		
+	}
 	public static void testApiSelfMade () throws IOException {
 		
 		OkHttpClient client = new OkHttpClient();
@@ -289,9 +329,9 @@ public class MindsphereServiceClient {
 		
 		String stringaRisposta;
 		
-		//System.out.println(dateFormat[0]);
+		System.out.println(dateFormat[0]);
 		
-		//System.out.println(dateFormat[1]);
+		System.out.println(dateFormat[1]);
 
 				
 		OkHttpClient client = new OkHttpClient();
@@ -317,10 +357,11 @@ public class MindsphereServiceClient {
 		
 		stringaRisposta = response1.body().string();
 		
-		//System.out.println(stringaRisposta);
+		System.out.println(stringaRisposta);
 	
 		
 		JSONArray responseArray = new JSONArray(stringaRisposta);
+		
 	    
 		int contMedia = 0;
 		

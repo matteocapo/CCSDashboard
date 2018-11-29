@@ -75,7 +75,15 @@
 		    <artifactId>mindsphere-sdk</artifactId>
 		    <version>1.2.0</version>
 		</dependency>
-		
+		<!-- mindsphere sdk 1.1.0 -->
+		<!-- 
+		<dependency>
+		    <groupId>mindsphere</groupId>
+		    <artifactId>mindsphere-sdk</artifactId>
+		    <version>1.1.0</version>
+		</dependency>
+		 -->
+		 	
 		<!-- https://mvnrepository.com/artifact/com.squareup.okhttp/okhttp -->
 		<dependency>
 		    <groupId>com.squareup.okhttp</groupId>
@@ -89,8 +97,8 @@
           <plugin>
               <artifactId>maven-compiler-plugin</artifactId>
               <configuration>
-                  <source>10</source>
-                  <target>10</target>
+                  <source>8</source>
+                  <target>8</target>
               </configuration>
           </plugin>
       </plugins>

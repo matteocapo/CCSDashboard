@@ -1,0 +1,7 @@
+applications:
+- name: ccshello
+  instances: 1
+  routes:
+  - route: ccshello-itadev.apps.eu1.mindsphere.io
+  path: target\CCSDashboard.war
+  memory: 890MB
