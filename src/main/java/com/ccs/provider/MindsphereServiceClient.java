@@ -231,9 +231,9 @@ public class MindsphereServiceClient {
 		return dati;
 	}
 
-	public static TimeseriesData getTimeSeriesAsObject(String entity, String propertySetName, String authorization) throws MindsphereException, IOException{
+	public static String getTimeSeriesAsObject(String entity, String propertySetName) throws MindsphereException, IOException{
 		
-	    MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(authorization).clientId("itadev-service-credentials").clientSecret("012615b6-a16c-4aaf-86af-6da9060df9fa").tenant("itadev").build();
+	    MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("itadev-service-credentials").clientSecret("012615b6-a16c-4aaf-86af-6da9060df9fa").tenant("itadev").build();
 
 	    RestClientConfig config = RestClientConfig.builder().build();
 	    
@@ -246,9 +246,10 @@ public class MindsphereServiceClient {
 	    } catch (MindsphereException e) {
 	    	System.out.println(e.getErrorMessage());
 	    	System.out.println(e.getHttpStatus());
+	    	return "Eccezione sollevata"+ e.getErrorMessage() + e.getHttpStatus();
 	    }
 
-	    return timeseriesData;
+	    return "Chiamata effettuata e dati di ritorno corretti";
 	}
 
 	public static String getTimeSeriesAsObjectTestCloudfoundry() throws IOException {
