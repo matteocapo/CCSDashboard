@@ -51,58 +51,7 @@ public class MindsphereServiceClient {
 		int oeeMedia = 0;
 		
 		try {
-			/*
-			String timeseriesMindsphereStringUrl = Provider.buidMindsphereRequestURL(entity, propertysetname, from, to, limit, select);
 			
-			URL timeseriesMindsphereUrl = new URL(timeseriesMindsphereStringUrl);
-			
-			HttpURLConnection c = (HttpURLConnection) timeseriesMindsphereUrl.openConnection();
-			c.setRequestMethod("GET");
-			c.setRequestProperty("Content-length", "0");
-			c.setUseCaches(false);
-			c.setAllowUserInteraction(false);
-			c.connect();
-			int status = c.getResponseCode();
-			
-			switch(status) {
-			
-			case 400: //bad request, in case of invalid parameters
-			case 401: //unauthorized
-			case 404: //entity not found 
-				
-			case 200:
-				//array of time series
-				BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream(), "UTF-8"));
-				StringBuilder sb = new StringBuilder();
-				String line;
-				while((line = br.readLine()) !=null) {
-					sb.append(line + "\n");
-				}
-				br.close();
-				
-				if(c != null) {
-					c.disconnect();
-				}
-			
-				
-				JSONObject response = new JSONObject(sb.toString());
-
-				
-				//testare la chiamata di ritorno e il formato json
-				JSONArray forecastDays = response.getJSONObject("forecast").getJSONObject("simpleforecast").getJSONArray("forecastday");
-
-				for (int i=0; i<forecastDays.length(); i++) {
-					JSONObject forecastDay = forecastDays.getJSONObject(i);
-					Date day = new Date(forecastDay.getJSONObject("date").getLong("epoch") * 1000);
-					String dayForecast = forecastDay.getString("conditions");
-					forecast.setDayForecast(day, dayForecast);
-				}
-
-				LOGGER.info("Returning weather service response");
-				return CompletableFuture.completedFuture(forecast);
-				
-			}
-			*/
 			//System.out.println("inizio lettura json"); 
 			File file = ResourceUtils.getFile("classpath:json_example_FromRunToRun.json");				 
 			//File is found
@@ -142,59 +91,6 @@ public class MindsphereServiceClient {
 		final int PezziProdotti = 1;
 		
 		try {
-			/*
-			String timeseriesMindsphereStringUrl = Provider.buidMindsphereRequestURL(entity, propertysetname, from, to, limit, select);
-			
-			URL timeseriesMindsphereUrl = new URL(timeseriesMindsphereStringUrl);
-			
-			HttpURLConnection c = (HttpURLConnection) timeseriesMindsphereUrl.openConnection();
-			c.setRequestMethod("GET");
-			c.setRequestProperty("Content-length", "0");
-			c.setUseCaches(false);
-			c.setAllowUserInteraction(false);
-			c.connect();
-			int status = c.getResponseCode();
-			
-			switch(status) {
-			
-			case 400: //bad request, in case of invalid parameters
-			case 401: //unauthorized
-			case 404: //entity not found 
-				
-			case 200:
-				//array of time series
-				BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream(), "UTF-8"));
-				StringBuilder sb = new StringBuilder();
-				String line;
-				while((line = br.readLine()) !=null) {
-					sb.append(line + "\n");
-				}
-				br.close();
-				
-				if(c != null) {
-					c.disconnect();
-				}
-			
-				
-				JSONObject response = new JSONObject(sb.toString());
-
-				
-				//testare la chiamata di ritorno e il formato json
-				JSONArray forecastDays = response.getJSONObject("forecast").getJSONObject("simpleforecast").getJSONArray("forecastday");
-
-				for (int i=0; i<forecastDays.length(); i++) {
-					JSONObject forecastDay = forecastDays.getJSONObject(i);
-					Date day = new Date(forecastDay.getJSONObject("date").getLong("epoch") * 1000);
-					String dayForecast = forecastDay.getString("conditions");
-					forecast.setDayForecast(day, dayForecast);
-				}
-
-				LOGGER.info("Returning weather service response");
-				return CompletableFuture.completedFuture(forecast);
-				
-			}
-			*/
-			//System.out.println("inizio lettura json"); 
 			File file = ResourceUtils.getFile("classpath:json_example_FromRunToRun.json");				 
 			//File is found
 			//System.out.println("File Found : " + file.exists()); 
@@ -252,45 +148,6 @@ public class MindsphereServiceClient {
 	    return "Chiamata effettuata e dati di ritorno corretti";
 	}
 
-	public static String getTimeSeriesAsObjectTestCloudfoundry() throws IOException {
-		
-		OkHttpClient client = new OkHttpClient();
-
-		MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-		RequestBody body = RequestBody.create(mediaType, "grant_type=client_credentials");
-		Request request = new Request.Builder()
-		  .url("https://itadev.piam.eu1.mindsphere.io/oauth/token")
-		  .post(body)
-		  .addHeader("Host", "itadev.piam.eu1.mindsphere.io")
-		  .addHeader("Content-Type", "application/x-www-form-urlencoded")
-		  .addHeader("Authorization", "Basic aXRhZGV2LXNlcnZpY2UtY3JlZGVudGlhbHM6MDEyNjE1YjYtYTE2Yy00YWFmLTg2YWYtNmRhOTA2MGRmOWZh")
-		  .build();
-		
-		//la parte di authorizazzione deve essere codificata in base64 e inizialmente ha la forma: {ServiceCredentialID: ServiceCredentialSecret}
-		Response response = client.newCall(request).execute();
-		
-		//da modificare con il json
-		String token_chiamata = response.body().string().substring(17, 1223);
-		
-		MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(token_chiamata).build();
-	
-	    RestClientConfig config = RestClientConfig.builder().build();
-	    
-	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
-
-	    TimeseriesData timeseriesData = null;
-	    try {
-	      timeseriesData = timeseriesClient.getLatestTimeseries("7cb21d4c9b724be5b38c2c9695d9b3c8", "demobox");
-
-	    } catch (MindsphereException e) {
-	    	System.out.println(e.getErrorMessage());
-	    	System.out.println(e.getHttpStatus());
-	    	return "Eccezione sollevata"+ e.getErrorMessage() + e.getHttpStatus();
-	    }
-
-	    return "Chiamata effettuata e dati di ritorno corretti";
-		
-	}
 	public static void testApiSelfMade () throws IOException {
 		
 		OkHttpClient client = new OkHttpClient();

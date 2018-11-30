@@ -57,7 +57,7 @@ public class CcsController {
 		
 		//MindsphereServiceClient.testApiSelfMade();
 		
-		//ErrorDataModel[] error_code = MindsphereServiceClient.testGetStopCodeStaticJson(date);
+		ErrorDataModel[] error_code = MindsphereServiceClient.testGetStopCodeStaticJson(date);
 		
 		
 		
@@ -83,7 +83,7 @@ public class CcsController {
 		
 		mv.addObject("date", date);
 		
-		//mv.addObject("error_codice", error_code);
+		mv.addObject("error_codice", error_code);
 
 
 		return mv;

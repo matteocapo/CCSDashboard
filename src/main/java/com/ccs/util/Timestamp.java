@@ -2,10 +2,18 @@ package com.ccs.util;
 
 public class Timestamp {
 	
-	char[] date = new char[24];
+	private char[] date = new char[24];
 
 	public Timestamp() {
-		date = "0000-00-00T00:00:00.000Z".toCharArray();
+		this.date = "0000-00-00T00:00:00.000Z".toCharArray();
+	}
+	
+	public Timestamp(char[] date_from_costructor) {
+		this.setDate(date_from_costructor.toString());
+	}
+	
+	public Timestamp(String date_from_costructor) {
+		this.setDate(date_from_costructor);
 	}
 	
 	//Set Functions
@@ -53,6 +61,10 @@ public class Timestamp {
 		this.date[18] = ss[1];
 	}
 	
+	public String getDate() {
+		return this.date.toString();
+	}
+	
 	public void clear() {
 		date = "0000-00-00T00:00:00.000Z".toCharArray();
 	}
@@ -82,5 +94,12 @@ public class Timestamp {
 		if(this.date.toString().compareTo(controlDate.toString()) == 0) return true;
 		return false;
 	}
+	
+	public String addSeconds() {
+		
+		return this.date.toString();
+	}
+	
+	
 	
 }

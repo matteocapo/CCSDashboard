@@ -55,11 +55,9 @@ public class Date {
 		}
 		//Set Minutes
 		To.setMinutes(date.substring(second_date + MINUTEs, second_date + MINUTEs + 2));
-		
-		String ConvertedFrom = new String(From.date);
-		String ConvertedTo = new String(To.date);
-		returnDate[0] = ConvertedFrom;
- 		returnDate[1] = ConvertedTo;
+
+		returnDate[0] = From.getDate();
+ 		returnDate[1] = To.getDate();
 		return returnDate;
 	}
 }
