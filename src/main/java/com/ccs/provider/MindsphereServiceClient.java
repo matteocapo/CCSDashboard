@@ -404,10 +404,45 @@ public class MindsphereServiceClient {
 		}
 		
 		//prova stampa degli elementi
+		/*
 		for (int i = 0; i < grandezza_array; i++) {
 			System.out.println(error_code[i].getErrorCode());
 			System.out.println(error_code[i].getTimestamp());
 		}
+		*/
 		return error_code;
+	}
+	
+	public static void dataInfoMs() throws IOException {
+		
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+		RequestBody body = RequestBody.create(mediaType, "grant_type=client_credentials");
+		Request request = new Request.Builder()
+		  .url("https://itadev.piam.eu1.mindsphere.io/oauth/token")
+		  .post(body)
+		  .addHeader("Host", "itadev.piam.eu1.mindsphere.io")
+		  .addHeader("Content-Type", "application/x-www-form-urlencoded")
+		  .addHeader("Authorization", "Basic aXRhZGV2LXNlcnZpY2UtY3JlZGVudGlhbHM6MDEyNjE1YjYtYTE2Yy00YWFmLTg2YWYtNmRhOTA2MGRmOWZh")
+		  .build();
+		//la parte di authorizazzione deve essere codificata in base64 e inizialmente ha la forma: {ServiceCredentialID: ServiceCredentialSecret}
+		Response response = client.newCall(request).execute();
+		
+		//da modificare con il json
+		String token_chiamata = response.body().string().substring(17, 1223);
+
+		Request request2 = new Request.Builder()
+		  .url("https://gateway.eu1.mindsphere.io/api/identitymanagement/v3/Grups?access_token=" + token_chiamata)
+		  .get()
+		  .addHeader("cache-control", "no-cache")
+		  .build();
+
+		Response response2 = client.newCall(request2).execute();
+				
+		System.out.println(response2.body().string());
+		
+		
+		
 	}
 }

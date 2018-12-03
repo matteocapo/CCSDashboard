@@ -89,7 +89,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Ccs Dashboard - ${date} ${stringa}</a>
+                    <a class="navbar-brand" href="#">Ccs Dashboard-${date}</a>
                 </div>
                 <div class="collapse navbar-collapse">
                 
@@ -205,7 +205,7 @@
                     <div class="col-md-3">
                         <div class="card ">
                             <div class="header">
-                            	<h4 class="title">Stop lists</h4>
+                            	<h4 class="title">Stop list</h4>
                             	<div id="stopCodes">
 	                            	 <c:forEach items="${error_codice}" var="val">
 								    	<p class="category">Stop Code: <c:out value="${val.getErrorCode()}"/> occured at <c:out value="${val.getTimestamp()}"/></p>

@@ -205,10 +205,12 @@
                     <div class="col-md-3">
                         <div class="card ">
                             <div class="header">
-                                <h4 class="title">Stop lists</h4>
-                                <c:forEach items="${error_codice}" var="val">
-							    	<p class="category">Stop Code: <c:out value="${val.getErrorCode()}"/> occured at <c:out value="${val.getTimestamp()}"/></p>
-								</c:forEach>
+                            	<h4 class="title">Stop list</h4>
+                            	<div id="stopCodes">
+	                            	 <c:forEach items="${error_codice}" var="val">
+								    	<p class="category">Stop Code: <c:out value="${val.getErrorCode()}"/> occured at <c:out value="${val.getTimestamp()}"/></p>
+									</c:forEach>
+                            	</div>
                             </div>
                             <div class="footer">
                                     <hr>

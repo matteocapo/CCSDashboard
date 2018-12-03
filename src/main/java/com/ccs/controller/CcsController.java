@@ -52,18 +52,19 @@ public class CcsController {
 		//ErrorDataModel[] error_code = MindsphereServiceClient.testGetStopCode(date);
 		
 		//test utilizzo chiamata developer account
-		String stringa_di_ritorno_chiamata_MS = MindsphereServiceClient.getTimeSeriesAsObject("7cb21d4c9b724be5b38c2c9695d9b3c8", "demobox");
+		//String stringa_di_ritorno_chiamata_MS = MindsphereServiceClient.getTimeSeriesAsObject("7cb21d4c9b724be5b38c2c9695d9b3c8", "demobox");
 	    //String stringa_di_ritorno_chiamata_MS = MindsphereServiceClient.getTimeSeriesAsObjectTestCloudfoundry();
 		
 		//MindsphereServiceClient.testApiSelfMade();
 		
+		//MindsphereServiceClient.dataInfoMs();
+		
 		ErrorDataModel[] error_code = MindsphereServiceClient.testGetStopCodeStaticJson(date);
-		
-		
+				
 		
 		ModelAndView mv = new ModelAndView("indexprova");
 		
-		mv.addObject("stringa", stringa_di_ritorno_chiamata_MS);
+		//mv.addObject("stringa", stringa_di_ritorno_chiamata_MS);
 
 		// oee
 		mv.addObject("oee", oee + "%");
