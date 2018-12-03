@@ -171,14 +171,14 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <div class="card ">
                             <div class="header">
                                 <h4 class="title">OEE</h4>
                                 <p class="category">Overall Equipment Effectiveness</p>
                             </div>
                             <div class="content">
-                            	<h4 style="text-align: center; font-size: 80px; font-weight:bold;">${oee}</h4>
+                            	<div class="GaugeMeter gaugeMeter" id="PreviewGaugeMeter_2" data-percent="${oee}" data-append="%" data-size="200" data-theme="Red-Gold-Green" data-back="RGBa(0,0,0,.1)" data-animate_gauge_colors="1" data-animate_text_colors="1" data-width="15" data-label="OEE" data-style="Arch" data-label_color="#FFF" data-id="PreviewGaugeMeter_2" style="width: 200px;"></div>
                             </div>
                             <div class="footer">
                                     <hr>
@@ -267,6 +267,7 @@
 
     <!--   Core JS Files   -->
     <script src="${pageContext.request.contextPath}/assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/assets/js/GaugeMeter.js" type="text/javascript"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/bootstrap.min.js" type="text/javascript"></script>
 
 	<!--  Charts Plugin -->
@@ -303,6 +304,8 @@
             //});
 
     	});
+    	
+    	$(".GaugeMeter").gaugeMeter();
 	</script>
 	
 	<!-- script primo istogramma
