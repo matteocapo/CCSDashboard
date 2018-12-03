@@ -171,13 +171,13 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-2" id="min-w-oee">
                         <div class="card ">
                             <div class="header">
                                 <h4 class="title">OEE</h4>
                                 <p class="category">Overall Equipment Effectiveness</p>
                             </div>
-                            <div class="content">
+                            <div class="content" id="centering-oee">
                             	<div class="GaugeMeter gaugeMeter" id="PreviewGaugeMeter_2" data-percent="${oee}" data-append="%" data-size="200" data-theme="Red-Gold-Green" data-back="RGBa(0,0,0,.1)" data-animate_gauge_colors="1" data-animate_text_colors="1" data-width="15" data-label="OEE" data-style="Arch" data-label_color="#FFF" data-id="PreviewGaugeMeter_2" style="width: 200px;"></div>
                             </div>
                             <div class="footer">

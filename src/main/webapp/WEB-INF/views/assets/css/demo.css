@@ -111,3 +111,11 @@
   font-weight: 200;
   opacity: .8;
 }
+
+#min-w-oee {
+	min-width: 260px;
+}
+
+#centering-oee {
+	text-align: center;
+}
