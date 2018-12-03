@@ -169,7 +169,7 @@
                             </div>
                             <div class="content">
                             <form action="${pageContext.request.contextPath}/indexprova" method="get">
-                            	<input id ="input-datetime" type="text" name="datetimes" size="32"/>
+                            	<input id ="input-datetime" type="text" name="datetimes"/>
                                 <div class="footer">
                                     <hr>
                                     <input type="submit" value="Submit interval time"/>
