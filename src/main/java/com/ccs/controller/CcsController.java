@@ -40,16 +40,16 @@ public class CcsController {
 		//oee = MindsphereServiceClient.oeeMedia("prova", "prova");
 		
 		//funzione di prova con json generato tramite richiesta di sessione 
-		//oee = MindsphereServiceClient.testUrlDataOee(date);
+		oee = MindsphereServiceClient.testUrlDataOee(date);
 		
 		//vecchia funzione di prova con json statico
 		//prodottiescarti = MindsphereServiceClient.prodottiEScarti("prova", "prova");
 		
 		//funzione di prova con json generato tramite richiesta di sessione 
-		//prodottiescarti = MindsphereServiceClient.testUrlDataProdottiEScarti(date);	
+		prodottiescarti = MindsphereServiceClient.testUrlDataProdottiEScarti(date);	
 		
 		//test messaggi di errore generato tramite richiesta di sessione
-		//ErrorDataModel[] error_code = MindsphereServiceClient.testGetStopCode(date);
+		ErrorDataModel[] error_code = MindsphereServiceClient.testGetStopCode(date);
 		
 		//test utilizzo chiamata developer account
 		//String stringa_di_ritorno_chiamata_MS = MindsphereServiceClient.getTimeSeriesAsObject("7cb21d4c9b724be5b38c2c9695d9b3c8", "demobox");
@@ -59,7 +59,7 @@ public class CcsController {
 		
 		//MindsphereServiceClient.dataInfoMs();
 		
-		ErrorDataModel[] error_code = MindsphereServiceClient.testGetStopCodeStaticJson(date);
+		//ErrorDataModel[] error_code = MindsphereServiceClient.testGetStopCodeStaticJson(date);
 				
 		
 		ModelAndView mv = new ModelAndView("indexprova");
@@ -67,7 +67,7 @@ public class CcsController {
 		//mv.addObject("stringa", stringa_di_ritorno_chiamata_MS);
 
 		// oee
-		mv.addObject("oee", oee + "%");
+		mv.addObject("oee", oee);
 
 		// scarti e produzioni
 		mv.addObject("produzioni", prodottiescarti[1]);

@@ -62,7 +62,7 @@ public class Timestamp {
 	}
 	
 	public String getDate() {
-		return this.date.toString();
+		return new String (this.date);
 	}
 	
 	public void clear() {

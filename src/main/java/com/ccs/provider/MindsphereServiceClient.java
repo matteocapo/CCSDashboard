@@ -44,7 +44,7 @@ public class MindsphereServiceClient {
 	String propertysetname = "";
 	String limit = "";
 	String select = "";
-	private static String URL_TOKEN = "3ba64f46-2fb9-422e-b58d-7ccf563df974";
+	private static String URL_TOKEN = "ea521996-0dc6-4872-bceb-03c1e7b0cbba";
 	
 	public static int oeeMedia(String from, String to) {
 		

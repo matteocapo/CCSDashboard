@@ -89,7 +89,8 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Ccs Dashboard-${date}</a>
+                    <a class="navbar-brand">Ccs Dashboard</a>
+                    <a class="navbar-brand">${date}</a>
                 </div>
                 <div class="collapse navbar-collapse">
                 
@@ -411,5 +412,9 @@
 	  data: speedData,
 	  options: chartOptions
 	});
+	</script>
+	
+	<!-- script odometro -->
+	<script type="text/javascript">
 	</script>
 </html>
