@@ -10,11 +10,9 @@
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
-
-
-    <!-- Bootstrap core CSS     -->
-    <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet" />
-
+	
+	
+ 
     <!-- Animation library for notifications   -->
     <link href="${pageContext.request.contextPath}/assets/css/animate.min.css" rel="stylesheet"/>
 
@@ -32,7 +30,17 @@
     <link href="${pageContext.request.contextPath}/assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
     
     <!-- 	date	 -->
-	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+	
+	<!-- date da modificare -->
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/v4.0.0/build/css/bootstrap-datetimepicker.css">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js"></script>
+	<script src="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/v4.0.0/src/js/bootstrap-datetimepicker.js"></script>
+	
 	
 </head>
 <body>
@@ -168,13 +176,26 @@
                                 <h4 class="title">Choose interval time for get datas</h4>
                             </div>
                             <div class="content">
-                            <form action="${pageContext.request.contextPath}/indexprova" method="get">
-                            	<input class="form-control" type="text" name="datetimes" readonly="readonly"/>
-                                <div class="footer">
-                                    <hr>
-                                    <input type="submit" value="Submit interval time"/>
-                                </div>
-                            </form>
+	                            <form action="${pageContext.request.contextPath}/indexprova" method="get">
+	                            	<div class="container-fluid">		     
+							            <div class='input-group date' id='datetimepicker6'>
+							                <input type='text' class="form-control" />
+							                <span class="input-group-addon">
+							                    <span class="glyphicon glyphicon-calendar"></span>
+							                </span>
+							            </div>
+							            <div class='input-group date' id='datetimepicker7'>
+							                <input type='text' class="form-control" />
+							                <span class="input-group-addon">
+							                    <span class="glyphicon glyphicon-calendar"></span>
+							                </span>
+							            </div>
+									</div>
+	                                <div class="footer">
+	                                    <hr>
+	                                    <input type="submit" value="Submit interval time"/>
+	                                </div>
+	                            </form>
                             </div>
                         </div>
                     </div>
@@ -226,18 +247,8 @@
 
 </body>
 
-    <!--   Core JS Files   -->
-    <script src="${pageContext.request.contextPath}/assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/bootstrap.min.js" type="text/javascript"></script>
-
 	<!--  Charts Plugin -->
 	<script src="${pageContext.request.contextPath}/assets/js/chartist.min.js"></script>
-
-    <!--  Notifications Plugin    -->
-    <script src="${pageContext.request.contextPath}/assets/js/bootstrap-notify.js"></script>
-
-    <!--  Google Maps Plugin    -->
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
 
     <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
 	<script src="${pageContext.request.contextPath}/assets/js/light-bootstrap-dashboard.js?v=1.4.0"></script>
@@ -247,12 +258,6 @@
 	
 	<!-- charts -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
-		
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-	
-	<!-- 	send date -->
 	
 
 	<script type="text/javascript">
@@ -273,18 +278,19 @@
 	</script>
 	
 	<!-- script data -->
-	<script>
-	$(function() {
-	  $('input[name="datetimes"]').daterangepicker({
-	    timePicker: true,
-	    startDate: moment().startOf('hour'),
-	    endDate: moment().startOf('hour').add(32, 'hour'),
-	    timePicker24Hour: true,
-	    locale: {
-	      format: 'M/DD/YYYY hh:mm A '
-	    }
-	  });
-	});
+	<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker6').datetimepicker();
+        $('#datetimepicker7').datetimepicker({
+            useCurrent: false //Important! See issue #1075
+        });
+        $("#datetimepicker6").on("dp.change", function (e) {
+            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datetimepicker7").on("dp.change", function (e) {
+            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+        });
+    });
 	</script>
 	
 		

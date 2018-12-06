@@ -14,6 +14,24 @@ import com.siemens.mindsphere.sdk.core.exception.MindsphereException;
 
 @Controller
 public class CcsController {
+	
+	@RequestMapping("/timetest")
+	public ModelAndView timetest() {
+
+		ModelAndView mv = new ModelAndView("timetest");
+		
+		return mv;
+		
+	}
+	
+	@RequestMapping("/eonasdan_date")
+	public ModelAndView eonasdan_date() {
+
+		ModelAndView mv = new ModelAndView("eonasdan_date");
+		
+		return mv;
+		
+	}
 
 	@RequestMapping("/indexprovatime")
 	public ModelAndView timepageview() {
@@ -23,6 +41,7 @@ public class CcsController {
 		return mv;
 		
 	}
+	
 	@RequestMapping("/indexprova")
 	public ModelAndView homepageview(@RequestParam(value = "datetimes", required = false, defaultValue = "World") String date) throws IOException, MindsphereException {
 		
