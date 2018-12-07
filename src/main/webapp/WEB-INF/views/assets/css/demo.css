@@ -62,7 +62,7 @@
 
 #stopCodes {
 	overflow-y: scroll;
-	height: 490px;
+	height: 300px;
 }
 
 @media all and (max-width: 991px)  {

@@ -34,7 +34,11 @@ public class Date {
 			String PMHour = new String(newHours.toString());
 			From.setHours(PMHour);
 		} else {
-			From.setHours(date.substring(first_date + HOURs, first_date + HOURs + 2));
+			if(date.substring(first_date + HOURs, first_date + HOURs + 2).equals("12")) {
+				From.setHours("00");	
+			} else {
+				From.setHours(date.substring(first_date + HOURs, first_date + HOURs + 2));
+			}
 		}
 		//Set Minutes
 		From.setMinutes(date.substring(first_date + MINUTEs, first_date + MINUTEs + 2));
@@ -51,13 +55,21 @@ public class Date {
 			Integer newHours = ( Integer.parseInt(date.substring(second_date + HOURs, second_date + HOURs + 2)) + 12 );
 			To.setHours(newHours.toString());
 		} else {
-			To.setHours(date.substring(second_date + HOURs, second_date + HOURs + 2));
+			if(date.substring(second_date + HOURs, second_date + HOURs + 2).equals("12")) {
+				To.setHours("00");	
+			} else {
+				To.setHours(date.substring(second_date + HOURs, second_date + HOURs + 2));
+			}
 		}
 		//Set Minutes
 		To.setMinutes(date.substring(second_date + MINUTEs, second_date + MINUTEs + 2));
 
 		returnDate[0] = From.getDate();
  		returnDate[1] = To.getDate();
+ 		
+ 		System.out.println(returnDate[0]);
+ 		System.out.println(returnDate[1]);
+
 		return returnDate;
 	}
 }

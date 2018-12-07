@@ -204,7 +204,7 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card ">
+                        <div class="card">
                             <div class="header">
                             	<h4 class="title">Stop list</h4>
                             	<div id="stopCodes">
@@ -340,7 +340,7 @@
 	new Chart(document.getElementById("popChart"),
 			{"type":"bar",
 			"data":{
-				"labels":["Total", "Discard"],
+				"labels":["Total", "Scrap"],
 				"datasets":[{
 					"label":"Pieces",
 					"data":[${produzioni}, ${scarti}],
