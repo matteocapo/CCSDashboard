@@ -203,7 +203,7 @@
                     <div class="col-md-5">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Intermediate OEE</h4>
+                                <h4 class="title">Intermediate OEEs</h4>
                             </div>
                             <div class="content">
                                 <!-- <div id="chartHours" class="ct-chart"></div>  -->
