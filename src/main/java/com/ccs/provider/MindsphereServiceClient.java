@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class MindsphereServiceClient {
 	String select = "";
 	private static String URL_TOKEN = "a930a23f-7838-4c00-b67f-eb21d3531d00";
 	
-	public static int oeeMediaJson(String from, String to) {
+	public static int oeeMediaJson(String from, String to, ArrayList<Integer> oeeArray) {
 		
 		int oeeMedia = 0;
 		
@@ -71,8 +72,9 @@ public class MindsphereServiceClient {
 			for (int i = 0; i < responseArray.length(); i++){
 				
 				if(responseArray.getJSONObject(i).getInt("OEE")>0) {
+					oeeArray.add(contMedia, responseArray.getJSONObject(i).getInt("OEE"));
 					contMedia++;
-					oeeMedia += responseArray.getJSONObject(i).getInt("OEE");
+					oeeMedia += responseArray.getJSONObject(i).getInt("OEE");	
 				}
 			    //System.out.println(responseArray.getJSONObject(i).getInt("OEE"));			    
 			}

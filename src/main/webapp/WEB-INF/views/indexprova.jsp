@@ -199,6 +199,23 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="col-md-5">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title">Intermediate OEE</h4>
+                            </div>
+                            <div class="content">
+                                <!-- <div id="chartHours" class="ct-chart"></div>  -->
+                                <div id="" class="content">
+                                	<canvas id="intOEE" width="600" height="400"></canvas>
+                                </div>
+                                <div class="footer">
+                                    <hr>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="col-md-5">
                         <div class="card">
@@ -352,9 +369,9 @@
 	<script>
 	new Chart(document.getElementById("popChart"),
 			{"type":"bar",
-			"data":{
-				"labels":["Total", "Scrap"],
-				"datasets":[{
+			 "data":{
+				 "labels":["Total", "Scrap"],
+				 "datasets":[{
 					"label":"Pieces",
 					"data":[${produzioni}, ${scarti}],
 					"fill":false,
@@ -373,7 +390,33 @@
 		"options":{"scales":{"yAxes":[{"ticks":{"beginAtZero":true}}]}}}
 	);</script>
 	
-	<!-- script grafo a torta -->
+	<!-- Grafico OEE intermedi -->
+	
+	<script type="text/javascript">
+	new Chart(document.getElementById("intOEE"),
+			{"type":"bar",
+			"data":{
+				"labels":[${oees_name}],
+				"datasets":[{
+					"label":"OEEs",
+					"data":[${oees_value}],
+					"fill":false,
+					"backgroundColor":[
+						"rgba(255, 159, 64, 0.2)",
+						"rgba(255, 99, 132, 0.2)"
+					],
+					"borderColor":[
+						"rgb(255, 159, 64)",
+						"rgb(255, 99, 132)"						
+						],
+						"borderWidth":1
+						}
+				]
+		},
+		"options":{"scales":{"yAxes":[{"ticks":{"beginAtZero":true}}]}}}
+	);</script>
+	
+	<!-- script grafo a torta
 	<script type="text/javascript">
 	var oilCanvas = document.getElementById("oilChart");
 	var oilData = {
@@ -396,8 +439,9 @@
 	  data: oilData
 	});
 	</script>
+	-->
 	
-	<!-- script grafo velocità -->
+	<!-- script grafo velocità
 	<script type="text/javascript">
 	var speedCanvas = document.getElementById("speedChart");
 
@@ -426,7 +470,7 @@
 	  options: chartOptions
 	});
 	</script>
-	
+	-->
 	<!-- script odometro -->
 	<script type="text/javascript">
 	</script>

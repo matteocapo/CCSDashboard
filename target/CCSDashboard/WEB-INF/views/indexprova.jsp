@@ -36,8 +36,8 @@
 
 </head>
 <body>
-
 <div class="wrapper">
+
     <div class="sidebar" data-color="azure" data-image="${pageContext.request.contextPath}/assets/img/sidebar-5.jpg">
 
     <!--
@@ -80,7 +80,20 @@
     </div>
 
     <div class="main-panel">
-        <nav class="navbar navbar-default navbar-fixed">
+    <c:choose>
+    	<c:when test="${testalert == no}">
+    	</c:when>
+   		<c:otherwise>
+       	 	<div class="bs-example">
+    			<div class="alert alert-warning">
+        			<a href="#" class="close" data-dismiss="alert">&times;</a>
+        			<strong>Warning!</strong> update the correct oee click <a href="${pageContext.request.contextPath}/indexprova?datetimes=${testalert}">here</a>.
+    			</div>
+			</div>
+    	</c:otherwise>
+	</c:choose>
+    
+	        <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
@@ -89,7 +102,8 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Ccs Dashboard - ${date} ${stringa}</a>
+                    <a class="navbar-brand">Ccs Dashboard</a>
+                    <a class="navbar-brand">${date}</a>
                 </div>
                 <div class="collapse navbar-collapse">
                 
@@ -171,17 +185,34 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-2" id="min-w-oee">
                         <div class="card ">
                             <div class="header">
                                 <h4 class="title">OEE</h4>
                                 <p class="category">Overall Equipment Effectiveness</p>
                             </div>
-                            <div class="content">
-                            	<h4 style="text-align: center; font-size: 80px; font-weight:bold;">${oee}</h4>
+                            <div class="content" id="centering-oee">
+                            	<div class="GaugeMeter gaugeMeter" id="PreviewGaugeMeter_2" data-percent="${oee}" data-append="%" data-size="200" data-theme="Red-Gold-Green" data-back="RGBa(0,0,0,.1)" data-animate_gauge_colors="1" data-animate_text_colors="1" data-width="15" data-label="OEE" data-style="Arch" data-label_color="#FFF" data-id="PreviewGaugeMeter_2" style="width: 200px;"></div>
                             </div>
                             <div class="footer">
                                     <hr>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-5">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title">Intermediate OEE</h4>
+                            </div>
+                            <div class="content">
+                                <!-- <div id="chartHours" class="ct-chart"></div>  -->
+                                <div id="" class="content">
+                                	<canvas id="intOEE" width="600" height="400"></canvas>
+                                </div>
+                                <div class="footer">
+                                    <hr>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -203,7 +234,7 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card ">
+                        <div class="card">
                             <div class="header">
                             	<h4 class="title">Stop list</h4>
                             	<div id="stopCodes">
@@ -267,6 +298,7 @@
 
     <!--   Core JS Files   -->
     <script src="${pageContext.request.contextPath}/assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/assets/js/GaugeMeter.js" type="text/javascript"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/bootstrap.min.js" type="text/javascript"></script>
 
 	<!--  Charts Plugin -->
@@ -303,6 +335,8 @@
             //});
 
     	});
+    	
+    	$(".GaugeMeter").gaugeMeter();
 	</script>
 	
 	<!-- script primo istogramma
@@ -336,10 +370,36 @@
 	new Chart(document.getElementById("popChart"),
 			{"type":"bar",
 			"data":{
-				"labels":["Total", "Discard"],
+				"labels":["Total", "Scrap"],
 				"datasets":[{
 					"label":"Pieces",
 					"data":[${produzioni}, ${scarti}],
+					"fill":false,
+					"backgroundColor":[
+						"rgba(255, 159, 64, 0.2)",
+						"rgba(255, 99, 132, 0.2)"
+					],
+					"borderColor":[
+						"rgb(255, 159, 64)",
+						"rgb(255, 99, 132)"						
+						],
+						"borderWidth":1
+						}
+				]
+		},
+		"options":{"scales":{"yAxes":[{"ticks":{"beginAtZero":true}}]}}}
+	);</script>
+	
+	<!-- Grafico OEE intermedi -->
+	
+	<script>
+	new Chart(document.getElementById("intOEE"),
+			{"type":"bar",
+			"data":{
+				"labels":[${oees_name}],
+				"datasets":[{
+					"label":""
+					"data":[45],
 					"fill":false,
 					"backgroundColor":[
 						"rgba(255, 159, 64, 0.2)",
@@ -408,5 +468,9 @@
 	  data: speedData,
 	  options: chartOptions
 	});
+	</script>
+	
+	<!-- script odometro -->
+	<script type="text/javascript">
 	</script>
 </html>

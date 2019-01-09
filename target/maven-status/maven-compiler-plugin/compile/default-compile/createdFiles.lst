@@ -1,7 +1,0 @@
-com\ccs\controller\CcsController.class
-com\ccs\util\Utils.class
-com\ccs\util\Provider.class
-com\ccs\model\ErrorDataModel.class
-com\ccs\provider\MindsphereServiceClient.class
-com\ccs\util\Timestamp.class
-com\ccs\util\Date.class
