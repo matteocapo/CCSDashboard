@@ -1,6 +1,7 @@
 package com.ccs.controller;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,32 +44,49 @@ public class CcsController {
 	}
 	
 	@RequestMapping("/indexprova")
-	public ModelAndView homepageview(@RequestParam(value = "datetimes", required = false, defaultValue = "World") String date) throws IOException, MindsphereException {
+	public ModelAndView homepageview(@RequestParam(value = "datetimes", required = false, defaultValue = "World") String date) throws IOException, MindsphereException, ParseException {
 		
 		int oee = 0;
 		int prodottiescarti[] = new int[2];
+		String[] fromTo = new String[2];
+		String testalert;
 		
 		System.out.println("in controller");
+		
+		System.out.println(date);
 
 		if (!date.equals("World")) {
 			//System.out.println(date);
-			Date.toMindSphereFormat(date);
+			//Date.toMindSphereFormat(date);
+			if(date.substring(4, 5).equals("-")) {
+				fromTo[0] = date.substring(0, 24);
+				fromTo[1] = date.substring(25, 49);
+			}else {
+				fromTo = Date.toMindSphereFormat(date);
+			}
 		}
+
+		System.out.println(fromTo[0]);
+		System.out.println(fromTo[1]);
+		
 		
 		//vecchia funzione di prova con json statico
-		//oee = MindsphereServiceClient.oeeMedia("prova", "prova");
+		oee = MindsphereServiceClient.oeeMediaJson("prova", "prova");
 		
 		//funzione di prova con json generato tramite richiesta di sessione 
-		oee = MindsphereServiceClient.testUrlDataOee(date);
+		//oee = MindsphereServiceClient.testUrlDataOee(date);
 		
 		//vecchia funzione di prova con json statico
-		//prodottiescarti = MindsphereServiceClient.prodottiEScarti("prova", "prova");
+		prodottiescarti = MindsphereServiceClient.prodottiEScartiJson("prova", "prova");
 		
 		//funzione di prova con json generato tramite richiesta di sessione 
-		prodottiescarti = MindsphereServiceClient.testUrlDataProdottiEScarti(date);	
+		//prodottiescarti = MindsphereServiceClient.testUrlDataProdottiEScarti(date);	
 		
 		//test messaggi di errore generato tramite richiesta di sessione
-		ErrorDataModel[] error_code = MindsphereServiceClient.testGetStopCode(date);
+		ErrorDataModel[] error_code = MindsphereServiceClient.testJsonGetStopCode(date);
+		
+		//test popup
+		testalert = MindsphereServiceClient.checkNewDataAlert(date);
 		
 		//test utilizzo chiamata developer account
 		//String stringa_di_ritorno_chiamata_MS = MindsphereServiceClient.getTimeSeriesAsObject("7cb21d4c9b724be5b38c2c9695d9b3c8", "demobox");
@@ -105,6 +123,7 @@ public class CcsController {
 		
 		mv.addObject("error_codice", error_code);
 
+		mv.addObject("testalert", testalert);
 
 		return mv;
 	}

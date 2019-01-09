@@ -36,8 +36,8 @@
 
 </head>
 <body>
-
 <div class="wrapper">
+
     <div class="sidebar" data-color="azure" data-image="${pageContext.request.contextPath}/assets/img/sidebar-5.jpg">
 
     <!--
@@ -80,7 +80,20 @@
     </div>
 
     <div class="main-panel">
-        <nav class="navbar navbar-default navbar-fixed">
+    <c:choose>
+    	<c:when test="${testalert == no}">
+    	</c:when>
+   		<c:otherwise>
+       	 	<div class="bs-example">
+    			<div class="alert alert-warning">
+        			<a href="#" class="close" data-dismiss="alert">&times;</a>
+        			<strong>Warning!</strong> update the correct oee click <a href="${pageContext.request.contextPath}/indexprova?datetimes=${testalert}">here</a>.
+    			</div>
+			</div>
+    	</c:otherwise>
+	</c:choose>
+    
+	        <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">

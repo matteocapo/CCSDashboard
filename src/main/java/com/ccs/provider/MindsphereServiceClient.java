@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.Iterator;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,14 +47,14 @@ public class MindsphereServiceClient {
 	String select = "";
 	private static String URL_TOKEN = "a930a23f-7838-4c00-b67f-eb21d3531d00";
 	
-	public static int oeeMedia(String from, String to) {
+	public static int oeeMediaJson(String from, String to) {
 		
 		int oeeMedia = 0;
 		
 		try {
 			
 			//System.out.println("inizio lettura json"); 
-			File file = ResourceUtils.getFile("classpath:json_example_FromRunToRun.json");				 
+			File file = ResourceUtils.getFile("classpath:from_run_to_run.json");				 
 			//File is found
 			//System.out.println("File Found : " + file.exists()); 
 			//Read File Content
@@ -85,13 +86,13 @@ public class MindsphereServiceClient {
 		return oeeMedia;
 	}
 	
-	public static int[] prodottiEScarti(String from, String to) {
+	public static int[] prodottiEScartiJson(String from, String to) {
 		int[] dati = new int[2];
 		final int PezziScartati = 0;
 		final int PezziProdotti = 1;
 		
 		try {
-			File file = ResourceUtils.getFile("classpath:json_example_FromRunToRun.json");				 
+			File file = ResourceUtils.getFile("classpath:from_run_to_run.json");				 
 			//File is found
 			//System.out.println("File Found : " + file.exists()); 
 			//Read File Content
@@ -179,7 +180,7 @@ public class MindsphereServiceClient {
 	
 	}
 		
-	public static int testUrlDataOee(String date) throws IOException {
+	public static int testTokenUrlDataOee(String date) throws IOException {
 		
 		int oeeMedia = 0;
 		
@@ -242,7 +243,7 @@ public class MindsphereServiceClient {
 		return oeeMedia;		
 	}
 
-	public static int[] testUrlDataProdottiEScarti(String date) throws IOException {
+	public static int[] testTokenUrlDataProdottiEScarti(String date) throws IOException {
 		
 		int[] dati = new int[2];
 		final int PezziScartati = 0;
@@ -296,7 +297,7 @@ public class MindsphereServiceClient {
 		return dati;
 	}
 	
-	public static ErrorDataModel[] testGetStopCode(String date) throws IOException {
+	public static ErrorDataModel[] testTokenUrlGetStopCode(String date) throws IOException {
 		
 		String dateFormat[] = Date.toMindSphereFormat(date);
 		String stringaRisposta;
@@ -362,13 +363,24 @@ public class MindsphereServiceClient {
 		
 		return error_code;
 	}
-
-	public static ErrorDataModel[] testGetStopCodeStaticJson(String date) throws IOException {
-
+	
+	public static ErrorDataModel[] testJsonGetStopCode(String date) throws IOException {
+		
+		
+		String dateFormat[] = new String[2];
+		
+		if(date.substring(4, 5).equals("-")) {
+			dateFormat[0] = date.substring(0, 24);
+			dateFormat[1] = date.substring(25, 49);
+		}else {
+			dateFormat = Date.toMindSphereFormat(date);
+		}
+		
+		String stringaRisposta;
 		int grandezza_array = 0;
 		
 		//System.out.println("inizio lettura json"); 
-		File file = ResourceUtils.getFile("classpath:json_example_FromRunToRun.json");				 
+		File file = ResourceUtils.getFile("classpath:from_run_to_run.json");				 
 		//File is found
 		//System.out.println("File Found : " + file.exists()); 
 		//Read File Content
@@ -377,7 +389,7 @@ public class MindsphereServiceClient {
 		//System.out.println("fine lettura json");
 		
 		//JSONObject response = new JSONObject(content);
-		JSONArray responseArray = new JSONArray(content);		
+		JSONArray responseArray = new JSONArray(content);
 		
 		
 		for (int i = 0; i < responseArray.length(); i++){
@@ -410,8 +422,11 @@ public class MindsphereServiceClient {
 			System.out.println(error_code[i].getTimestamp());
 		}
 		*/
+		
+		
 		return error_code;
 	}
+
 	
 	public static void dataInfoMs() throws IOException {
 		
@@ -444,5 +459,118 @@ public class MindsphereServiceClient {
 		
 		
 		
+	}
+	
+	public static String checkNewDataAlert(String date) throws MindsphereException, IOException, java.text.ParseException{
+				
+		//trasformo la data in un formato mindsphere like
+		String[] dates = new String[2];
+		
+		if(date.substring(4, 5).equals("-")) {
+			dates[0] = date.substring(0, 24);
+			dates[1] = date.substring(25, 49);
+		}else {
+			dates = Date.toMindSphereFormat(date);
+		}
+		
+		//flag inizio
+		int initflag = 0;
+		String newInit, goodInit;
+		
+		
+		//flag fine
+		int endflag = 0;
+		String newEnd, goodEnd;
+		
+	    //MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("itadev-service-credentials").clientSecret("012615b6-a16c-4aaf-86af-6da9060df9fa").tenant("itadev").build();
+
+	    //RestClientConfig config = RestClientConfig.builder().build();
+	    
+	    //TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+
+	    //List<TimeseriesData> timeseriesDataOEE = null;
+	  
+		//timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[0], dates[1], 100, "oee");
+		
+		
+		//if controlla se il primo elemento è uno stop. (è uno stop se ha oee = 0)
+			//Se si, chiedi di partire dal run precedente a calcolare il tutto e imposta l'initflag a 1
+		
+		//if controlla se l'ultimo elemento è un run. (è un run se ha oee > 0)
+			//se si, imposta l' endflag di fine a 1 e viene richiesto se inglobare anche lui
+	
+		//if initiflag == 1 
+			// calcolo il range del giorno precedente e vado a prendere l'ultimo elemento il quale siamo sicuri che sia un run e prendo il tempo di questo run
+			// il tempo del nuovo inizio lo salvo in una variabile d'appoggio
+			newInit = Date.previousDay(dates[0]);
+			//timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[0], newInit, 100, "oee");
+			//mi prendo il tempo dell'ultimo valore (che siamo sicuri che sia un run)
+			goodInit = "valore1";
+	
+		
+		//if endflag == 1
+			//calcolo il range del giorno successivo e prendo il primo valore che possiedo, e sono sicuro che sia un valore di run
+			// il tempo della nuova fine lo salvo in una variabile d'appoggio
+			newEnd = Date.nextDay(dates[1]);
+			//timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[1], newEnd, 100, "oee");
+			//mi prendo il tempo del primo valore (che siamo sicuri che sia un run)
+			goodEnd = "valore2";
+	    
+	    
+	    if((initflag+endflag) == 0) {
+		    return "2019-01-05T01:00:00.000Z+2019-01-05T01:00:00.000Z";
+	    } else {
+	    	return "no";
+	    }
+	}
+	
+	public static int[] oeeTotalScrapMSApi(String date) throws MindsphereException, IOException{
+		
+		//array di interi che conterrà in prima posizione l'oee, in seconda i pezzi totali e in terza i pezzi scartati
+		int[] oeeTotScrap = new int[3];
+		oeeTotScrap[0] = 0;
+		oeeTotScrap[1] = 0;
+		oeeTotScrap[2] = 0;
+
+		
+		//trasformo la data in un formato mindsphere like
+		String[] dates = new String[2];
+		
+		dates = Date.toMindSphereFormat(date);
+		
+		//flag inizio
+		int initflag;
+		
+		int endflag;
+		
+	    MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("itadev-service-credentials").clientSecret("012615b6-a16c-4aaf-86af-6da9060df9fa").tenant("itadev").build();
+
+	    RestClientConfig config = RestClientConfig.builder().build();
+	    
+	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+
+	    List<TimeseriesData> timeseriesDataOEE = null;
+	    List<TimeseriesData> timeseriesDataScrap = null;
+	    List<TimeseriesData> timeseriesDataTotal = null;
+	    try {
+	    	timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[0], dates[1], 100, "oee");
+	    	
+	    	//per calcolare l'oee medio, non devi tenere in considerazione il primo valore di run (cioè il primo valore che ha oee>0) ma inizi a calcolarlo dal successivo
+	    	//la stessa cosa vale per gli altri due valori
+	    	
+	    	//ovviamente l'ultimo valore di oee non viene preso in considerazione perchè è un valore di stop
+	    	
+	    	timeseriesDataScrap = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[0], dates[1], 100, "scarti");
+	    	
+	    	timeseriesDataTotal = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[0], dates[1], 100, "totali");
+	 
+
+	    } catch (MindsphereException e) {
+	    	System.out.println(e.getErrorMessage());
+	    	System.out.println(e.getHttpStatus());
+	    	return oeeTotScrap;
+	    }
+
+	    return oeeTotScrap;
 	}
 }
