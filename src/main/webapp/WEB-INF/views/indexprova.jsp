@@ -425,23 +425,22 @@
 	var e = jQuery.Event( "click" );
 	
 	$( "#intOEE" ).click(function(e) {
-		<!-- Intercettazione frame cliccato
-		  -- Reference: https://www.chartjs.org/docs/latest/developers/api.html#getelementatevente
-		  -->
+		<!-- Intercettazione frame cliccato -->
+		  <!-- Reference: https://www.chartjs.org/docs/latest/developers/api.html#getelementatevente -->
 		var clickedFrameObject = itermediateOEEChart.getElementAtEvent(e)[0];
 		
 	    if (clickedFrameObject) {
 	    	<!-- Presa data -->
 	        var date = itermediateOEEChart.data.labels[clickedFrameObject._index];
-	        <!-- Trovare data (Due soluzione)
-	          -- 1. Inviare la data del frame corrente e rielaborare la data precedente nel backend
-	          -- 2. Trovare la data precedente decrementando l'index trovato sopra,
-	          --    tuttavia nel caso in cui il frame cliccato sia il primo o lo facciamo trovare al backend
-	          --    oppure lo carichiamo noi preventivamente all'interno della pagina -->
+	        <!-- Trovare data (Due soluzione)-->
+	        <!-- 1. Inviare la data del frame corrente e rielaborare la data precedente nel backend-->
+	        <!-- 2. Trovare la data precedente decrementando l'index trovato sopra,-->
+	        <!--    tuttavia nel caso in cui il frame cliccato sia il primo o lo facciamo trovare al backend-->
+	        <!--    oppure lo carichiamo noi preventivamente all'interno della pagina -->
 	        
-	        <!-- Nel caso la soluzione scelta sia la seconda si può utilizzare il comando successivo per arrivare alla pagina frame info
-	          -- location.assign( path );
-	          -->
+	        <!-- Nel caso la soluzione scelta sia la seconda si può utilizzare il comando successivo per arrivare alla pagina frame info-->
+	        <!-- location.assign( path );-->
+	          
 	          
 	        alert("Data: " + date);
 	    }
