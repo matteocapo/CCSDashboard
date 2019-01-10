@@ -44,12 +44,27 @@ public class CcsController {
 		
 	}
 	
+	@RequestMapping("/frameinfo")
+	public ModelAndView motorpageview(	@RequestParam(value = "from", 	required = false, defaultValue = "from") String from
+									 ,	@RequestParam(value = "to", 	required = false, defaultValue = "to") 	 String to
+					) throws IOException, MindsphereException, ParseException {
+		
+		//Getting frame information about motors and sensors
+		
+		
+		
+		ModelAndView mv = new ModelAndView("frameInfo");
+		return mv;
+	}
+	
+	
 	@RequestMapping("/indexprova")
 	public ModelAndView homepageview(@RequestParam(value = "datetimes", required = false, defaultValue = "World") String date) throws IOException, MindsphereException, ParseException {
 		
 		int oee = 0;
 		int prodottiescarti[] = new int[2];
 		ArrayList<Integer> oeeArray=new ArrayList<Integer>();
+		ArrayList<String> oeeNamesArr=new ArrayList<String>();
 		String[] fromTo = new String[2];
 		String testalert;
 		String oees_name  = new String();
@@ -75,7 +90,7 @@ public class CcsController {
 		
 		
 		//vecchia funzione di prova con json statico
-		oee = MindsphereServiceClient.oeeMediaJson("prova", "prova", oeeArray);
+		oee = MindsphereServiceClient.oeeMediaJson("prova", "prova", oeeArray, oeeNamesArr);
 		
 		//funzione di prova con json generato tramite richiesta di sessione 
 		//oee = MindsphereServiceClient.testUrlDataOee(date);
@@ -110,15 +125,16 @@ public class CcsController {
 		// oee
 		mv.addObject("oee", oee);
 		if(oeeArray.size() > 0) {
-			oees_name = oees_name.concat("'OEE_1'");
+			oees_name = oees_name.concat("'" + oeeNamesArr.get(0) + "'");
 			oees_value = oees_value.concat(oeeArray.get(0).toString());
 			if (oeeArray.size() > 1) {
 				for(int i = 1; i < oeeArray.size(); i++) {
-					oees_name = oees_name.concat(", 'OEE_" + (i+1) + "'");
+					oees_name = oees_name.concat(", '" + oeeNamesArr.get(i) + "'");
 					oees_value = oees_value.concat(", " + oeeArray.get(i).toString());
 				}
 			}
 		}
+		System.out.println(oees_value);
 		mv.addObject("oees_value", oees_value);
 		mv.addObject("oees_name" , oees_name);
 

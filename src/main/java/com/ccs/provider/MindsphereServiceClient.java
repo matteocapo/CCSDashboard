@@ -48,14 +48,14 @@ public class MindsphereServiceClient {
 	String select = "";
 	private static String URL_TOKEN = "a930a23f-7838-4c00-b67f-eb21d3531d00";
 	
-	public static int oeeMediaJson(String from, String to, ArrayList<Integer> oeeArray) {
+	public static int oeeMediaJson(String from, String to, ArrayList<Integer> oeeArr, ArrayList<String> oeeNamesArr) {
 		
 		int oeeMedia = 0;
 		
 		try {
 			
 			//System.out.println("inizio lettura json"); 
-			File file = ResourceUtils.getFile("classpath:from_run_to_run.json");				 
+			File file = ResourceUtils.getFile("classpath:from_run_to_run2.json");				 
 			//File is found
 			//System.out.println("File Found : " + file.exists()); 
 			//Read File Content
@@ -72,7 +72,8 @@ public class MindsphereServiceClient {
 			for (int i = 0; i < responseArray.length(); i++){
 				
 				if(responseArray.getJSONObject(i).getInt("OEE")>0) {
-					oeeArray.add(contMedia, responseArray.getJSONObject(i).getInt("OEE"));
+					oeeArr.add(contMedia, responseArray.getJSONObject(i).getInt("OEE"));
+					oeeNamesArr.add(contMedia, responseArray.getJSONObject(i).getString("_time"));
 					contMedia++;
 					oeeMedia += responseArray.getJSONObject(i).getInt("OEE");	
 				}

@@ -1,5 +1,4 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>  
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!doctype html>
 <html lang="en">
 <head>
@@ -32,12 +31,13 @@
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="${pageContext.request.contextPath}/assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
     
-    <!-- css grafo time series -->
-
+    <!-- 	date	 -->
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+	
 </head>
 <body>
-<div class="wrapper">
 
+<div class="wrapper">
     <div class="sidebar" data-color="azure" data-image="${pageContext.request.contextPath}/assets/img/sidebar-5.jpg">
 
     <!--
@@ -61,39 +61,17 @@
 
             <ul class="nav">
                 <li class="active">
-                    <a href="${pageContext.request.contextPath}/indexprovatime">
+                    <a href="${pageContext.request.contextPath}">
                         <i class="pe-7s-note"></i>
                         <p>Set interval time</p>
                     </a>
                 </li>
-                <!-- classi che definiscono i loghi:
-                	class="pe-7s-user"
-                	class="pe-7s-note2"
-                	class="pe-7s-news-paper"
-                	class="pe-7s-science"
-                	class="pe-7s-map-marker"
-                	class="pe-7s-bell"
-                	class="pe-7s-rocket"
-            	-->
-            </ul>
+             </ul>
     	</div>
     </div>
 
     <div class="main-panel">
-    <c:choose>
-    	<c:when test="${testalert == no}">
-    	</c:when>
-   		<c:otherwise>
-       	 	<div class="bs-example">
-    			<div class="alert alert-warning">
-        			<a href="#" class="close" data-dismiss="alert">&times;</a>
-        			<strong>Warning!</strong> update the correct oee click <a href="${pageContext.request.contextPath}/indexprova?datetimes=${testalert}">here</a>.
-    			</div>
-			</div>
-    	</c:otherwise>
-	</c:choose>
-    
-	        <nav class="navbar navbar-default navbar-fixed">
+        <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
@@ -102,8 +80,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand">Ccs Dashboard</a>
-                    <a class="navbar-brand">${date}</a>
+                    <a class="navbar-brand" href="#">Ccs Dashboard</a>
                 </div>
                 <div class="collapse navbar-collapse">
                 
@@ -185,66 +162,19 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-2" id="min-w-oee">
-                        <div class="card ">
-                            <div class="header">
-                                <h4 class="title">OEE</h4>
-                                <p class="category">Overall Equipment Effectiveness</p>
-                            </div>
-                            <div class="content" id="centering-oee">
-                            	<div class="GaugeMeter gaugeMeter" id="PreviewGaugeMeter_2" data-percent="${oee}" data-append="%" data-size="200" data-theme="Red-Gold-Green" data-back="RGBa(0,0,0,.1)" data-animate_gauge_colors="1" data-animate_text_colors="1" data-width="15" data-label="OEE" data-style="Arch" data-label_color="#FFF" data-id="PreviewGaugeMeter_2" style="width: 200px;"></div>
-                            </div>
-                            <div class="footer">
-                                    <hr>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <div class="col-md-5">
                         <div class="card">
-                            <div class="header">
-                                <h4 class="title">Intermediate OEEs</h4>
+                          <div class="header">
+                                <h4 class="title">Choose interval time for get datas</h4>
                             </div>
                             <div class="content">
-                                <!-- <div id="chartHours" class="ct-chart"></div>  -->
-                                <div id="" class="content">
-                                	<canvas id="intOEE" width="100%" height="100%"></canvas>
-                                </div>
+                            <form action="${pageContext.request.contextPath}/indexprova" method="get">
+                            	<input class="form-control" type="text" name="datetimes"/>
                                 <div class="footer">
                                     <hr>
+                                    <input type="submit" value="Submit interval time"/>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-5">
-                        <div class="card">
-                            <div class="header">
-                                <h4 class="title">Pieces & discard pieces</h4>
-                            </div>
-                            <div class="content">
-                                <!-- <div id="chartHours" class="ct-chart"></div>  -->
-                                <div id="" class="content">
-                                	<canvas id="popChart" width="600" height="400"></canvas>
-                                </div>
-                                <div class="footer">
-                                    <hr>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card">
-                            <div class="header">
-                            	<h4 class="title">Stop list</h4>
-                            	<div id="stopCodes">
-	                            	 <c:forEach items="${error_codice}" var="val">
-								    	<p class="category">Stop Code: <c:out value="${val.getErrorCode()}"/> occured at <c:out value="${val.getTimestamp()}"/></p>
-									</c:forEach>
-                            	</div>
-                            </div>
-                            <div class="footer">
-                                    <hr>
+                            </form>
                             </div>
                         </div>
                     </div>
@@ -298,7 +228,6 @@
 
     <!--   Core JS Files   -->
     <script src="${pageContext.request.contextPath}/assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/assets/js/GaugeMeter.js" type="text/javascript"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/bootstrap.min.js" type="text/javascript"></script>
 
 	<!--  Charts Plugin -->
@@ -317,7 +246,13 @@
 	<script src="${pageContext.request.contextPath}/assets/js/demo.js"></script>
 	
 	<!-- charts -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+		
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+	
+	<!-- 	send date -->
 	
 
 	<script type="text/javascript">
@@ -335,176 +270,22 @@
             //});
 
     	});
-    	
-    	$(".GaugeMeter").gaugeMeter();
 	</script>
 	
-	<!-- script primo istogramma
-	<script type="text/javascript">
-	/**
-	 * chart js 
-	 */
-	var popCanvas = document.getElementById("popChart");
-	var popCanvas = $("#popChart");
-	var popCanvas = document.getElementById("popChart").getContext("2d");
-	var barChart = new Chart(popCanvas, {
-		  type: 'bar',
-		  data:{
-		    labels: ["Total", "Discard"],
-		    datasets: [{
-		    	label: 'Pieces',
-		    	data: [${domenica}, ${lunedì}],
-		    	fill:false,
-		    	backgroundColor: [
-		        'rgba(255, 99, 132, 0.6)',
-		        'rgba(54, 162, 235, 0.6)'
-		        ]
-		    }]
-	
-		  }		
-		});
-	</script> -->
-	
-	
+	<!-- script data -->
 	<script>
-	Chart.scaleService.updateScaleDefaults('linear', {
-	    ticks: {
-	        min: 0
+	$(function() {
+	  $('input[name="datetimes"]').daterangepicker({
+	    timePicker: true,
+	    startDate: moment().startOf('hour'),
+	    endDate: moment().startOf('hour').add(32, 'hour'),
+	    timePicker24Hour: true,
+	    locale: {
+	      format: 'M/DD/YYYY hh:mm A '
 	    }
+	  });
 	});
-	new Chart(document.getElementById("popChart"),
-			{"type":"bar",
-			 "data":{
-				 "labels":["Total", "Scrap"],
-				 "datasets":[{
-					"label":"Pieces",
-					"data":[${produzioni}, ${scarti}],
-					"fill":false,
-					"backgroundColor":[
-						"rgba(255, 159, 64, 0.2)",
-						"rgba(255, 99, 132, 0.2)"
-					],
-					"borderColor":[
-						"rgb(255, 159, 64)",
-						"rgb(255, 99, 132)"						
-						],
-						"borderWidth":1
-						}
-				]
-		},
-		"options":{"scales":{"yAxes":[{"ticks":{"beginAtZero":true}}]}}}
-	);</script>
+	</script>
 	
-	<!-- Grafico OEE intermedi -->
-	
-	<script type="text/javascript">
-	Chart.scaleService.updateScaleDefaults('linear', {
-	    ticks: {
-	        min: 0,
-	        max: 100
-	    }
-	});
-	var itermediateOEEChart = new Chart(document.getElementById("intOEE"),
-			{"type":"horizontalBar",
-			"data":{
-				"labels":[${oees_name}],
-				"datasets":[{
-					"label":"OEEs",
-					"data":[${oees_value}],
-					"fill":false,
-					"backgroundColor":[],
-					"borderColor":[],
-						"borderWidth":1
-						}
-				]
-		},
-		"options":{"scales":{"yAxes":[{"ticks":{"beginAtZero":true}}]}}}
-	);
-	
-	<!-- Sezione di ingresso al singolo frame -->
-	var e = jQuery.Event( "click" );
-	
-	$( "#intOEE" ).click(function(e) {
-		<!-- Intercettazione frame cliccato
-		  -- Reference: https://www.chartjs.org/docs/latest/developers/api.html#getelementatevente
-		  -->
-		var clickedFrameObject = itermediateOEEChart.getElementAtEvent(e)[0];
 		
-	    if (clickedFrameObject) {
-	    	<!-- Presa data -->
-	        var date = itermediateOEEChart.data.labels[clickedFrameObject._index];
-	        <!-- Trovare data (Due soluzione)
-	          -- 1. Inviare la data del frame corrente e rielaborare la data precedente nel backend
-	          -- 2. Trovare la data precedente decrementando l'index trovato sopra,
-	          --    tuttavia nel caso in cui il frame cliccato sia il primo o lo facciamo trovare al backend
-	          --    oppure lo carichiamo noi preventivamente all'interno della pagina -->
-	        
-	        <!-- Nel caso la soluzione scelta sia la seconda si può utilizzare il comando successivo per arrivare alla pagina frame info
-	          -- location.assign( path );
-	          -->
-	          
-	        alert("Data: " + date);
-	    }
-	});
-	
-	</script>
-	
-	<!-- script grafo a torta
-	<script type="text/javascript">
-	var oilCanvas = document.getElementById("oilChart");
-	var oilData = {
-	    labels: [
-	        "Discarded pieces",
-	        "Produced pieces"
-	    ],
-	    datasets: [
-	        {
-	            data: [${scarti}, ${produzioni}],
-	            backgroundColor: [
-	                "#FF6384",
-	                "#63FF84"
-	            ]
-	        }]
-	};
-
-	var pieChart = new Chart(oilCanvas, {
-	  type: 'pie',
-	  data: oilData
-	});
-	</script>
-	-->
-	
-	<!-- script grafo velocità
-	<script type="text/javascript">
-	var speedCanvas = document.getElementById("speedChart");
-
-	var speedData = {
-	  labels: ["10", "20", "30", "40", "50", "60"],
-	  datasets: [{
-	    label: "PPM",
-	    data: [${min1}, ${min2}, ${min3}, ${min4}, ${min1}, ${min6}],
-	  }]
-	};
-
-	var chartOptions = {
-	  legend: {
-	    display: true,
-	    position: 'top',
-	    labels: {
-	      boxWidth: 80,
-	      fontColor: 'black'
-	    }
-	  }
-	};
-
-	var lineChart = new Chart(speedCanvas, {
-	  type: 'line',
-	  data: speedData,
-	  options: chartOptions
-	});
-	</script>
-	-->
-	<!-- script odometro -->
-	<script type="text/javascript">
-	</script>
 </html>
