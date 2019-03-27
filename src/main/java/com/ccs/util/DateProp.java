@@ -4,7 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class Date {
+public class DateProp {
 	
 	public static String[] toMindSphereFormat(String date) {
 		/* 	Input:

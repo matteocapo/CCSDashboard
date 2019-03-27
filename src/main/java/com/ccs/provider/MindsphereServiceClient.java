@@ -26,7 +26,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ccs.model.ErrorDataModel;
-import com.ccs.util.Date;
+import com.ccs.util.DateProp;
+import java.util.Date;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import com.ccs.util.Provider;
 import com.siemens.mindsphere.sdk.auth.model.MindsphereCredentials;
 import com.siemens.mindsphere.sdk.core.RestClientConfig;
@@ -47,6 +51,34 @@ public class MindsphereServiceClient {
 	String limit = "";
 	String select = "";
 	private static String URL_TOKEN = "a930a23f-7838-4c00-b67f-eb21d3531d00";
+	
+	public static List<TimeseriesData> getLargeRangeV1(String[] fromTo) throws java.text.ParseException {
+	    
+		List<TimeseriesData> timeseriesData = null;
+	    String fromUteData = fromTo[0];
+	    String toUteData = fromTo[1];
+	    
+	    String fromNew = DateProp.previousDay(fromTo[0]);
+	    String toNew = DateProp.nextDay(fromTo[1]);
+	    
+	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+	    Date fromUteDataFormatted = formatter.parse(fromUteData);
+	    Date toUteDataFormatted = formatter.parse(fromUteData);
+	    Date fromNewFormatted = formatter.parse(fromUteData);
+	    Date toNewFormatted = formatter.parse(fromUteData);
+	    
+	    List<TimeseriesData> lista = null;
+	   
+	    for(int i = 0; i < lista.size(); i++) {
+	    	//lista.get(i).getData();
+	    	//1) controllo gli indici della data immessa dall'utente
+	    	//2) controllo se devo prendermi gli indici per effettuare la correzione
+	    	//3) se devo prendermi gli indici della correzione li prendo e copio in un'altra lista che ritorna la funzione
+	    }
+	    
+	    
+	    return timeseriesData;
+	}
 	
 	public static int oeeMediaJson(String from, String to, ArrayList<Integer> oeeArr, ArrayList<String> oeeNamesArr) {
 		
@@ -73,7 +105,11 @@ public class MindsphereServiceClient {
 				
 				if(responseArray.getJSONObject(i).getInt("OEE")>0) {
 					oeeArr.add(contMedia, responseArray.getJSONObject(i).getInt("OEE"));
-					oeeNamesArr.add(contMedia, responseArray.getJSONObject(i).getString("_time"));
+					if(i == responseArray.length() || (i == responseArray.length() - 1 ) || (i == responseArray.length() - 2) ) {
+						oeeNamesArr.add(contMedia, responseArray.getJSONObject(i).getString("_time") +" - "+ responseArray.getJSONObject(i+1).getString("_time"));
+					}else {
+						oeeNamesArr.add(contMedia, responseArray.getJSONObject(i).getString("_time") +" - "+ responseArray.getJSONObject(i+2).getString("_time"));
+					}
 					contMedia++;
 					oeeMedia += responseArray.getJSONObject(i).getInt("OEE");	
 				}
@@ -140,9 +176,10 @@ public class MindsphereServiceClient {
 	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
 
 	    TimeseriesData timeseriesData = null;
+	    
 	    try {
 	      timeseriesData = timeseriesClient.getLatestTimeseries(entity, propertySetName);
-
+	      
 	    } catch (MindsphereException e) {
 	    	System.out.println(e.getErrorMessage());
 	    	System.out.println(e.getHttpStatus());
@@ -187,7 +224,7 @@ public class MindsphereServiceClient {
 		
 		int oeeMedia = 0;
 		
-		String dateFormat[] = Date.toMindSphereFormat(date);
+		String dateFormat[] = DateProp.toMindSphereFormat(date);
 		
 		String stringaRisposta;
 		
@@ -252,7 +289,7 @@ public class MindsphereServiceClient {
 		final int PezziScartati = 0;
 		final int PezziProdotti = 1;
 		
-		String dateFormat[] = Date.toMindSphereFormat(date);
+		String dateFormat[] = DateProp.toMindSphereFormat(date);
 		String stringaRisposta;
 		
 		OkHttpClient client = new OkHttpClient();
@@ -302,7 +339,7 @@ public class MindsphereServiceClient {
 	
 	public static ErrorDataModel[] testTokenUrlGetStopCode(String date) throws IOException {
 		
-		String dateFormat[] = Date.toMindSphereFormat(date);
+		String dateFormat[] = DateProp.toMindSphereFormat(date);
 		String stringaRisposta;
 		int grandezza_array = 0;
 		
@@ -376,7 +413,7 @@ public class MindsphereServiceClient {
 			dateFormat[0] = date.substring(0, 24);
 			dateFormat[1] = date.substring(25, 49);
 		}else {
-			dateFormat = Date.toMindSphereFormat(date);
+			dateFormat = DateProp.toMindSphereFormat(date);
 		}
 		
 		String stringaRisposta;
@@ -430,7 +467,6 @@ public class MindsphereServiceClient {
 		return error_code;
 	}
 
-	
 	public static void dataInfoMs() throws IOException {
 		
 		OkHttpClient client = new OkHttpClient();
@@ -473,7 +509,7 @@ public class MindsphereServiceClient {
 			dates[0] = date.substring(0, 24);
 			dates[1] = date.substring(25, 49);
 		}else {
-			dates = Date.toMindSphereFormat(date);
+			dates = DateProp.toMindSphereFormat(date);
 		}
 		
 		//flag inizio
@@ -505,7 +541,7 @@ public class MindsphereServiceClient {
 		//if initiflag == 1 
 			// calcolo il range del giorno precedente e vado a prendere l'ultimo elemento il quale siamo sicuri che sia un run e prendo il tempo di questo run
 			// il tempo del nuovo inizio lo salvo in una variabile d'appoggio
-			newInit = Date.previousDay(dates[0]);
+			newInit = DateProp.previousDay(dates[0]);
 			//timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[0], newInit, 100, "oee");
 			//mi prendo il tempo dell'ultimo valore (che siamo sicuri che sia un run)
 			goodInit = "valore1";
@@ -514,7 +550,7 @@ public class MindsphereServiceClient {
 		//if endflag == 1
 			//calcolo il range del giorno successivo e prendo il primo valore che possiedo, e sono sicuro che sia un valore di run
 			// il tempo della nuova fine lo salvo in una variabile d'appoggio
-			newEnd = Date.nextDay(dates[1]);
+			newEnd = DateProp.nextDay(dates[1]);
 			//timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[1], newEnd, 100, "oee");
 			//mi prendo il tempo del primo valore (che siamo sicuri che sia un run)
 			goodEnd = "valore2";
@@ -539,7 +575,7 @@ public class MindsphereServiceClient {
 		//trasformo la data in un formato mindsphere like
 		String[] dates = new String[2];
 		
-		dates = Date.toMindSphereFormat(date);
+		dates = DateProp.toMindSphereFormat(date);
 		
 		//flag inizio
 		int initflag;

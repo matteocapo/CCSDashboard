@@ -409,7 +409,7 @@
 			"data":{
 				"labels":[${oees_name}],
 				"datasets":[{
-					"label":"OEEs",
+					"label":"OEEs %",
 					"data":[${oees_value}],
 					"fill":false,
 					"backgroundColor":[],
@@ -440,7 +440,6 @@
 	        
 	        <!-- Nel caso la soluzione scelta sia la seconda si può utilizzare il comando successivo per arrivare alla pagina frame info-->
 	        <!-- location.assign( path );-->
-	          
 	          
 	        alert("Data: " + date);
 	    }

@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ccs.model.ErrorDataModel;
 import com.ccs.provider.MindsphereServiceClient;
-import com.ccs.util.Date;
+import com.ccs.util.DateProp;
 import com.siemens.mindsphere.sdk.core.exception.MindsphereException;
 
 @Controller
@@ -81,7 +81,7 @@ public class CcsController {
 				fromTo[0] = date.substring(0, 24);
 				fromTo[1] = date.substring(25, 49);
 			}else {
-				fromTo = Date.toMindSphereFormat(date);
+				fromTo = DateProp.toMindSphereFormat(date);
 			}
 		}
 
@@ -116,6 +116,8 @@ public class CcsController {
 		//MindsphereServiceClient.dataInfoMs();
 		
 		//ErrorDataModel[] error_code = MindsphereServiceClient.testGetStopCodeStaticJson(date);
+		
+		//MindsphereServiceClient.getLargeRangeV1(fromTo);
 				
 		
 		ModelAndView mv = new ModelAndView("indexprova");
@@ -134,7 +136,11 @@ public class CcsController {
 				}
 			}
 		}
-		System.out.println(oees_value);
+		//System.out.println(oees_value);		
+		//System.out.println(oees_name);
+
+		
+		
 		mv.addObject("oees_value", oees_value);
 		mv.addObject("oees_name" , oees_name);
 
