@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ccs.model.ErrorDataModel;
+import com.ccs.model.IntermediateOeesModel;
+import com.ccs.model.ListAndInfo;
 import com.ccs.util.DateProp;
 import java.util.Date;
 
@@ -563,53 +565,570 @@ public class MindsphereServiceClient {
 	    }
 	}
 	
-	public static int[] oeeTotalScrapMSApi(String date) throws MindsphereException, IOException{
+	//Da qui iniziano le chiamate che vengono effettuate a mindsphere
+	
+	//Questa funzione al suo interno effettua 3 chiamate rest e serve per prendere gli OEE, pezzi prodotti e scartati
+	public static int[] oeeTotalScrapMSApi(String date, String credentialId, String tableName, int max_visual) throws MindsphereException, IOException{
 		
-		//array di interi che conterrà in prima posizione l'oee, in seconda i pezzi totali e in terza i pezzi scartati
+		//array di interi che conterrà in prima posizione i pezzi scartati [0], in seconda i pezzi prodotti [1] e in terza l'oee medio [2]
+		    	
+		int contMedia = 0;
 		int[] oeeTotScrap = new int[3];
 		oeeTotScrap[0] = 0;
 		oeeTotScrap[1] = 0;
 		oeeTotScrap[2] = 0;
-
-		
+				
 		//trasformo la data in un formato mindsphere like
-		String[] dates = new String[2];
+			
+		String dates[] = new String[2];
+		
+		System.out.println("ora che arriva dalla form:"+ date);
+		
+		if(date.substring(4, 5).equals("-")) {
+			dates[0] = date.substring(0, 24);
+			dates[1] = date.substring(25, 49);
+		}else {
+			dates = DateProp.toMindSphereFormat(date);
+		}
 		
 		dates = DateProp.toMindSphereFormat(date);
 		
-		//flag inizio
-		int initflag;
+		System.out.println("ora inizio:"+ dates[0]);
+		System.out.println("ora fine: "+ dates[1]);
+
 		
-		int endflag;
+	    MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+
+	    RestClientConfig config = RestClientConfig.builder().build();
+	    
+	    
+	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+
+	    List<TimeseriesData> timeseriesDataOEEScrapTotal = null;
+	    
+	    try {
+	    	
+	    	//chiamata dall'SDK per ricevere tutte le info dal db
+	    	timeseriesDataOEEScrapTotal = timeseriesClient.getTimeseries(credentialId , tableName, dates[0], dates[1], max_visual, null);
+	    	
+	    	//set scarti totali e oee
+	    	if(!(timeseriesDataOEEScrapTotal == null)) {
+	    		for (int i = 0; i < timeseriesDataOEEScrapTotal.size(); i++){
+					oeeTotScrap[0] =  oeeTotScrap[0] + timeseriesDataOEEScrapTotal.get(i).getData().get("PezziScartati").hashCode();
+					oeeTotScrap[1] = oeeTotScrap[1] + timeseriesDataOEEScrapTotal.get(i).getData().get("PezziProdotti").hashCode();	
+					if(timeseriesDataOEEScrapTotal.get(i).getData().get("OEE").hashCode() > 0) {
+						contMedia++;
+						oeeTotScrap[2] += timeseriesDataOEEScrapTotal.get(i).getData().get("OEE").hashCode();	
+					}
+				}
+	    		oeeTotScrap[2] = oeeTotScrap[2]/contMedia;
+	    	}
+	    	
+	    } catch (MindsphereException e) {
+	    	System.out.println(e);
+	    	System.out.println(e.getErrorMessage());
+	    	System.out.println(e.getHttpStatus());
+	    	System.out.println("errore nel collegamento");
+	    	return oeeTotScrap;
+	    }
+	    
+	    System.out.println("OEE: " + oeeTotScrap[2]);
+	    System.out.println("collegamento stabilito e dati ricevuti");
+	    
+	    return oeeTotScrap;
+	}
+
+	
+	public static ErrorDataModel[] stopcodeMSApi(String date, String credentialId, String tableName, int max_visual) throws MindsphereException, IOException {
 		
-	    MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("itadev-service-credentials").clientSecret("012615b6-a16c-4aaf-86af-6da9060df9fa").tenant("itadev").build();
+		
+		String dates[] = new String[2];
+		
+		if(date.substring(4, 5).equals("-")) {
+			dates[0] = date.substring(0, 24);
+			dates[1] = date.substring(25, 49);
+		}else {
+			dates = DateProp.toMindSphereFormat(date);
+		}
+		
+		
+		MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
 
 	    RestClientConfig config = RestClientConfig.builder().build();
 	    
 	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
 
-	    List<TimeseriesData> timeseriesDataOEE = null;
-	    List<TimeseriesData> timeseriesDataScrap = null;
-	    List<TimeseriesData> timeseriesDataTotal = null;
+	    List<TimeseriesData> timeseriesStopCode = null;
+	    
 	    try {
-	    	timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[0], dates[1], 100, "oee");
 	    	
-	    	//per calcolare l'oee medio, non devi tenere in considerazione il primo valore di run (cioè il primo valore che ha oee>0) ma inizi a calcolarlo dal successivo
-	    	//la stessa cosa vale per gli altri due valori
+	    	//lista degli stop code
+	    	timeseriesStopCode = timeseriesClient.getTimeseries(credentialId , tableName, dates[0], dates[1], max_visual, null);
 	    	
-	    	//ovviamente l'ultimo valore di oee non viene preso in considerazione perchè è un valore di stop
-	    	
-	    	timeseriesDataScrap = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[0], dates[1], 100, "scarti");
-	    	
-	    	timeseriesDataTotal = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[0], dates[1], 100, "totali");
-	 
-
+	    	if(!(timeseriesStopCode == null)) {
+	    		for (int i = 0; i < timeseriesStopCode.size(); i++){
+	    			
+				}
+	       	}
+	    
 	    } catch (MindsphereException e) {
+	    	System.out.println(e);
 	    	System.out.println(e.getErrorMessage());
 	    	System.out.println(e.getHttpStatus());
-	    	return oeeTotScrap;
+	    	System.out.println("errore nel collegamento");
+	    }
+	    
+	    System.out.println("collegamento stabilito e dati ricevuti");
+	    
+		String stringaRisposta;
+		int grandezza_array = 0;
+		
+		//System.out.println("inizio lettura json"); 
+		File file = ResourceUtils.getFile("classpath:from_run_to_run.json");				 
+		//File is found
+		//System.out.println("File Found : " + file.exists()); 
+		//Read File Content
+		String content = new String(Files.readAllBytes(file.toPath()));
+		//System.out.println(content);	 
+		//System.out.println("fine lettura json");
+		
+		//JSONObject response = new JSONObject(content);
+		JSONArray responseArray = new JSONArray(content);
+		
+		
+		for (int i = 0; i < responseArray.length(); i++){
+			
+			if(responseArray.getJSONObject(i).getInt("OEE") == 0) {
+				grandezza_array++;				
+			}
+		}
+		
+		//deve essere inizializzato dopo che si è contato il numero di errori contenuti nel json di ritorno
+		ErrorDataModel[] error_code  = new ErrorDataModel[grandezza_array]; 
+		
+
+		for (int i = 0, j = 0; i < responseArray.length(); i++){
+			
+			if(responseArray.getJSONObject(i).getInt("OEE") == 0) {
+				ErrorDataModel temp = new ErrorDataModel();
+				temp.setErrorCode(responseArray.getJSONObject(i).getInt("CodeStop"));
+				temp.setTimestamp(responseArray.getJSONObject(i).getString("_time"));
+				error_code[j] = temp;
+				j++;
+			}
+			
+		}
+		
+		//prova stampa degli elementi
+		/*
+		for (int i = 0; i < grandezza_array; i++) {
+			System.out.println(error_code[i].getErrorCode());
+			System.out.println(error_code[i].getTimestamp());
+		}
+		*/
+		
+		
+		return error_code;
+	}
+	
+	/* NUOVA GESTIONE DELLA LOGICA
+	 * 
+	 * Da qui inizia la gestione della logica tramite l'utilizzo delle chiamate API a MindSphere 
+	 *  
+	 *  
+	 */
+	
+	
+	public static List<TimeseriesData> listMindsphere (String date, String credentialId, String tableName, int max_visual) throws MindsphereException, IOException{
+						
+		//trasformo la data in un formato mindsphere like
+			
+		String dates[] = new String[2];
+		
+		System.out.println("ora che arriva dalla form:"+ date);
+		
+		if(date.substring(4, 5).equals("-")) {
+			dates[0] = date.substring(0, 24);
+			dates[1] = date.substring(25, 49);
+		}else {
+			dates = DateProp.toMindSphereFormat(date);
+		}
+		
+		dates = DateProp.toMindSphereFormat(date);
+		
+		System.out.println("ora inizio:"+ dates[0]);
+		System.out.println("ora fine: "+ dates[1]);
+
+		
+	    MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+
+	    RestClientConfig config = RestClientConfig.builder().build();
+	    
+	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+
+	    List<TimeseriesData> timeseriesList = null;
+	    
+	    try {
+	    	
+	    	//chiamata dall'SDK per ricevere tutte le info dal db
+	    	timeseriesList = timeseriesClient.getTimeseries(credentialId , tableName, dates[0], dates[1], max_visual, null);
+	    	
+	    	//set scarti totali e oee
+	    	if(!(timeseriesList == null)) {
+	    		System.out.println("dati ricevuti con successo (lista non vuota)");
+	    	} else {
+	    		System.out.println("dati ricevuti (lista vuota)");
+	    	}
+	    	
+	    } catch (MindsphereException e) {
+	    	System.out.println(e);
+	    	System.out.println(e.getErrorMessage());
+	    	System.out.println(e.getHttpStatus());
+	    	System.out.println("errore nel collegamento");
+	    	return timeseriesList;
+	    }
+	    
+	    System.out.println("collegamento stabilito");    
+	    return timeseriesList;
+	}
+	
+	public static ListAndInfo listAndInfoMindsphere(List<TimeseriesData> timeseriesList) {
+		
+		ListAndInfo timeseries_list_info = new ListAndInfo();
+
+		
+		timeseries_list_info.setTimeseriesList(timeseriesList);
+		timeseries_list_info.setLunghezza_lista(timeseriesList.size());
+		timeseries_list_info.setData_iniziale(timeseriesList.get(0).getTimeString());
+		timeseries_list_info.setData_finale(timeseriesList.get(timeseries_list_info.getLunghezza_lista()-1).getTimeString());
+
+		
+		if(timeseriesList.get(0).getData().get("OEE").hashCode() == 0) {
+			timeseries_list_info.setTipo_iniziale("stop");
+		} else {
+			timeseries_list_info.setTipo_iniziale("run");
+		}
+		
+		if(timeseriesList.get(timeseriesList.size()-1).getData().get("OEE").hashCode() == 0) {
+			timeseries_list_info.setTipo_finale("stop");
+		} else {
+			timeseries_list_info.setTipo_finale("run");
+		}
+		
+		System.out.println("");
+		System.out.println("Data iniziale: "+timeseries_list_info.getData_iniziale());
+		System.out.println("Data finale: "+timeseries_list_info.getData_finale());
+		System.out.println("Tipo iniziale: "+timeseries_list_info.getTipo_iniziale());
+		System.out.println("Tipo finale: "+timeseries_list_info.getTipo_finale());
+		System.out.println("Lunghezza lista: "+timeseries_list_info.getLunghezza_lista());
+		System.out.println("");
+
+		return timeseries_list_info;
+		
+	}
+	
+	public static int[] oeeTotalScrapMSApi(ListAndInfo timeseries_list_info) throws MindsphereException, IOException{
+		
+		//array di interi che conterrà in prima posizione i pezzi scartati [0], in seconda i pezzi prodotti [1] e in terza l'oee medio [2]
+		    	
+		int contMedia = 0;
+		int[] oeeTotScrap = new int[3];
+		oeeTotScrap[0] = 0;
+		oeeTotScrap[1] = 0;
+		oeeTotScrap[2] = 0;
+		
+		List<TimeseriesData> timeseriesDataOEEScrapTotal = timeseries_list_info.getTimeseriesList();
+		
+    	//set scarti totali e oee
+		
+    	if(!(timeseriesDataOEEScrapTotal == null)) {
+    		if(timeseriesDataOEEScrapTotal.size()>3) {
+
+	    		for (int i = 0; i < timeseriesDataOEEScrapTotal.size(); i++){
+					if(i == 0) {
+						if(timeseriesDataOEEScrapTotal.get(0).getData().get("OEE").hashCode() == 0) {
+							//vado avanti di 3 perchè è il primo run utile		
+							i = i + 3;
+						}else {
+							
+							//vado avanti di 2 perchè è il primo run utile
+							i = i + 2;
+						}
+					}
+					oeeTotScrap[0] =  oeeTotScrap[0] + timeseriesDataOEEScrapTotal.get(i).getData().get("PezziScartati").hashCode();
+					oeeTotScrap[1] = oeeTotScrap[1] + timeseriesDataOEEScrapTotal.get(i).getData().get("PezziProdotti").hashCode();	
+					if(timeseriesDataOEEScrapTotal.get(i).getData().get("OEE").hashCode() > 0) {
+						contMedia++;
+						oeeTotScrap[2] += timeseriesDataOEEScrapTotal.get(i).getData().get("OEE").hashCode();	
+					}
+				}
+	    		oeeTotScrap[2] = oeeTotScrap[2]/contMedia;
+    		}
+    	}
+    	
+    	return oeeTotScrap;
+	}
+	
+	public static void intermediateOees(List<TimeseriesData> list, IntermediateOeesModel intermediateOees) {
+		
+		/* se impostato a 1 = il primo era uno stop e posso prendere il primo tempo di run che è su i-2
+		 * se impostato a 2 = il primo era un run e posso prendere il primo tempo di run che è su i-2
+		 */
+		
+		int flag = 0;
+		
+		ArrayList<Integer> oeeArr = new ArrayList<Integer>();
+		ArrayList<String> oeeNamesArr = new ArrayList<String>();
+		
+		int contMedia = 0;
+		
+		if(!(list == null)) {
+			
+			for (int i = 0; i < list.size() - 1; i++){
+				/*
+				if(list.get(0).getData().get("OEE").hashCode() == 0) {
+					
+					//vado avanti di 3 perchè è il primo run utile		
+					i = i + 3;
+					flag = 1;
+				}else {
+					
+					//vado avanti di 2 perchè è il primo run utile
+					i = i + 2;
+					flag = 2;
+				}
+				*/
+				if(list.get(i).getData().get("OEE").hashCode()>0) {
+						oeeArr.add(contMedia, list.get(i).getData().get("OEE").hashCode());
+						if(i == list.size()|| (i == list.size() - 1 ) || (i == list.size() - 2) ) {
+							oeeNamesArr.add(contMedia, list.get(i).getTimeString() +" - "+list.get(i+1).getTimeString());
+						}else {
+							oeeNamesArr.add(contMedia, list.get(i).getTimeString() +" - "+list.get(i+2).getTimeString());
+						}
+						contMedia++;
+				}
+			}
+			
+			
+		} else {
+			oeeArr.add(0, 0);
+			oeeNamesArr.add(0, "null");
+		}
+		intermediateOees.setOeeArray(oeeArr);
+		intermediateOees.setOeeNamesArr(oeeNamesArr);
+	}
+	
+	public static void intermediateOeesModifica(ListAndInfo timeseries_list_info, IntermediateOeesModel intermediateOees) {
+		
+		/* se impostato a 1 = il primo era uno stop e posso prendere il primo tempo di run che è su i-2
+		 * se impostato a 2 = il primo era un run e posso prendere il primo tempo di run che è su i-2
+		 */
+		
+		int flag = 0;
+		
+		List <TimeseriesData> list = timeseries_list_info.getTimeseriesList();
+		
+		ArrayList<Integer> oeeArr = new ArrayList<Integer>();
+		ArrayList<String> oeeNamesArr = new ArrayList<String>();
+		
+		int contMedia = 0;
+		
+		if(!(list == null)) {
+			if(list.size()<4) {
+				
+				oeeArr.add(0, 0);
+				oeeNamesArr.add(0, "null");
+				
+			} else {
+				
+				for (int i = 0; i < list.size(); i++){
+					
+					if(i == 0) {
+						if(list.get(0).getData().get("OEE").hashCode() == 0) {
+							
+							//vado avanti di 3 perchè è il primo run utile		
+							i = i + 3;
+							flag = 1;
+						}else {
+							
+							//vado avanti di 2 perchè è il primo run utile
+							i = i + 2;
+							flag = 2;
+						}
+					}	
+					if(list.get(i).getData().get("OEE").hashCode()>0) {
+							oeeArr.add(contMedia, list.get(i).getData().get("OEE").hashCode());
+							oeeNamesArr.add(contMedia, list.get(i-2).getTimeString() +" - "+list.get(i-1).getTimeString());
+							contMedia++;
+					}
+				}
+			}	
+		} else {
+			oeeArr.add(0, 0);
+			oeeNamesArr.add(0, "null");
+		}
+		intermediateOees.setOeeArray(oeeArr);
+		intermediateOees.setOeeNamesArr(oeeNamesArr);
+	}
+	
+	public static ErrorDataModel[] getStopCodeFromList(ListAndInfo timeseries_list_info) {
+		
+		int grandezza_array = 0;
+		
+		List<TimeseriesData> list = timeseries_list_info.getTimeseriesList();
+		
+		for (int i = 0; i < timeseries_list_info.getLunghezza_lista(); i++){
+			if((list.get(i).getData().get("OEE").hashCode() == 0)) {
+				grandezza_array++;				
+			}
+		}
+		
+		//deve essere inizializzato dopo che si è contato il numero di errori contenuti nel json di ritorno
+		ErrorDataModel[] error_code  = new ErrorDataModel[grandezza_array-1]; 
+		
+		if(!(list == null)) {
+			if(list.size()>3) {
+
+				for (int i = 0, j = 0; i < timeseries_list_info.getLunghezza_lista(); i++){
+					if(i == 0) {
+						if(list.get(0).getData().get("OEE").hashCode() == 0) {
+							
+							//vado avanti di 2 perchè è il primo run utile		
+							i = i + 2;
+						}else {
+							
+							//vado avanti di 1 perchè è il primo run utile
+							i = i + 1;
+						}
+					}	
+					
+					if(list.get(i).getData().get("OEE").hashCode() == 0) {
+						ErrorDataModel temp = new ErrorDataModel();
+						temp.setErrorCode(list.get(i).getData().get("CodeStop").hashCode());
+						temp.setTimestamp(list.get(i).getTimeString());
+						error_code[j] = temp;
+						j++;
+					}
+				}
+			}
+		}
+		return error_code;
+	}
+	
+	public static String checkNewDataAlert(ListAndInfo timeseries_list_info) throws java.text.ParseException, MindsphereException {
+			
+			
+		//flag inizio
+		int initflag = 0;
+		String newInit, goodInit = "";
+		
+		
+		//flag fine
+		int endflag = 0;
+		String newEnd, goodEnd = "";
+		
+		
+		MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+		
+		RestClientConfig config = RestClientConfig.builder().build();
+		    
+		TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+		
+		List<TimeseriesData> init_date = null;
+		List<TimeseriesData> final_date = null;
+		
+		
+		if(timeseries_list_info.getTipo_iniziale().equals("stop")) {
+			//if controlla se il primo elemento è uno stop. (è uno stop se ha oee = 0)
+			//Se si, chiedi di partire dal run precedente a calcolare il tutto e imposta l'initflag a 1
+			
+			initflag = 1;
+			
+		}
+		
+		
+		if(timeseries_list_info.getTipo_finale().equals("run")) {
+			//if controlla se l'ultimo elemento è un run. (è un run se ha oee > 0)
+			//se si, imposta l' endflag di fine a 1 e viene richiesto se inglobare anche lui
+			System.out.println("endflag di run: "+endflag);
+			endflag = 1;
+			
+		}
+		
+		try {
+			
+			if(initflag == 1) {
+				//if initiflag == 1 
+				// calcolo il range del giorno precedente e vado a prendere l'ultimo elemento il quale siamo sicuri che sia un run e prendo il tempo di questo run
+				// il tempo del nuovo inizio lo salvo in una variabile d'appoggio
+				
+				//newInit = DateProp.previousDay(dates[0]);
+				
+				//timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[0], newInit, 100, "oee");
+				//mi prendo il tempo dell'ultimo valore (che siamo sicuri che sia un run)
+				//goodInit = "valore1";
+				
+				newInit = DateProp.previousDayList(timeseries_list_info.getData_iniziale());
+				
+				//lista degli stop code
+				init_date = timeseriesClient.getTimeseries("8dda19eac02e4eec8489535a5cbaa235" , "FromRunToRun", newInit, timeseries_list_info.getData_iniziale(), 2000, "OEE");
+				
+				int index;
+				
+				index = init_date.size();
+				System.out.println("grandezza lista di ritorno dalla prima chiamata: "+index);
+
+				if(index>1) {
+					index = index -2;
+					goodInit =  goodInit + init_date.get(index).getTimeString();
+				} else {
+				goodInit =  goodInit + timeseries_list_info.getData_iniziale();
+				}
+				System.out.println("nuovo elemento di partenza: "+goodInit);
+			}
+			
+			if(endflag == 1) {
+				//if endflag == 1
+				//calcolo il range del giorno successivo e prendo il primo valore che possiedo, e sono sicuro che sia un valore di run
+				// il tempo della nuova fine lo salvo in una variabile d'appoggio
+				
+				//newEnd = DateProp.nextDay(dates[1]);
+				
+				//timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[1], newEnd, 100, "oee");
+				//mi prendo il tempo del primo valore (che siamo sicuri che sia un run)
+				//goodEnd = "valore2";
+				
+				newEnd = DateProp.nextDayList(timeseries_list_info.getData_finale());
+				
+				//lista degli stop code
+				final_date = timeseriesClient.getTimeseries("8dda19eac02e4eec8489535a5cbaa235" , "FromRunToRun", timeseries_list_info.getData_finale(), newEnd, 2, "OEE");
+				
+				if((final_date.size() == 0) || (final_date.size() == 1)) {
+					goodEnd = goodEnd + timeseries_list_info.getData_finale();
+				} else {
+					goodEnd = goodEnd +  final_date.get(1).getTimeString();	
+				}
+				System.out.println("nuovo elemento di arrivo: "+goodEnd);
+			}
+		} catch (MindsphereException e) {
+	    	System.out.println(e);
+	    	System.out.println(e.getErrorMessage());
+	    	System.out.println(e.getHttpStatus());
 	    }
 
-	    return oeeTotScrap;
+		
+		
+		
+	    if((initflag == 1) && (endflag == 1)) {
+		    return goodInit + "+" + goodEnd;
+	    } else if((initflag == 1) && (endflag == 0)) {
+	    	 return goodInit + "+" + timeseries_list_info.getData_finale();
+	    } else if((initflag == 0) && (endflag == 1)) {
+	    	 return timeseries_list_info.getData_iniziale() + "+" + goodEnd;
+	    } else {
+	    	return "no";
+	    }
+	    
 	}
+
 }

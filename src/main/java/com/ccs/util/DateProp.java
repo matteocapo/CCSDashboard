@@ -34,9 +34,15 @@ public class DateProp {
 			From.setMonth("0" + date.substring(first_date+MONTHs, first_date+MONTHs+1));
 			From.setDay(date.substring(first_date+DAYs-1, first_date+DAYs+1));	
 			if (date.substring(first_date + FORMAT-1, first_date + FORMAT + 1).equals("PM")) {
-				Integer newHours = ( Integer.parseInt(date.substring(first_date + HOURs-1, first_date + HOURs + 1)) + 12 );
-				String PMHour = new String(newHours.toString());
-				From.setHours(PMHour);
+				if(Integer.parseInt(date.substring(first_date + HOURs-1, first_date + HOURs + 1)) == 12) {
+					Integer newHours = ( Integer.parseInt(date.substring(first_date + HOURs-1, first_date + HOURs + 1)));
+					String PMHour = new String(newHours.toString());
+					From.setHours(PMHour);
+				} else {
+					Integer newHours = ( Integer.parseInt(date.substring(first_date + HOURs-1, first_date + HOURs + 1)) + 12 );
+					String PMHour = new String(newHours.toString());
+					From.setHours(PMHour);
+				}		
 			} else {
 				if(date.substring(first_date + HOURs-1, first_date + HOURs + 1).equals("12")) {
 					From.setHours("00");	
@@ -57,9 +63,15 @@ public class DateProp {
 			From.setDay(date.substring(first_date+DAYs, first_date+DAYs+2));
 			//Set Hours
 			if (date.substring(first_date + FORMAT, first_date + FORMAT + 2).equals("PM")) {
-				Integer newHours = ( Integer.parseInt(date.substring(first_date + HOURs, first_date + HOURs + 2)) + 12 );
-				String PMHour = new String(newHours.toString());
-				From.setHours(PMHour);
+				if(( Integer.parseInt(date.substring(first_date + HOURs, first_date + HOURs + 2))) == 12) {
+					Integer newHours = ( Integer.parseInt(date.substring(first_date + HOURs, first_date + HOURs + 2)));
+					String PMHour = new String(newHours.toString());
+					From.setHours(PMHour);
+				} else {
+					Integer newHours = ( Integer.parseInt(date.substring(first_date + HOURs, first_date + HOURs + 2)) + 12 );
+					String PMHour = new String(newHours.toString());
+					From.setHours(PMHour);
+				}	
 			} else {
 				if(date.substring(first_date + HOURs, first_date + HOURs + 2).equals("12")) {
 					From.setHours("00");	
@@ -85,8 +97,13 @@ public class DateProp {
 			To.setDay(date.substring(second_date_mod+DAYs-1, second_date_mod+DAYs+1));
 			//Set Hours
 			if (date.substring(second_date_mod + FORMAT - 1, second_date_mod + FORMAT + 1).equals("PM")) {
-				Integer newHours = ( Integer.parseInt(date.substring(second_date_mod + HOURs - 1, second_date_mod + HOURs + 1)) + 12 );
-				To.setHours(newHours.toString());
+				if((Integer.parseInt(date.substring(second_date_mod + HOURs - 1, second_date_mod + HOURs + 1))) == 12) {
+					Integer newHours = ( Integer.parseInt(date.substring(second_date_mod + HOURs - 1, second_date_mod + HOURs + 1)));
+					To.setHours(newHours.toString());
+				} else {
+					Integer newHours = ( Integer.parseInt(date.substring(second_date_mod + HOURs - 1, second_date_mod + HOURs + 1)) + 12 );
+					To.setHours(newHours.toString());
+				}		
 			} else {
 				if(date.substring(second_date_mod + HOURs - 1 , second_date_mod + HOURs + 1).equals("12")) {
 					To.setHours("00");	
@@ -108,8 +125,13 @@ public class DateProp {
 			To.setDay(date.substring(second_date+DAYs, second_date+DAYs+2));
 			//Set Hours
 			if (date.substring(second_date + FORMAT, second_date + FORMAT + 2).equals("PM")) {
-				Integer newHours = ( Integer.parseInt(date.substring(second_date + HOURs, second_date + HOURs + 2)) + 12 );
-				To.setHours(newHours.toString());
+				if(( Integer.parseInt(date.substring(second_date + HOURs, second_date + HOURs + 2))) == 12) {
+					Integer newHours = ( Integer.parseInt(date.substring(second_date + HOURs, second_date + HOURs + 2)));
+					To.setHours(newHours.toString());
+				} else {
+					Integer newHours = ( Integer.parseInt(date.substring(second_date + HOURs, second_date + HOURs + 2)) + 12 );
+					To.setHours(newHours.toString());
+				}	
 			} else {
 				if(date.substring(second_date + HOURs, second_date + HOURs + 2).equals("12")) {
 					To.setHours("00");	
@@ -146,6 +168,7 @@ public class DateProp {
 	
 	public static String previousDay(String date) throws ParseException {
 		//String date format : YYYY-MM-DDThh:mm:ss.000Z
+		//					OR 2018-11-23T10:05:50Z
 				
 		String dt = date.substring(0, 10);  // Start date
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -154,8 +177,40 @@ public class DateProp {
 		c.add(Calendar.DATE, -1);  // number of days to add
 		dt = sdf.format(c.getTime());  // dt is now the new date
 		
+		System.out.println("data stampata dalla funzione previousDay"+date);
 		//get the previous date in java.util.Date.
 		return  dt + "T" + date.substring(11, 24);
+		
+	}
+	
+	public static String nextDayList(String date) throws ParseException {
+		//String date format : 2018-11-23T10:05:50Z
+		
+		String dt = date.substring(0, 10);  // Start date
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar c = Calendar.getInstance();
+		c.setTime(sdf.parse(dt));
+		c.add(Calendar.DATE, 1);  // number of days to add
+		dt = sdf.format(c.getTime());  // dt is now the new date
+		
+		//get the previous date in java.util.Date.
+		return  dt + "T" + date.substring(11, 19) + ".000" + date.substring(19, 20);
+	}
+	
+	public static String previousDayList(String date) throws ParseException {
+		//String date format : 2018-11-23T10:05:50Z
+						
+				
+		String dt = date.substring(0, 10);  // Start date
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar c = Calendar.getInstance();
+		c.setTime(sdf.parse(dt));
+		c.add(Calendar.DATE, -1);  // number of days to add
+		dt = sdf.format(c.getTime());  // dt is now the new date
+		
+		System.out.println("data stampata dalla funzione previousDayList: "+ dt + "T" + date.substring(11, 19) + ".000" + date.substring(19, 20));
+		//get the previous date in java.util.Date.
+		return  dt + "T" + date.substring(11, 19) + ".000" + date.substring(19, 20);
 		
 	}
 }

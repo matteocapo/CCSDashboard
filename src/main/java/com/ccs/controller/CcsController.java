@@ -3,6 +3,7 @@ package com.ccs.controller;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,9 +11,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ccs.model.ErrorDataModel;
+import com.ccs.model.IntermediateOeesModel;
+import com.ccs.model.ListAndInfo;
 import com.ccs.provider.MindsphereServiceClient;
 import com.ccs.util.DateProp;
 import com.siemens.mindsphere.sdk.core.exception.MindsphereException;
+import com.siemens.mindsphere.sdk.iot.timeseries.model.TimeseriesData;
 
 @Controller
 public class CcsController {
@@ -61,8 +65,15 @@ public class CcsController {
 	@RequestMapping("/indexprova")
 	public ModelAndView homepageview(@RequestParam(value = "datetimes", required = false, defaultValue = "World") String date) throws IOException, MindsphereException, ParseException {
 		
-		int oee = 0;
-		int prodottiescarti[] = new int[2];
+		/* Definizione delle variabili */
+		
+		List<TimeseriesData> timeseriesList = null;	
+		
+		ListAndInfo timeseries_list_info;
+		
+		int[] oeeTotScrap = new int[3];
+		
+		IntermediateOeesModel intermediateOees = new IntermediateOeesModel();
 		ArrayList<Integer> oeeArray=new ArrayList<Integer>();
 		ArrayList<String> oeeNamesArr=new ArrayList<String>();
 		String[] fromTo = new String[2];
@@ -72,12 +83,8 @@ public class CcsController {
 		
 		System.out.println("in controller");
 		
-		System.out.println(date);
-
 		if (!date.equals("World")) {
-			//System.out.println(date);
-			//Date.toMindSphereFormat(date);
-			if(date.substring(4, 5).equals("-")) {
+				if(date.substring(4, 5).equals("-")) {
 				fromTo[0] = date.substring(0, 24);
 				fromTo[1] = date.substring(25, 49);
 			}else {
@@ -85,28 +92,65 @@ public class CcsController {
 			}
 		}
 
-		System.out.println(fromTo[0]);
-		System.out.println(fromTo[1]);
+			
+		/*nuova gestione della chiamata, 
+		 * 1) viene effettuata la chiamata a MS e tramite l'SDK viene ricevuta la lista contenete tutti i valori delle TS nel range selezionato, oppure la lista viene ritornata a null
+		 * 2) vengono effettuate le chiamate per la gestione e visualizzazione dei dati di produzione sulla dashboard
+		 */
 		
+		/* Prima chiamata che riceve in input la data (formattata come vuole mindsphere), l'ID univoco della tabella definita su mindsphere, il nome della tabella su mindsphere,
+		 *  e il numero massimo di valori che possono tornarne dalla query, in questo caso l'API ha un valore massimo di 2000 risultati di ritorno
+		 */
+		timeseriesList = MindsphereServiceClient.listMindsphere(date, "8dda19eac02e4eec8489535a5cbaa235", "FromRunToRun", 2000);
 		
+		/* 
+		 * con questa funzione reperiamo tutte le informazioni sulla lista per utilizzi futuri
+		 */
+		timeseries_list_info = MindsphereServiceClient.listAndInfoMindsphere(timeseriesList);
+
+		/* chiamata alla funzione che rende disponibili i dati inerenti all'oee medio, pezzi prodotti e pezzi scartati*/
+		oeeTotScrap = MindsphereServiceClient.oeeTotalScrapMSApi(timeseries_list_info);
+		
+		/*chiamata alla funzione che rende disponibili i dati inerenti agli oee intermedi con lista dei range di funzionamento con rispettivo oee*/
+		MindsphereServiceClient.intermediateOeesModifica(timeseries_list_info, intermediateOees);
+		
+		if(intermediateOees.getOeeArray().size() > 0) {
+			oees_name = oees_name.concat("'" + intermediateOees.getOeeNamesArr().get(0) + "'");
+			oees_value = oees_value.concat(intermediateOees.getOeeArray().get(0).toString());
+			if (intermediateOees.getOeeArray().size() > 1) {
+				for(int i = 1; i < intermediateOees.getOeeArray().size(); i++) {
+					oees_name = oees_name.concat(", '" + intermediateOees.getOeeNamesArr().get(i) + "'");
+					oees_value = oees_value.concat(", " + intermediateOees.getOeeArray().get(i).toString());
+				}
+			}
+		}
+		//System.out.println(oees_value);		
+		//System.out.println(oees_name);
+
+		//System.out.println("inizio chiamata MS");
+		//oeeTotScrap = MindsphereServiceClient.oeeTotalScrapMSApi(date, "8dda19eac02e4eec8489535a5cbaa235", "FromRunToRun", 2000);
+		//System.out.println("fine chiamata MS");
+
+	
 		//vecchia funzione di prova con json statico
-		oee = MindsphereServiceClient.oeeMediaJson("prova", "prova", oeeArray, oeeNamesArr);
+		//oee = MindsphereServiceClient.oeeMediaJson("prova", "prova", oeeArray, oeeNamesArr);
 		
 		//funzione di prova con json generato tramite richiesta di sessione 
 		//oee = MindsphereServiceClient.testUrlDataOee(date);
 		
 		//vecchia funzione di prova con json statico
-		prodottiescarti = MindsphereServiceClient.prodottiEScartiJson("prova", "prova");
+		//prodottiescarti = MindsphereServiceClient.prodottiEScartiJson("prova", "prova");
 		
 		//funzione di prova con json generato tramite richiesta di sessione 
 		//prodottiescarti = MindsphereServiceClient.testUrlDataProdottiEScarti(date);	
 		
 		//test messaggi di errore generato tramite richiesta di sessione
-		ErrorDataModel[] error_code = MindsphereServiceClient.testJsonGetStopCode(date);
-		
+		//ErrorDataModel[] error_code = MindsphereServiceClient.testJsonGetStopCode(date);
+		ErrorDataModel[] error_code = MindsphereServiceClient.getStopCodeFromList(timeseries_list_info);
 		//test popup
 		testalert = MindsphereServiceClient.checkNewDataAlert(date);
 		
+		System.out.println("Nuovo range di date da selezionare: " + MindsphereServiceClient.checkNewDataAlert(timeseries_list_info));
 		//test utilizzo chiamata developer account
 		//String stringa_di_ritorno_chiamata_MS = MindsphereServiceClient.getTimeSeriesAsObject("7cb21d4c9b724be5b38c2c9695d9b3c8", "demobox");
 	    //String stringa_di_ritorno_chiamata_MS = MindsphereServiceClient.getTimeSeriesAsObjectTestCloudfoundry();
@@ -124,8 +168,7 @@ public class CcsController {
 		
 		//mv.addObject("stringa", stringa_di_ritorno_chiamata_MS);
 
-		// oee
-		mv.addObject("oee", oee);
+		/*
 		if(oeeArray.size() > 0) {
 			oees_name = oees_name.concat("'" + oeeNamesArr.get(0) + "'");
 			oees_value = oees_value.concat(oeeArray.get(0).toString());
@@ -136,17 +179,24 @@ public class CcsController {
 				}
 			}
 		}
+		
+		*/
 		//System.out.println(oees_value);		
 		//System.out.println(oees_name);
 
-		
-		
+		//System.out.println("inizio chiamata MS");
+		//oeeTotScrap = MindsphereServiceClient.oeeTotalScrapMSApi(date, "8dda19eac02e4eec8489535a5cbaa235", "FromRunToRun", 2000);
+		//System.out.println("fine chiamata MS");
+
 		mv.addObject("oees_value", oees_value);
 		mv.addObject("oees_name" , oees_name);
+		
+		// oee
+		mv.addObject("oee", oeeTotScrap[2]);
 
 		// scarti e produzioni
-		mv.addObject("produzioni", prodottiescarti[1]);
-		mv.addObject("scarti", prodottiescarti[0]);
+		mv.addObject("produzioni", oeeTotScrap[1]);
+		mv.addObject("scarti", oeeTotScrap[0]);
 
 		// velocità ultima ora
 
