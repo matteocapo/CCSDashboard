@@ -61,7 +61,7 @@
 
             <ul class="nav">
                 <li class="active">
-                    <a href="${pageContext.request.contextPath}/indexprovatime">
+                    <a href="${pageContext.request.contextPath}/">
                         <i class="pe-7s-note"></i>
                         <p>Set interval time</p>
                     </a>

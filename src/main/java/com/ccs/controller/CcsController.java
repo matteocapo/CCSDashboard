@@ -6,10 +6,14 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -42,11 +46,38 @@ public class CcsController {
 		return mv;
 		
 	}
-
-	@RequestMapping("/indexprovatime")
-	public ModelAndView timepageview() {
+	
+	@RequestMapping(path = "/", method = RequestMethod.GET)
+	public @ResponseBody ModelAndView homepagetimepageview(HttpServletRequest request) {
+		
+		Enumeration<String> headerNames = request.getHeaderNames();
+		String authorization = "";
+	
+	    authorization = authorization + request.getHeader("authorization");
 
 		ModelAndView mv = new ModelAndView("indexprovatime");
+		
+		//mv.addObject("auth", authorization);
+		
+		return mv;
+		
+	}
+
+	@RequestMapping(path = "/indexprovatime", method = RequestMethod.GET)
+	public @ResponseBody ModelAndView timepageview(HttpServletRequest request) {
+		
+		Enumeration<String> headerNames = request.getHeaderNames();
+		String authorization = "";
+		
+	    while (headerNames.hasMoreElements()) {
+	      String header = headerNames.nextElement();
+	      //System.out.println("header " + header +  " " + request.getHeader(header));
+	    }
+	    authorization = authorization + request.getHeader("authorization");
+
+		ModelAndView mv = new ModelAndView("indexprovatime");
+		
+		//mv.addObject("auth", authorization);
 		
 		return mv;
 		
@@ -66,11 +97,17 @@ public class CcsController {
 	}
 	
 	
-	@RequestMapping("/indexprova")
-	public ModelAndView homepageview(@RequestParam(value = "datetimes", required = false, defaultValue = "World") String date) throws IOException, MindsphereException, ParseException {
+	@RequestMapping(path = "/indexprova", method = RequestMethod.GET)
+	public @ResponseBody ModelAndView homepageview(@RequestParam(value = "datetimes", required = false, defaultValue = "World") String date, HttpServletRequest request) throws IOException, MindsphereException, ParseException {
+		
 		
 		/* Definizione delle variabili */
 		
+		Enumeration<String> headerNames = request.getHeaderNames();
+		String authorization = "";
+	
+	    authorization = authorization + request.getHeader("authorization");
+				
 		List<TimeseriesData> timeseriesList = null;	
 		
 		ListAndInfo timeseries_list_info;
@@ -114,7 +151,7 @@ public class CcsController {
 		/* Prima chiamata che riceve in input la data (formattata come vuole mindsphere), l'ID univoco della tabella definita su mindsphere, il nome della tabella su mindsphere,
 		 *  e il numero massimo di valori che possono tornarne dalla query, in questo caso l'API ha un valore massimo di 2000 risultati di ritorno
 		 */
-		timeseriesList = MindsphereServiceClient.listMindsphere(date, "8dda19eac02e4eec8489535a5cbaa235", "FromRunToRun", 2000);
+		timeseriesList = MindsphereServiceClient.listMindsphere(date, "8dda19eac02e4eec8489535a5cbaa235", "FromRunToRun", 2000, authorization);
 		
 		/* 
 		 * con questa funzione reperiamo tutte le informazioni sulla lista per utilizzi futuri
@@ -161,9 +198,11 @@ public class CcsController {
 		//ErrorDataModel[] error_code = MindsphereServiceClient.testJsonGetStopCode(date);
 		ErrorDataModel[] error_code = MindsphereServiceClient.getStopCodeFromList(timeseries_list_info);
 		//test popup
-		testalert = MindsphereServiceClient.checkNewDataAlert(date);
+		//testalert = MindsphereServiceClient.checkNewDataAlert(date);
 		
-		System.out.println("Nuovo range di date da selezionare: " + MindsphereServiceClient.checkNewDataAlert(timeseries_list_info));
+		
+		//System.out.println("Nuovo range di date da selezionare: " + MindsphereServiceClient.checkNewDataAlert(timeseries_list_info));
+		
 		//test utilizzo chiamata developer account
 		//String stringa_di_ritorno_chiamata_MS = MindsphereServiceClient.getTimeSeriesAsObject("7cb21d4c9b724be5b38c2c9695d9b3c8", "demobox");
 	    //String stringa_di_ritorno_chiamata_MS = MindsphereServiceClient.getTimeSeriesAsObjectTestCloudfoundry();
@@ -224,7 +263,10 @@ public class CcsController {
 		
 		mv.addObject("error_codice", error_code);
 
-		mv.addObject("testalert", testalert);
+		//mv.addObject("testalert", testalert);
+		
+		//mv.addObject("auth", authorization);
+
 
 		return mv;
 	}

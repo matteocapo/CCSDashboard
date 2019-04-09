@@ -739,7 +739,7 @@ public class MindsphereServiceClient {
 	 */
 	
 	
-	public static List<TimeseriesData> listMindsphere (String date, String credentialId, String tableName, int max_visual) throws MindsphereException, IOException{
+	public static List<TimeseriesData> listMindsphere (String date, String credentialId, String tableName, int max_visual, String auth) throws MindsphereException, IOException{
 						
 		//trasformo la data in un formato mindsphere like
 			
@@ -760,8 +760,9 @@ public class MindsphereServiceClient {
 		System.out.println("ora fine: "+ dates[1]);
 
 		
-	    MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+	    //MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
 
+	    MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
 	    RestClientConfig config = RestClientConfig.builder().build();
 	    
 	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
