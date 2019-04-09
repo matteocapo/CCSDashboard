@@ -796,33 +796,34 @@ public class MindsphereServiceClient {
 		
 		ListAndInfo timeseries_list_info = new ListAndInfo();
 
-		
-		timeseries_list_info.setTimeseriesList(timeseriesList);
-		timeseries_list_info.setLunghezza_lista(timeseriesList.size());
-		timeseries_list_info.setData_iniziale(timeseriesList.get(0).getTimeString());
-		timeseries_list_info.setData_finale(timeseriesList.get(timeseries_list_info.getLunghezza_lista()-1).getTimeString());
+		if(!(timeseriesList == null)) {
+			timeseries_list_info.setTimeseriesList(timeseriesList);
+			timeseries_list_info.setLunghezza_lista(timeseriesList.size());
+			timeseries_list_info.setData_iniziale(timeseriesList.get(0).getTimeString());
+			timeseries_list_info.setData_finale(timeseriesList.get(timeseries_list_info.getLunghezza_lista()-1).getTimeString());
+	
+			
+			if(timeseriesList.get(0).getData().get("OEE").hashCode() == 0) {
+				timeseries_list_info.setTipo_iniziale("stop");
+			} else {
+				timeseries_list_info.setTipo_iniziale("run");
+			}
+			
+			if(timeseriesList.get(timeseriesList.size()-1).getData().get("OEE").hashCode() == 0) {
+				timeseries_list_info.setTipo_finale("stop");
+			} else {
+				timeseries_list_info.setTipo_finale("run");
+			}
+			
+			System.out.println("");
+			System.out.println("Data iniziale: "+timeseries_list_info.getData_iniziale());
+			System.out.println("Data finale: "+timeseries_list_info.getData_finale());
+			System.out.println("Tipo iniziale: "+timeseries_list_info.getTipo_iniziale());
+			System.out.println("Tipo finale: "+timeseries_list_info.getTipo_finale());
+			System.out.println("Lunghezza lista: "+timeseries_list_info.getLunghezza_lista());
+			System.out.println("");
 
-		
-		if(timeseriesList.get(0).getData().get("OEE").hashCode() == 0) {
-			timeseries_list_info.setTipo_iniziale("stop");
-		} else {
-			timeseries_list_info.setTipo_iniziale("run");
 		}
-		
-		if(timeseriesList.get(timeseriesList.size()-1).getData().get("OEE").hashCode() == 0) {
-			timeseries_list_info.setTipo_finale("stop");
-		} else {
-			timeseries_list_info.setTipo_finale("run");
-		}
-		
-		System.out.println("");
-		System.out.println("Data iniziale: "+timeseries_list_info.getData_iniziale());
-		System.out.println("Data finale: "+timeseries_list_info.getData_finale());
-		System.out.println("Tipo iniziale: "+timeseries_list_info.getTipo_iniziale());
-		System.out.println("Tipo finale: "+timeseries_list_info.getTipo_finale());
-		System.out.println("Lunghezza lista: "+timeseries_list_info.getLunghezza_lista());
-		System.out.println("");
-
 		return timeseries_list_info;
 		
 	}
@@ -984,7 +985,13 @@ public class MindsphereServiceClient {
 		}
 		
 		//deve essere inizializzato dopo che si è contato il numero di errori contenuti nel json di ritorno
-		ErrorDataModel[] error_code  = new ErrorDataModel[grandezza_array-1]; 
+		ErrorDataModel[] error_code ;
+		
+		if(grandezza_array == 0) {
+			error_code  = new ErrorDataModel[0]; 
+		} else {
+			error_code  = new ErrorDataModel[grandezza_array-1]; 
+		}
 		
 		if(!(list == null)) {
 			if(list.size()>3) {
@@ -1027,107 +1034,111 @@ public class MindsphereServiceClient {
 		int endflag = 0;
 		String newEnd, goodEnd = "";
 		
-		
-		MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
-		
-		RestClientConfig config = RestClientConfig.builder().build();
-		    
-		TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
-		
-		List<TimeseriesData> init_date = null;
-		List<TimeseriesData> final_date = null;
-		
-		
-		if(timeseries_list_info.getTipo_iniziale().equals("stop")) {
-			//if controlla se il primo elemento è uno stop. (è uno stop se ha oee = 0)
-			//Se si, chiedi di partire dal run precedente a calcolare il tutto e imposta l'initflag a 1
+		if(timeseries_list_info.getTimeseriesList() == null) {
+			return "0";
+		} else {
+			MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
 			
-			initflag = 1;
+			RestClientConfig config = RestClientConfig.builder().build();
+			    
+			TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+			
+			List<TimeseriesData> init_date = null;
+			List<TimeseriesData> final_date = null;
+			
+			
+			if(timeseries_list_info.getTipo_iniziale().equals("stop")) {
+				//if controlla se il primo elemento è uno stop. (è uno stop se ha oee = 0)
+				//Se si, chiedi di partire dal run precedente a calcolare il tutto e imposta l'initflag a 1
+				
+				initflag = 1;
+				
+			}
+			
+			
+			if(timeseries_list_info.getTipo_finale().equals("run")) {
+				//if controlla se l'ultimo elemento è un run. (è un run se ha oee > 0)
+				//se si, imposta l' endflag di fine a 1 e viene richiesto se inglobare anche lui
+				System.out.println("endflag di run: "+endflag);
+				endflag = 1;
+				
+			}
+			
+			try {
+				
+				if(initflag == 1) {
+					//if initiflag == 1 
+					// calcolo il range del giorno precedente e vado a prendere l'ultimo elemento il quale siamo sicuri che sia un run e prendo il tempo di questo run
+					// il tempo del nuovo inizio lo salvo in una variabile d'appoggio
+					
+					//newInit = DateProp.previousDay(dates[0]);
+					
+					//timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[0], newInit, 100, "oee");
+					//mi prendo il tempo dell'ultimo valore (che siamo sicuri che sia un run)
+					//goodInit = "valore1";
+					
+					newInit = DateProp.previousDayList(timeseries_list_info.getData_iniziale());
+					
+					//lista degli stop code
+					init_date = timeseriesClient.getTimeseries("8dda19eac02e4eec8489535a5cbaa235" , "FromRunToRun", newInit, timeseries_list_info.getData_iniziale(), 2000, "OEE");
+					
+					int index;
+					
+					index = init_date.size();
+					System.out.println("grandezza lista di ritorno dalla prima chiamata: "+index);
+
+					if(index>1) {
+						index = index -2;
+						goodInit =  goodInit + init_date.get(index).getTimeString();
+					} else {
+					goodInit =  goodInit + timeseries_list_info.getData_iniziale();
+					}
+					System.out.println("nuovo elemento di partenza: "+goodInit);
+				}
+				
+				if(endflag == 1) {
+					//if endflag == 1
+					//calcolo il range del giorno successivo e prendo il primo valore che possiedo, e sono sicuro che sia un valore di run
+					// il tempo della nuova fine lo salvo in una variabile d'appoggio
+					
+					//newEnd = DateProp.nextDay(dates[1]);
+					
+					//timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[1], newEnd, 100, "oee");
+					//mi prendo il tempo del primo valore (che siamo sicuri che sia un run)
+					//goodEnd = "valore2";
+					
+					newEnd = DateProp.nextDayList(timeseries_list_info.getData_finale());
+					
+					//lista degli stop code
+					final_date = timeseriesClient.getTimeseries("8dda19eac02e4eec8489535a5cbaa235" , "FromRunToRun", timeseries_list_info.getData_finale(), newEnd, 2, "OEE");
+					
+					if((final_date.size() == 0) || (final_date.size() == 1)) {
+						goodEnd = goodEnd + timeseries_list_info.getData_finale();
+					} else {
+						goodEnd = goodEnd +  final_date.get(1).getTimeString();	
+					}
+					System.out.println("nuovo elemento di arrivo: "+goodEnd);
+				}
+			} catch (MindsphereException e) {
+		    	System.out.println(e);
+		    	System.out.println(e.getErrorMessage());
+		    	System.out.println(e.getHttpStatus());
+		    }
+
+					
+			
+		    if((initflag == 1) && (endflag == 1)) {
+			    return goodInit + "+" + goodEnd;
+		    } else if((initflag == 1) && (endflag == 0)) {
+		    	 return goodInit + "+" + timeseries_list_info.getData_finale();
+		    } else if((initflag == 0) && (endflag == 1)) {
+		    	 return timeseries_list_info.getData_iniziale() + "+" + goodEnd;
+		    } else {
+		    	return "no";
+		    }
 			
 		}
 		
-		
-		if(timeseries_list_info.getTipo_finale().equals("run")) {
-			//if controlla se l'ultimo elemento è un run. (è un run se ha oee > 0)
-			//se si, imposta l' endflag di fine a 1 e viene richiesto se inglobare anche lui
-			System.out.println("endflag di run: "+endflag);
-			endflag = 1;
-			
-		}
-		
-		try {
-			
-			if(initflag == 1) {
-				//if initiflag == 1 
-				// calcolo il range del giorno precedente e vado a prendere l'ultimo elemento il quale siamo sicuri che sia un run e prendo il tempo di questo run
-				// il tempo del nuovo inizio lo salvo in una variabile d'appoggio
-				
-				//newInit = DateProp.previousDay(dates[0]);
-				
-				//timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[0], newInit, 100, "oee");
-				//mi prendo il tempo dell'ultimo valore (che siamo sicuri che sia un run)
-				//goodInit = "valore1";
-				
-				newInit = DateProp.previousDayList(timeseries_list_info.getData_iniziale());
-				
-				//lista degli stop code
-				init_date = timeseriesClient.getTimeseries("8dda19eac02e4eec8489535a5cbaa235" , "FromRunToRun", newInit, timeseries_list_info.getData_iniziale(), 2000, "OEE");
-				
-				int index;
-				
-				index = init_date.size();
-				System.out.println("grandezza lista di ritorno dalla prima chiamata: "+index);
-
-				if(index>1) {
-					index = index -2;
-					goodInit =  goodInit + init_date.get(index).getTimeString();
-				} else {
-				goodInit =  goodInit + timeseries_list_info.getData_iniziale();
-				}
-				System.out.println("nuovo elemento di partenza: "+goodInit);
-			}
-			
-			if(endflag == 1) {
-				//if endflag == 1
-				//calcolo il range del giorno successivo e prendo il primo valore che possiedo, e sono sicuro che sia un valore di run
-				// il tempo della nuova fine lo salvo in una variabile d'appoggio
-				
-				//newEnd = DateProp.nextDay(dates[1]);
-				
-				//timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[1], newEnd, 100, "oee");
-				//mi prendo il tempo del primo valore (che siamo sicuri che sia un run)
-				//goodEnd = "valore2";
-				
-				newEnd = DateProp.nextDayList(timeseries_list_info.getData_finale());
-				
-				//lista degli stop code
-				final_date = timeseriesClient.getTimeseries("8dda19eac02e4eec8489535a5cbaa235" , "FromRunToRun", timeseries_list_info.getData_finale(), newEnd, 2, "OEE");
-				
-				if((final_date.size() == 0) || (final_date.size() == 1)) {
-					goodEnd = goodEnd + timeseries_list_info.getData_finale();
-				} else {
-					goodEnd = goodEnd +  final_date.get(1).getTimeString();	
-				}
-				System.out.println("nuovo elemento di arrivo: "+goodEnd);
-			}
-		} catch (MindsphereException e) {
-	    	System.out.println(e);
-	    	System.out.println(e.getErrorMessage());
-	    	System.out.println(e.getHttpStatus());
-	    }
-
-		
-		
-		
-	    if((initflag == 1) && (endflag == 1)) {
-		    return goodInit + "+" + goodEnd;
-	    } else if((initflag == 1) && (endflag == 0)) {
-	    	 return goodInit + "+" + timeseries_list_info.getData_finale();
-	    } else if((initflag == 0) && (endflag == 1)) {
-	    	 return timeseries_list_info.getData_iniziale() + "+" + goodEnd;
-	    } else {
-	    	return "no";
-	    }
 	    
 	}
 

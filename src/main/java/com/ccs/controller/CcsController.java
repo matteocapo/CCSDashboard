@@ -3,11 +3,15 @@ package com.ccs.controller;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ccs.model.ErrorDataModel;
@@ -80,6 +84,15 @@ public class CcsController {
 		String testalert;
 		String oees_name  = new String();
 		String oees_value = new String();
+		
+		/*
+		HttpHeaders headerNames = request.getHeaders();
+		while (!(headerNames.isEmpty())) {
+			String header = headerNames.getFirst("authorization");
+		    System.out.println("header " + header +  " ");
+		 }
+		 */    
+
 		
 		System.out.println("in controller");
 		
