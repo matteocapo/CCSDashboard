@@ -1,4 +1,5 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
 <!doctype html>
 <html lang="en">
 <head>
@@ -185,6 +186,10 @@
 
         <footer class="footer">
             <div class="container-fluid">
+            	<h1>${auth}</h1>
+	           	<c:forEach items="${asset}" var="food">
+	            		<h1>${food}</h1>
+	   			</c:forEach>
             	<!--  
                 <nav class="pull-left">
                     <ul>

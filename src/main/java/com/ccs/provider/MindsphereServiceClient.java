@@ -37,6 +37,9 @@ import com.ccs.util.Provider;
 import com.siemens.mindsphere.sdk.auth.model.MindsphereCredentials;
 import com.siemens.mindsphere.sdk.core.RestClientConfig;
 import com.siemens.mindsphere.sdk.core.exception.MindsphereException;
+import com.siemens.mindsphere.sdk.iot.asset.apiclient.AssetClient;
+import com.siemens.mindsphere.sdk.iot.asset.model.AssetResource;
+import com.siemens.mindsphere.sdk.iot.asset.model.Assets;
 import com.siemens.mindsphere.sdk.iot.timeseries.apiclient.TimeseriesClient;
 import com.siemens.mindsphere.sdk.iot.timeseries.model.TimeseriesData;
 import com.squareup.okhttp.MediaType;
@@ -731,10 +734,10 @@ public class MindsphereServiceClient {
 		return error_code;
 	}
 	
-	/* NUOVA GESTIONE DELLA LOGICA
+	/* NUOVA GESTIONE DELLA LOGICA 
 	 * 
-	 * Da qui inizia la gestione della logica tramite l'utilizzo delle chiamate API a MindSphere 
-	 *  
+	 * Da qui inizia la gestione della logica tramite l'utilizzo delle chiamate API a MindSphere che vengono effettuate nella servlet principale /indexprova
+	 * 
 	 *  
 	 */
 	
@@ -1023,7 +1026,7 @@ public class MindsphereServiceClient {
 		return error_code;
 	}
 	
-	public static String checkNewDataAlert(ListAndInfo timeseries_list_info) throws java.text.ParseException, MindsphereException {
+	public static String checkNewDataAlert(ListAndInfo timeseries_list_info, String auth) throws java.text.ParseException, MindsphereException {
 			
 			
 		//flag inizio
@@ -1038,8 +1041,10 @@ public class MindsphereServiceClient {
 		if(timeseries_list_info.getTimeseriesList() == null) {
 			return "0";
 		} else {
-			MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+			//MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
 			
+			MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
+
 			RestClientConfig config = RestClientConfig.builder().build();
 			    
 			TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
@@ -1081,7 +1086,7 @@ public class MindsphereServiceClient {
 					newInit = DateProp.previousDayList(timeseries_list_info.getData_iniziale());
 					
 					//lista degli stop code
-					init_date = timeseriesClient.getTimeseries("8dda19eac02e4eec8489535a5cbaa235" , "FromRunToRun", newInit, timeseries_list_info.getData_iniziale(), 2000, "OEE");
+					init_date = timeseriesClient.getTimeseries("e8e33cdb64fa4e14b0692d4d66b5fd04" , "FromRunToRun", newInit, timeseries_list_info.getData_iniziale(), 2000, "OEE");
 					
 					int index;
 					
@@ -1111,7 +1116,7 @@ public class MindsphereServiceClient {
 					newEnd = DateProp.nextDayList(timeseries_list_info.getData_finale());
 					
 					//lista degli stop code
-					final_date = timeseriesClient.getTimeseries("8dda19eac02e4eec8489535a5cbaa235" , "FromRunToRun", timeseries_list_info.getData_finale(), newEnd, 2, "OEE");
+					final_date = timeseriesClient.getTimeseries("e8e33cdb64fa4e14b0692d4d66b5fd04" , "FromRunToRun", timeseries_list_info.getData_finale(), newEnd, 2, "OEE");
 					
 					if((final_date.size() == 0) || (final_date.size() == 1)) {
 						goodEnd = goodEnd + timeseries_list_info.getData_finale();
@@ -1140,7 +1145,59 @@ public class MindsphereServiceClient {
 			
 		}
 		
-	    
 	}
 
+	
+
+	/* GESTIONE DELLA LOGICA PER LA GENERAZIONE AUTOMATICA DEGLI ASSET E VISUALIZZAZIONE DEI NOMI E CODICI 
+	 * 
+	 * Da qui inizia la gestione della logica tramite l'utilizzo delle chiamate API a MindSphere che vengono effettuate nella servlet principale /indexprovatime
+	 * 
+	 *  
+	 */
+	
+	public static ArrayList<String> reciveAsset(String auth) {
+		
+		ArrayList<String> list_asset_id = new ArrayList<String>();
+		
+		MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
+	   
+		//MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+		
+		RestClientConfig config = RestClientConfig.builder().build();
+	    
+		AssetClient  assetClient = AssetClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+	    
+	    Assets assets = null;
+	    
+	    List<AssetResource> asset_resource = null;
+	    
+	    
+	    try {
+	    	 assets = assetClient.getAssets();
+	    	 asset_resource = assets.getEmbedded().getAssets();
+	    	 if(asset_resource.size() == 0) {
+	    		 list_asset_id.add("empity list");
+	    	 }
+	    	 for(int i = 0; i < asset_resource.size(); i++) {
+	    		 if(!(asset_resource.get(i).getVariables().isEmpty())) {
+	    			 if(asset_resource.get(i).getVariables().get(0).getName().equals("ccs_type")) {
+		    			 list_asset_id.add(asset_resource.get(i).getAssetId());
+		    		 }
+	    		 }
+	    	 }
+	    	 //asset =  asset_resource.get(1).getVariables().get(0).getName();
+	    		  
+	    	 
+	    } catch (MindsphereException e) {
+	    	System.out.println(e);
+	    	System.out.println(e.getErrorMessage());
+	    	System.out.println(e.getHttpStatus());
+	    	System.out.println("errore nel collegamento");
+	    	return list_asset_id;
+	    }
+	    
+	    System.out.println("collegamento stabilito");    
+	    return list_asset_id;		
+	}
 }

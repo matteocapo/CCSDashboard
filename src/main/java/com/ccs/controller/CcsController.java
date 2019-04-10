@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -50,14 +52,30 @@ public class CcsController {
 	@RequestMapping(path = "/", method = RequestMethod.GET)
 	public @ResponseBody ModelAndView homepagetimepageview(HttpServletRequest request) {
 		
-		Enumeration<String> headerNames = request.getHeaderNames();
+		//Enumeration<String> headerNames = request.getHeaderNames();
+		Map<String, String> mappa_list_asset_id = new HashMap<String, String>();
+		
+		ArrayList<String> list_asset_id = null;
+		
 		String authorization = "";
+		//String asset = "";
 	
 	    authorization = authorization + request.getHeader("authorization");
 
 		ModelAndView mv = new ModelAndView("indexprovatime");
 		
-		//mv.addObject("auth", authorization);
+		mv.addObject("auth", authorization);
+		
+		//chiamata alla funzione per il reperimento degli asset recieveAsset(String authorization){List<String>}
+		list_asset_id =  MindsphereServiceClient.reciveAsset(authorization);
+		
+		//mv.addObject("asset_size", list_asset_id.size());
+
+		for (int i = 0; i < list_asset_id.size(); i++) {
+			mappa_list_asset_id.put(list_asset_id.get(i), list_asset_id.get(i));
+		}
+		
+		mv.addObject("asset", list_asset_id);
 		
 		return mv;
 		
@@ -68,6 +86,7 @@ public class CcsController {
 		
 		Enumeration<String> headerNames = request.getHeaderNames();
 		String authorization = "";
+		String asset = "";
 		
 	    while (headerNames.hasMoreElements()) {
 	      String header = headerNames.nextElement();
@@ -77,7 +96,12 @@ public class CcsController {
 
 		ModelAndView mv = new ModelAndView("indexprovatime");
 		
-		//mv.addObject("auth", authorization);
+		mv.addObject("auth", authorization);
+		
+		//chiamata alla funzione per il reperimento degli asset recieveAsset(String authorization){List<String>}
+		asset = asset + MindsphereServiceClient.reciveAsset(authorization);
+		
+		mv.addObject("asset", asset);
 		
 		return mv;
 		
@@ -151,7 +175,7 @@ public class CcsController {
 		/* Prima chiamata che riceve in input la data (formattata come vuole mindsphere), l'ID univoco della tabella definita su mindsphere, il nome della tabella su mindsphere,
 		 *  e il numero massimo di valori che possono tornarne dalla query, in questo caso l'API ha un valore massimo di 2000 risultati di ritorno
 		 */
-		timeseriesList = MindsphereServiceClient.listMindsphere(date, "8dda19eac02e4eec8489535a5cbaa235", "FromRunToRun", 2000, authorization);
+		timeseriesList = MindsphereServiceClient.listMindsphere(date, "e8e33cdb64fa4e14b0692d4d66b5fd04", "FromRunToRun", 2000, authorization);
 		
 		/* 
 		 * con questa funzione reperiamo tutte le informazioni sulla lista per utilizzi futuri
@@ -201,7 +225,7 @@ public class CcsController {
 		//testalert = MindsphereServiceClient.checkNewDataAlert(date);
 		
 		
-		//System.out.println("Nuovo range di date da selezionare: " + MindsphereServiceClient.checkNewDataAlert(timeseries_list_info));
+		//System.out.println("Nuovo range di date da selezionare: " + MindsphereServiceClient.checkNewDataAlert(timeseries_list_info, authorization));
 		
 		//test utilizzo chiamata developer account
 		//String stringa_di_ritorno_chiamata_MS = MindsphereServiceClient.getTimeSeriesAsObject("7cb21d4c9b724be5b38c2c9695d9b3c8", "demobox");
