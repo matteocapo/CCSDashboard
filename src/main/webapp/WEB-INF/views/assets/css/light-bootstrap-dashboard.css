@@ -3868,3 +3868,16 @@ fieldset[disabled] .btn-neutral.active {
         -webkit-overflow-scrolling: touch;
     }
 }
+
+.block {
+	display : block;
+	padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+.block>li>a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+}

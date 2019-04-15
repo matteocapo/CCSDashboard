@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<link rel="icon" type="image/png" href="${pageContext.request.contextPath}/assets/img/favicon.ico">
+	<link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/img/favicon.ico">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 	<title>CCS Dashboard</title>
@@ -38,7 +38,7 @@
 <body>
 <div class="wrapper">
 
-    <div class="sidebar" data-color="azure" data-image="${pageContext.request.contextPath}/assets/img/sidebar-5.jpg">
+    <div class="sidebar" data-color="blue" data-image="${pageContext.request.contextPath}/assets/img/sidebar-6.JPG">
 
     <!--
 
@@ -50,7 +50,8 @@
     	<div class="sidebar-wrapper">
             <div class="logo">
             <a>
-            <img src="${pageContext.request.contextPath}/assets/img/28_main.jpg" class ="simple-text" height="140" width="230">
+            
+            <img src="${pageContext.request.contextPath}/assets/img/28_main_r.png" class ="simple-text">
             <!-- 
                 <a href="http://www.creative-tim.com" class="simple-text">
                     Creative Tim
@@ -62,7 +63,7 @@
             <ul class="nav">
                 <li class="active">
                     <a href="${pageContext.request.contextPath}/">
-                        <i class="pe-7s-note"></i>
+                        <i class="pe-7s-date"></i>
                         <p>Set interval time</p>
                     </a>
                 </li>

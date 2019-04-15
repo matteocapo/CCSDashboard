@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<link rel="icon" type="image/png" href="${pageContext.request.contextPath}/assets/img/favicon.ico">
+	<link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/img/favicon.ico">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 	<title>CCS Dashboard</title>
@@ -39,7 +39,7 @@
 <body>
 
 <div class="wrapper">
-    <div class="sidebar" data-color="azure" data-image="${pageContext.request.contextPath}/assets/img/sidebar-5.jpg">
+    <div class="sidebar" data-color="blue" data-image="${pageContext.request.contextPath}/assets/img/sidebar-6.JPG">
 
     <!--
 
@@ -51,8 +51,9 @@
     	<div class="sidebar-wrapper">
             <div class="logo">
             <a>
-            <img src="${pageContext.request.contextPath}/assets/img/28_main.jpg" class ="simple-text" height="140" width="230">
-            <!-- 
+             
+            <img src="${pageContext.request.contextPath}/assets/img/28_main_r.png" class ="simple-text">
+           <!-- 
                 <a href="http://www.creative-tim.com" class="simple-text">
                     Creative Tim
                 </a>
@@ -63,11 +64,39 @@
             <ul class="nav">
                 <li class="active">
                     <a href="${pageContext.request.contextPath}">
-                        <i class="pe-7s-note"></i>
+                        <i class="pe-7s-date"></i>
                         <p>Set interval time</p>
                     </a>
                 </li>
              </ul>
+             
+             <c:forEach items="${assets}" var="food">
+             	 
+	             	<ul class="nav">
+
+	             			<label class="block" for="${food.key}">
+				                <li class="active">
+					                	<a>
+					                        <i class="pe-7s-graph2"></i>
+					                        <p>${food.key}<input type="radio" id="${food.key}" name="asset" value="${food.value}" style="vertical-align: text-bottom;" form = "indexprovatime" checked></p>
+					                    </a>
+					             </li>
+					         </label>     
+		             </ul>
+		     </c:forEach>
+             
+            <!-- 
+            <c:forEach items="${asset_name}" var="val_name">
+	            <ul class="nav">
+	                <li class="active">
+	                    <a href="${pageContext.request.contextPath}">
+	                        <i class="pe-7s-look"></i>
+	                        <p>${val_name}</p>
+	                    </a>
+	                </li>
+	             </ul>
+	   		</c:forEach>
+	   		 --> 
     	</div>
     </div>
 
@@ -169,13 +198,13 @@
                                 <h4 class="title">Choose interval time for get datas</h4>
                             </div>
                             <div class="content">
-                            <form action="${pageContext.request.contextPath}/indexprova" method="get">
-                            	<input class="form-control" type="text" name="datetimes"/>
-                                <div class="footer">
-                                    <hr>
-                                    <input type="submit" value="Submit interval time"/>
-                                </div>
-                            </form>
+	                            <form action="${pageContext.request.contextPath}/indexprova" method="get" id="indexprovatime">
+	                            	<input class="form-control" type="text" name="datetimes"/>
+	                                <div class="footer">
+	                                    <hr>
+	                                    <input type="submit" value="Submit interval time"/>
+	                                </div>
+	                            </form>
                             </div>
                         </div>
                     </div>
@@ -186,11 +215,26 @@
 
         <footer class="footer">
             <div class="container-fluid">
+            <!--
             	<h1>${auth}</h1>
-	           	<c:forEach items="${asset}" var="food">
-	            		<h1>${food}</h1>
+            	
+            	<select id="food" name="fooditems">
+				    <c:forEach items="${assets}" var="food">
+				        <option value="${food.key}">
+				            ${food.value}
+				        </option>
+				    </c:forEach>
+				</select>
+            	
+            	  
+	           	<c:forEach items="${asset_id}" var="val_id">
+	            		<h1>${val_id}</h1>
 	   			</c:forEach>
-            	<!--  
+	   			
+	   			<c:forEach items="${asset_name}" var="val_name">
+	            		<h1>${val_name}</h1>
+	   			</c:forEach>
+            	
                 <nav class="pull-left">
                     <ul>
                         <li>

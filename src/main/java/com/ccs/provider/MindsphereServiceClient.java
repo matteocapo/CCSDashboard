@@ -763,9 +763,9 @@ public class MindsphereServiceClient {
 		System.out.println("ora fine: "+ dates[1]);
 
 		
-	    //MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+	    MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
 
-	    MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
+	    //MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
 	    RestClientConfig config = RestClientConfig.builder().build();
 	    
 	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
@@ -994,7 +994,11 @@ public class MindsphereServiceClient {
 		if(grandezza_array == 0) {
 			error_code  = new ErrorDataModel[0]; 
 		} else {
-			error_code  = new ErrorDataModel[grandezza_array-1]; 
+			if(timeseries_list_info.getTipo_iniziale().equals("stop")) {
+				error_code  = new ErrorDataModel[grandezza_array-1]; 
+			} else {
+				error_code  = new ErrorDataModel[grandezza_array]; 
+			}
 		}
 		
 		if(!(list == null)) {
@@ -1041,9 +1045,10 @@ public class MindsphereServiceClient {
 		if(timeseries_list_info.getTimeseriesList() == null) {
 			return "0";
 		} else {
-			//MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
 			
-			MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
+			MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+			
+			//MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
 
 			RestClientConfig config = RestClientConfig.builder().build();
 			    
@@ -1156,48 +1161,65 @@ public class MindsphereServiceClient {
 	 *  
 	 */
 	
-	public static ArrayList<String> reciveAsset(String auth) {
+	//Funziona che restituisce un'array di 2 ArrayList che contengono uno i valori degli asset id e l'altro i nomi degli asset id
+	public static ArrayList<String>[] reciveAsset(String auth) {
+		
+		ArrayList<String> array_asset [] = new ArrayList[2];
 		
 		ArrayList<String> list_asset_id = new ArrayList<String>();
 		
-		MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
-	   
-		//MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+		ArrayList<String> list_asset_name = new ArrayList<String>();
 		
-		RestClientConfig config = RestClientConfig.builder().build();
+		try {
+		
+			//MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
+		   
+			MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+			
+			RestClientConfig config = RestClientConfig.builder().build();
+		    
+			AssetClient  assetClient = AssetClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+		    
+		    Assets assets = null;
+		    
+		    List<AssetResource> asset_resource = null;
 	    
-		AssetClient  assetClient = AssetClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
-	    
-	    Assets assets = null;
-	    
-	    List<AssetResource> asset_resource = null;
-	    
-	    
-	    try {
 	    	 assets = assetClient.getAssets();
 	    	 asset_resource = assets.getEmbedded().getAssets();
 	    	 if(asset_resource.size() == 0) {
 	    		 list_asset_id.add("empity list");
+	    		 list_asset_name.add("empity list");
 	    	 }
 	    	 for(int i = 0; i < asset_resource.size(); i++) {
 	    		 if(!(asset_resource.get(i).getVariables().isEmpty())) {
 	    			 if(asset_resource.get(i).getVariables().get(0).getName().equals("ccs_type")) {
 		    			 list_asset_id.add(asset_resource.get(i).getAssetId());
+		    			 list_asset_name.add(asset_resource.get(i).getName());
 		    		 }
 	    		 }
 	    	 }
-	    	 //asset =  asset_resource.get(1).getVariables().get(0).getName();
-	    		  
+	    	 
+	    	 array_asset [0] = list_asset_id;
+	    	 array_asset [1] = list_asset_name;
 	    	 
 	    } catch (MindsphereException e) {
 	    	System.out.println(e);
 	    	System.out.println(e.getErrorMessage());
 	    	System.out.println(e.getHttpStatus());
 	    	System.out.println("errore nel collegamento");
-	    	return list_asset_id;
+	    	
+	    	list_asset_id.add("empity list");
+   		 	list_asset_name.add("empity list");
+	    	array_asset [0] = list_asset_id;
+	    	array_asset [1] = list_asset_name;
+	    	
+	    	return array_asset;
 	    }
 	    
-	    System.out.println("collegamento stabilito");    
-	    return list_asset_id;		
+	    array_asset [0] = list_asset_id;
+   	 	array_asset [1] = list_asset_name;
+	    
+   	 	System.out.println("collegamento stabilito");    
+	    return array_asset;		
 	}
 }
