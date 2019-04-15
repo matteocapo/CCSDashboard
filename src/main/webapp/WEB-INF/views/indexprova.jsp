@@ -88,7 +88,7 @@
        	 	<div class="bs-example">
     			<div class="alert alert-warning">
         			<a href="#" class="close" data-dismiss="alert">&times;</a>
-        			<strong>Warning!</strong> update the correct oee click <a href="${pageContext.request.contextPath}/indexprova?datetimes=${testalert}">here</a>.
+        			<strong>Warning!</strong> update the correct oee click <a href="${pageContext.request.contextPath}/indexprova?asset=${asset}&datetimes=${testalert}">here</a>.
     			</div>
 			</div>
     	</c:otherwise>

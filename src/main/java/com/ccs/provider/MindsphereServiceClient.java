@@ -842,35 +842,33 @@ public class MindsphereServiceClient {
 		oeeTotScrap[1] = 0;
 		oeeTotScrap[2] = 0;
 		
-		List<TimeseriesData> timeseriesDataOEEScrapTotal = timeseries_list_info.getTimeseriesList();
+		List<TimeseriesData> timeseries_data = timeseries_list_info.getTimeseriesList();
 		
     	//set scarti totali e oee
 		
-    	if(!(timeseriesDataOEEScrapTotal == null)) {
-    		if(timeseriesDataOEEScrapTotal.size()>3) {
-
-	    		for (int i = 0; i < timeseriesDataOEEScrapTotal.size(); i++){
+    	if(!(timeseries_data == null)) {
+    		if(timeseries_data.size()>3) {
+	    		for (int i = 0; i < timeseries_data.size(); i++){
 					if(i == 0) {
-						if(timeseriesDataOEEScrapTotal.get(0).getData().get("OEE").hashCode() == 0) {
+						//inizia il controllo sul primo elemento per capire da dove iniziare a calcolare l'oee
+						if(timeseries_data.get(0).getData().get("OEE").hashCode() == 0) {
 							//vado avanti di 3 perchè è il primo run utile		
 							i = i + 3;
 						}else {
-							
 							//vado avanti di 2 perchè è il primo run utile
 							i = i + 2;
 						}
 					}
-					oeeTotScrap[0] =  oeeTotScrap[0] + timeseriesDataOEEScrapTotal.get(i).getData().get("PezziScartati").hashCode();
-					oeeTotScrap[1] = oeeTotScrap[1] + timeseriesDataOEEScrapTotal.get(i).getData().get("PezziProdotti").hashCode();	
-					if(timeseriesDataOEEScrapTotal.get(i).getData().get("OEE").hashCode() > 0) {
-						contMedia++;
-						oeeTotScrap[2] += timeseriesDataOEEScrapTotal.get(i).getData().get("OEE").hashCode();	
+					oeeTotScrap[0] =  oeeTotScrap[0] + timeseries_data.get(i).getData().get("PezziScartati").hashCode();
+					oeeTotScrap[1] = oeeTotScrap[1] + timeseries_data.get(i).getData().get("PezziProdotti").hashCode();	
+					if(timeseries_data.get(i).getData().get("OEE").hashCode() > 0) {
+						contMedia = contMedia + timeseries_data.get(i).getData().get("RunTime").hashCode() + timeseries_data.get(i).getData().get("StopTime").hashCode();
+						oeeTotScrap[2] = oeeTotScrap[2] + timeseries_data.get(i).getData().get("OEE").hashCode() * (timeseries_data.get(i).getData().get("RunTime").hashCode() + timeseries_data.get(i).getData().get("StopTime").hashCode());	
 					}
 				}
 	    		oeeTotScrap[2] = oeeTotScrap[2]/contMedia;
     		}
     	}
-    	
     	return oeeTotScrap;
 	}
 	
@@ -939,8 +937,7 @@ public class MindsphereServiceClient {
 		int contMedia = 0;
 		
 		if(!(list == null)) {
-			if(list.size()<4) {
-				
+			if(list.size()<4) {	
 				oeeArr.add(0, 0);
 				oeeNamesArr.add(0, "null");
 				
@@ -963,7 +960,7 @@ public class MindsphereServiceClient {
 					}	
 					if(list.get(i).getData().get("OEE").hashCode()>0) {
 							oeeArr.add(contMedia, list.get(i).getData().get("OEE").hashCode());
-							oeeNamesArr.add(contMedia, list.get(i-2).getTimeString() +" - "+list.get(i-1).getTimeString());
+							oeeNamesArr.add(contMedia, list.get(i-2).getTimeString() +" - "+list.get(i).getTimeString());
 							contMedia++;
 					}
 				}
@@ -1030,7 +1027,7 @@ public class MindsphereServiceClient {
 		return error_code;
 	}
 	
-	public static String checkNewDataAlert(ListAndInfo timeseries_list_info, String auth) throws java.text.ParseException, MindsphereException {
+	public static String checkNewDataAlert(ListAndInfo timeseries_list_info, String asset, String auth) throws java.text.ParseException, MindsphereException {
 			
 			
 		//flag inizio
@@ -1043,7 +1040,7 @@ public class MindsphereServiceClient {
 		String newEnd, goodEnd = "";
 		
 		if(timeseries_list_info.getTimeseriesList() == null) {
-			return "0";
+			return "correct_data";
 		} else {
 			
 			MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
@@ -1091,7 +1088,7 @@ public class MindsphereServiceClient {
 					newInit = DateProp.previousDayList(timeseries_list_info.getData_iniziale());
 					
 					//lista degli stop code
-					init_date = timeseriesClient.getTimeseries("e8e33cdb64fa4e14b0692d4d66b5fd04" , "FromRunToRun", newInit, timeseries_list_info.getData_iniziale(), 2000, "OEE");
+					init_date = timeseriesClient.getTimeseries(asset , "FromRunToRun", newInit, timeseries_list_info.getData_iniziale(), 2000, "OEE");
 					
 					int index;
 					
@@ -1121,7 +1118,7 @@ public class MindsphereServiceClient {
 					newEnd = DateProp.nextDayList(timeseries_list_info.getData_finale());
 					
 					//lista degli stop code
-					final_date = timeseriesClient.getTimeseries("e8e33cdb64fa4e14b0692d4d66b5fd04" , "FromRunToRun", timeseries_list_info.getData_finale(), newEnd, 2, "OEE");
+					final_date = timeseriesClient.getTimeseries(asset , "FromRunToRun", timeseries_list_info.getData_finale(), newEnd, 2, "OEE");
 					
 					if((final_date.size() == 0) || (final_date.size() == 1)) {
 						goodEnd = goodEnd + timeseries_list_info.getData_finale();
@@ -1145,7 +1142,7 @@ public class MindsphereServiceClient {
 		    } else if((initflag == 0) && (endflag == 1)) {
 		    	 return timeseries_list_info.getData_iniziale() + "+" + goodEnd;
 		    } else {
-		    	return "no";
+		    	return "correct_data";
 		    }
 			
 		}

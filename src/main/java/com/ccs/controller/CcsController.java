@@ -135,6 +135,7 @@ public class CcsController {
 		
 		Enumeration<String> headerNames = request.getHeaderNames();
 		String authorization = "";
+		String alert_val = "";
 	
 	    authorization = authorization + request.getHeader("authorization");
 				
@@ -230,8 +231,10 @@ public class CcsController {
 		//test popup
 		//testalert = MindsphereServiceClient.checkNewDataAlert(date);
 		
+		alert_val = MindsphereServiceClient.checkNewDataAlert(timeseries_list_info, asset, authorization);
 		
-		//System.out.println("Nuovo range di date da selezionare: " + MindsphereServiceClient.checkNewDataAlert(timeseries_list_info, authorization));
+		
+ 		System.out.println("Nuovo range di date da selezionare: " + MindsphereServiceClient.checkNewDataAlert(timeseries_list_info, asset, authorization));
 		
 		//test utilizzo chiamata developer account
 		//String stringa_di_ritorno_chiamata_MS = MindsphereServiceClient.getTimeSeriesAsObject("7cb21d4c9b724be5b38c2c9695d9b3c8", "demobox");
@@ -292,7 +295,14 @@ public class CcsController {
 		mv.addObject("date", date);
 		
 		mv.addObject("error_codice", error_code);
-
+		mv.addObject("asset", asset);
+		
+		if(alert_val.equals("correct_data")) {
+			mv.addObject("testalert", "no");
+		} else {
+			mv.addObject("testalert", alert_val);
+		}
+		
 		//mv.addObject("testalert", testalert);
 		
 		//mv.addObject("auth", authorization);
