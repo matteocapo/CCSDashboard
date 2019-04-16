@@ -165,11 +165,11 @@ public class CcsController {
 		System.out.println("in controller");
 		
 		if (!date.equals("World")) {
-				if(date.substring(4, 5).equals("-")) {
-				fromTo[0] = date.substring(0, 24);
-				fromTo[1] = date.substring(25, 49);
-			}else {
-				fromTo = DateProp.toMindSphereFormat(date);
+			if(date.substring(4, 5).equals("-")) {
+			fromTo[0] = date.substring(0, 24);
+			fromTo[1] = date.substring(25, 49);
+		}else {
+			fromTo = DateProp.toMindSphereFormat(date);
 			}
 		}
 
@@ -187,7 +187,7 @@ public class CcsController {
 		/* 
 		 * con questa funzione reperiamo tutte le informazioni sulla lista per utilizzi futuri
 		 */
-		timeseries_list_info = MindsphereServiceClient.listAndInfoMindsphere(timeseriesList);
+		timeseries_list_info = MindsphereServiceClient.listAndInfoMindsphere(timeseriesList, fromTo);
 
 		/* chiamata alla funzione che rende disponibili i dati inerenti all'oee medio, pezzi prodotti e pezzi scartati*/
 		oeeTotScrap = MindsphereServiceClient.oeeTotalScrapMSApi(timeseries_list_info);
@@ -235,6 +235,8 @@ public class CcsController {
 		
 		
  		System.out.println("Nuovo range di date da selezionare: " + MindsphereServiceClient.checkNewDataAlert(timeseries_list_info, asset, authorization));
+ 		
+ 		MindsphereServiceClient.ListaAllarmi(authorization, asset);
 		
 		//test utilizzo chiamata developer account
 		//String stringa_di_ritorno_chiamata_MS = MindsphereServiceClient.getTimeSeriesAsObject("7cb21d4c9b724be5b38c2c9695d9b3c8", "demobox");

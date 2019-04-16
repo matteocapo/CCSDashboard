@@ -185,7 +185,8 @@ public class DateProp {
 	
 	public static String nextDayList(String date) throws ParseException {
 		//String date format : 2018-11-23T10:05:50Z
-		
+		//output : YYYY-MM-DDThh:mm:ss.000Z
+
 		String dt = date.substring(0, 10);  // Start date
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
@@ -199,7 +200,8 @@ public class DateProp {
 	
 	public static String previousDayList(String date) throws ParseException {
 		//String date format : 2018-11-23T10:05:50Z
-						
+		//output : YYYY-MM-DDThh:mm:ss.000Z
+				
 				
 		String dt = date.substring(0, 10);  // Start date
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -213,4 +215,12 @@ public class DateProp {
 		return  dt + "T" + date.substring(11, 19) + ".000" + date.substring(19, 20);
 		
 	}
+	public static String setMindshphereDate(String date) {
+		//String date format : 2018-11-23T10:05:50Z
+		//output : 			   YYYY-MM-DDThh:mm:ss.000Z
+
+		String dt = date.substring(0, 19);  // Start date
+		return  dt + ".000" + date.substring(19, 20);
+	}
+	
 }

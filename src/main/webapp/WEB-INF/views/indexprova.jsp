@@ -82,7 +82,7 @@
 
     <div class="main-panel">
     <c:choose>
-    	<c:when test="${testalert == no}">
+    	<c:when test="${testalert == 'no'}">
     	</c:when>
    		<c:otherwise>
        	 	<div class="bs-example">

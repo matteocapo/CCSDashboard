@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,7 +32,7 @@ import com.ccs.model.IntermediateOeesModel;
 import com.ccs.model.ListAndInfo;
 import com.ccs.util.DateProp;
 import java.util.Date;
-
+import java.util.HashMap;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import com.ccs.util.Provider;
@@ -40,6 +42,8 @@ import com.siemens.mindsphere.sdk.core.exception.MindsphereException;
 import com.siemens.mindsphere.sdk.iot.asset.apiclient.AssetClient;
 import com.siemens.mindsphere.sdk.iot.asset.model.AssetResource;
 import com.siemens.mindsphere.sdk.iot.asset.model.Assets;
+import com.siemens.mindsphere.sdk.iot.fileservice.apiclient.FileservicesClient;
+import com.siemens.mindsphere.sdk.iot.fileservice.model.FileReaderResponse;
 import com.siemens.mindsphere.sdk.iot.timeseries.apiclient.TimeseriesClient;
 import com.siemens.mindsphere.sdk.iot.timeseries.model.TimeseriesData;
 import com.squareup.okhttp.MediaType;
@@ -757,7 +761,7 @@ public class MindsphereServiceClient {
 			dates = DateProp.toMindSphereFormat(date);
 		}
 		
-		dates = DateProp.toMindSphereFormat(date);
+		//dates = DateProp.toMindSphereFormat(date);
 		
 		System.out.println("ora inizio:"+ dates[0]);
 		System.out.println("ora fine: "+ dates[1]);
@@ -796,13 +800,16 @@ public class MindsphereServiceClient {
 	    return timeseriesList;
 	}
 	
-	public static ListAndInfo listAndInfoMindsphere(List<TimeseriesData> timeseriesList) {
+	public static ListAndInfo listAndInfoMindsphere(List<TimeseriesData> timeseriesList, String[] from_to) {
 		
 		ListAndInfo timeseries_list_info = new ListAndInfo();
 
 		if(!(timeseriesList == null)) {
+			
 			timeseries_list_info.setTimeseriesList(timeseriesList);
 			timeseries_list_info.setLunghezza_lista(timeseriesList.size());
+			timeseries_list_info.set_data_iniziale_da_utente(from_to[0]);
+			timeseries_list_info.set_data_finale_da_utente(from_to[1]);
 			timeseries_list_info.setData_iniziale(timeseriesList.get(0).getTimeString());
 			timeseries_list_info.setData_finale(timeseriesList.get(timeseries_list_info.getLunghezza_lista()-1).getTimeString());
 	
@@ -1064,10 +1071,11 @@ public class MindsphereServiceClient {
 			}
 			
 			
-			if(timeseries_list_info.getTipo_finale().equals("run")) {
+			if(timeseries_list_info.getTipo_finale().equals("stop")) {
 				//if controlla se l'ultimo elemento è un run. (è un run se ha oee > 0)
 				//se si, imposta l' endflag di fine a 1 e viene richiesto se inglobare anche lui
 				System.out.println("endflag di run: "+endflag);
+				
 				endflag = 1;
 				
 			}
@@ -1085,10 +1093,10 @@ public class MindsphereServiceClient {
 					//mi prendo il tempo dell'ultimo valore (che siamo sicuri che sia un run)
 					//goodInit = "valore1";
 					
-					newInit = DateProp.previousDayList(timeseries_list_info.getData_iniziale());
+					newInit = DateProp.previousDay(timeseries_list_info.getData_inizialeDaUtente());
 					
 					//lista degli stop code
-					init_date = timeseriesClient.getTimeseries(asset , "FromRunToRun", newInit, timeseries_list_info.getData_iniziale(), 2000, "OEE");
+					init_date = timeseriesClient.getTimeseries(asset , "FromRunToRun", newInit, timeseries_list_info.getData_inizialeDaUtente(), 2000, "OEE");
 					
 					int index;
 					
@@ -1099,7 +1107,7 @@ public class MindsphereServiceClient {
 						index = index -2;
 						goodInit =  goodInit + init_date.get(index).getTimeString();
 					} else {
-					goodInit =  goodInit + timeseries_list_info.getData_iniziale();
+					goodInit =  goodInit + timeseries_list_info.getData_inizialeDaUtente();
 					}
 					System.out.println("nuovo elemento di partenza: "+goodInit);
 				}
@@ -1115,15 +1123,16 @@ public class MindsphereServiceClient {
 					//mi prendo il tempo del primo valore (che siamo sicuri che sia un run)
 					//goodEnd = "valore2";
 					
-					newEnd = DateProp.nextDayList(timeseries_list_info.getData_finale());
+					newEnd = DateProp.nextDay(timeseries_list_info.getData_finaleDaUtente());
 					
 					//lista degli stop code
-					final_date = timeseriesClient.getTimeseries(asset , "FromRunToRun", timeseries_list_info.getData_finale(), newEnd, 2, "OEE");
+					final_date = timeseriesClient.getTimeseries(asset , "FromRunToRun", timeseries_list_info.getData_finaleDaUtente(), newEnd, 2, "OEE");
 					
 					if((final_date.size() == 0) || (final_date.size() == 1)) {
-						goodEnd = goodEnd + timeseries_list_info.getData_finale();
+						goodEnd = goodEnd + timeseries_list_info.getData_finaleDaUtente();
+						endflag = 0;
 					} else {
-						goodEnd = goodEnd +  final_date.get(1).getTimeString();	
+						goodEnd = goodEnd +  final_date.get(0).getTimeString();	
 					}
 					System.out.println("nuovo elemento di arrivo: "+goodEnd);
 				}
@@ -1131,25 +1140,78 @@ public class MindsphereServiceClient {
 		    	System.out.println(e);
 		    	System.out.println(e.getErrorMessage());
 		    	System.out.println(e.getHttpStatus());
-		    }
-
-					
+		    }			
 			
 		    if((initflag == 1) && (endflag == 1)) {
-			    return goodInit + "+" + goodEnd;
-		    } else if((initflag == 1) && (endflag == 0)) {
-		    	 return goodInit + "+" + timeseries_list_info.getData_finale();
-		    } else if((initflag == 0) && (endflag == 1)) {
-		    	 return timeseries_list_info.getData_iniziale() + "+" + goodEnd;
-		    } else {
+		    	//test da cacellare
+		    	if(initflag == 1) {
+		    		System.out.println("Il primo valore è uno stop");
+		    	} else {
+		    		System.out.println("Il primo valore è uno run");
+		    	}
+		    	
+		    	if(endflag == 1) {
+		    		System.out.println("L'ultimo valore è un run");
+		    	} else {
+		    		System.out.println("L'ultimo valore è uno stop");
+		    	}
+		    	//test da cacellare
+		    	
+			    return DateProp.setMindshphereDate(goodInit) + "+" + DateProp.setMindshphereDate(goodEnd);
+		    }
+		    if((initflag == 1) && (endflag == 0)) {
+		    	//test da cacellare
+		    	if(initflag == 1) {
+		    		System.out.println("Il primo valore è uno stop");
+		    	} else {
+		    		System.out.println("Il primo valore è uno run");
+		    	}
+		    	
+		    	if(endflag == 1) {
+		    		System.out.println("L'ultimo valore è un run");
+		    	} else {
+		    		System.out.println("L'ultimo valore è uno stop");
+		    	}
+		    	//test da cacellare
+		    	
+		    	 return DateProp.setMindshphereDate(goodInit) + "+" + timeseries_list_info.getData_finaleDaUtente();
+		    }
+		    if((initflag == 0) && (endflag == 1)) {
+		    	//test da cacellare
+		    	if(initflag == 1) {
+		    		System.out.println("Il primo valore è uno stop");
+		    	} else {
+		    		System.out.println("Il primo valore è uno run");
+		    	}
+		    	
+		    	if(endflag == 1) {
+		    		System.out.println("L'ultimo valore è un run");
+		    	} else {
+		    		System.out.println("L'ultimo valore è uno stop");
+		    	}
+		    	//test da cacellare
+
+		    	 return timeseries_list_info.getData_inizialeDaUtente() + "+" + DateProp.setMindshphereDate(goodEnd);
+		    } 
+		    if ((initflag == 0) && (endflag == 0)){
+		    	if(initflag == 1) {
+		    		System.out.println("Il primo valore è uno stop");
+		    	} else {
+		    		System.out.println("Il primo valore è uno run");
+		    	}
+		    	
+		    	if(endflag == 1) {
+		    		System.out.println("L'ultimo valore è un run");
+		    	} else {
+		    		System.out.println("L'ultimo valore è uno stop");
+		    	}
+		    	System.out.println();
+		    	return "correct_data";
+		    }else {
 		    	return "correct_data";
 		    }
-			
 		}
-		
 	}
-
-	
 
 	/* GESTIONE DELLA LOGICA PER LA GENERAZIONE AUTOMATICA DEGLI ASSET E VISUALIZZAZIONE DEI NOMI E CODICI 
 	 * 
@@ -1218,5 +1280,50 @@ public class MindsphereServiceClient {
 	    
    	 	System.out.println("collegamento stabilito");    
 	    return array_asset;		
+	}
+	public static Map<String, String> ListaAllarmi(String auth, String asset){
+		
+		Map<String, String> allarmi = new HashMap<String, String>();
+		
+		String alarm_list = "";
+		
+		//MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
+				
+		MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+		
+		RestClientConfig config = RestClientConfig.builder().build();
+
+		
+		FileservicesClient fileservicesClient = FileservicesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+
+		FileReaderResponse fileReaderResponse;
+		
+		try {
+			
+		    fileReaderResponse = fileservicesClient.readFile(asset, "AlarmList.txt"); 
+		    
+		    alarm_list = alarm_list + fileReaderResponse.getFileContent();  
+		    
+		    String[] pairs = alarm_list.split("\n");
+		    for (int i=0;i<pairs.length;i++) {
+		        String pair = pairs[i];
+		        String[] keyValue = pair.split(";");
+		        allarmi.put(keyValue[0], keyValue[1]);
+		    }
+		    
+		    System.out.println("maybe ha fatto");
+		    
+
+		    System.out.println("allarme 31: "+ allarmi.get("31"));
+		    
+		    
+		    
+		} catch (MindsphereException e) {
+		    // Exception handling
+			System.out.println(e);
+			System.out.println("non ho letto");
+		}
+		System.out.println("ho letto");
+		return allarmi;
 	}
 }

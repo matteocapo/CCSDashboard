@@ -10,8 +10,10 @@ public class ListAndInfo {
 	List<TimeseriesData> timeseriesList = null;	
 	String tipo_iniziale;
 	String tipo_finale;
-	String data_iniziale;
-	String data_finale;
+	String data_iniziale_lista;
+	String data_finale_lista;
+	String data_iniziale_da_utente;
+	String data_finale_da_utente;
 	int lunghezza_lista;
 	
 	public void setTimeseriesList(List<TimeseriesData> timeseriesList) {
@@ -27,15 +29,23 @@ public class ListAndInfo {
 	}
 
 	public void setData_iniziale(String data_iniziale) {
-		this.data_iniziale = data_iniziale;
+		this.data_iniziale_lista = data_iniziale;
 	}
 
 	public void setData_finale(String data_finale) {
-		this.data_finale = data_finale;
+		this.data_finale_lista = data_finale;
 	}
 	
 	public void setLunghezza_lista(int lunghezza) {
 		this.lunghezza_lista = lunghezza;
+	}
+	
+	public void set_data_iniziale_da_utente(String data_iniziale_da_utente) {
+		this.data_iniziale_da_utente = data_iniziale_da_utente;
+	}
+	
+	public void set_data_finale_da_utente(String data_finale_da_utente) {
+		this.data_finale_da_utente = data_finale_da_utente;
 	}
 	
 	public List<TimeseriesData> getTimeseriesList() {
@@ -51,11 +61,19 @@ public class ListAndInfo {
 	}
 
 	public String getData_iniziale() {
-		return  data_iniziale;
+		return  data_iniziale_lista;
 	}
 
 	public String getData_finale() {
-		return data_finale;
+		return data_finale_lista;
+	}
+	
+	public String getData_inizialeDaUtente() {
+		return  data_iniziale_da_utente;
+	}
+
+	public String getData_finaleDaUtente() {
+		return data_finale_da_utente;
 	}
 	public int getLunghezza_lista() {
 		return lunghezza_lista;
