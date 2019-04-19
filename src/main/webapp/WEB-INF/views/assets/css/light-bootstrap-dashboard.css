@@ -544,20 +544,20 @@ input:focus {
 
 .btn {
     border-width: 2px;
-    background-color: transparent;
+    background-color: #c4c4c4;
     font-weight: 400;
     opacity: 0.8;
     filter: alpha(opacity=80);
     padding: 8px 16px;
-    border-color: #888888;
-    color: #888888;
+    border-color: #ffffff;
+    color: #ffffff;
 }
 
 .btn:hover, .btn:focus, .btn:active, .btn.active,
 .open > .btn.dropdown-toggle {
-    background-color: transparent;
-    color: #777777;
-    border-color: #777777;
+    background-color: #31b93c;
+    color: #ffffff;
+    border-color: #ffffff;
 }
 
 .btn.disabled, .btn.disabled:hover, .btn.disabled:focus, .btn.disabled.focus, .btn.disabled:active, .btn.disabled.active, .btn:disabled, .btn:disabled:hover, .btn:disabled:focus, .btn:disabled.focus, .btn:disabled:active, .btn:disabled.active, .btn[disabled], .btn[disabled]:hover, .btn[disabled]:focus, .btn[disabled].focus, .btn[disabled]:active, .btn[disabled].active,
@@ -3880,4 +3880,8 @@ fieldset[disabled] .btn-neutral.active {
     position: relative;
     display: block;
     padding: 10px 15px;
+}
+
+.show_performance{
+	background-color: black;
 }

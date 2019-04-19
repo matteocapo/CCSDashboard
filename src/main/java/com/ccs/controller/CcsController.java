@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ccs.model.ErrorDataModel;
 import com.ccs.model.IntermediateOeesModel;
 import com.ccs.model.ListAndInfo;
+import com.ccs.model.RawDataModel;
 import com.ccs.provider.MindsphereServiceClient;
 import com.ccs.util.DateProp;
 import com.siemens.mindsphere.sdk.core.exception.MindsphereException;
@@ -134,14 +135,19 @@ public class CcsController {
 		/* Definizione delle variabili */
 		
 		Enumeration<String> headerNames = request.getHeaderNames();
+				
+		Map<String, String> allarmi_da_file = new HashMap<String, String>();
+
 		String authorization = "";
 		String alert_val = "";
 	
 	    authorization = authorization + request.getHeader("authorization");
 				
-		List<TimeseriesData> timeseriesList = null;	
+		List<TimeseriesData> timeseriesList_performance = null;	
 		
-		ListAndInfo timeseries_list_info;
+		RawDataModel raw_data = new RawDataModel();
+		
+		ListAndInfo timeseries_list_performance_info;
 		
 		int[] oeeTotScrap = new int[3];
 		
@@ -182,18 +188,18 @@ public class CcsController {
 		/* Prima chiamata che riceve in input la data (formattata come vuole mindsphere), l'ID univoco della tabella definita su mindsphere, il nome della tabella su mindsphere,
 		 *  e il numero massimo di valori che possono tornarne dalla query, in questo caso l'API ha un valore massimo di 2000 risultati di ritorno
 		 */
-		timeseriesList = MindsphereServiceClient.listMindsphere(date, asset, "FromRunToRun", 2000, authorization);
+		timeseriesList_performance = MindsphereServiceClient.listMindsphere(date, asset, "FromRunToRun", 2000, authorization);
 		
 		/* 
 		 * con questa funzione reperiamo tutte le informazioni sulla lista per utilizzi futuri
 		 */
-		timeseries_list_info = MindsphereServiceClient.listAndInfoMindsphere(timeseriesList, fromTo);
+		timeseries_list_performance_info = MindsphereServiceClient.listAndInfoMindsphere(timeseriesList_performance, fromTo);
 
 		/* chiamata alla funzione che rende disponibili i dati inerenti all'oee medio, pezzi prodotti e pezzi scartati*/
-		oeeTotScrap = MindsphereServiceClient.oeeTotalScrapMSApi(timeseries_list_info);
+		oeeTotScrap = MindsphereServiceClient.oeeTotalScrapMSApi(timeseries_list_performance_info);
 		
 		/*chiamata alla funzione che rende disponibili i dati inerenti agli oee intermedi con lista dei range di funzionamento con rispettivo oee*/
-		MindsphereServiceClient.intermediateOeesModifica(timeseries_list_info, intermediateOees);
+		MindsphereServiceClient.intermediateOeesModifica(timeseries_list_performance_info, intermediateOees);
 		
 		if(intermediateOees.getOeeArray().size() > 0) {
 			oees_name = oees_name.concat("'" + intermediateOees.getOeeNamesArr().get(0) + "'");
@@ -227,16 +233,27 @@ public class CcsController {
 		
 		//test messaggi di errore generato tramite richiesta di sessione
 		//ErrorDataModel[] error_code = MindsphereServiceClient.testJsonGetStopCode(date);
-		ErrorDataModel[] error_code = MindsphereServiceClient.getStopCodeFromList(timeseries_list_info);
+		
+		/*
+		 * funzione che ritorna la lista degli allarmi da file all'interno di una hash map
+		 */
+		
+ 		allarmi_da_file = MindsphereServiceClient.ListaAllarmi(authorization, asset);
+
+		ErrorDataModel[] error_code = MindsphereServiceClient.getStopCodeFromList(timeseries_list_performance_info, allarmi_da_file);
 		//test popup
 		//testalert = MindsphereServiceClient.checkNewDataAlert(date);
 		
-		alert_val = MindsphereServiceClient.checkNewDataAlert(timeseries_list_info, asset, authorization);
+		alert_val = MindsphereServiceClient.checkNewDataAlert(timeseries_list_performance_info, asset, authorization);
 		
 		
- 		System.out.println("Nuovo range di date da selezionare: " + MindsphereServiceClient.checkNewDataAlert(timeseries_list_info, asset, authorization));
+ 		System.out.println("Nuovo range di date da selezionare: " + MindsphereServiceClient.checkNewDataAlert(timeseries_list_performance_info, asset, authorization));
  		
- 		MindsphereServiceClient.ListaAllarmi(authorization, asset);
+ 		
+ 		/*
+ 		 * funzione per il reperimento delle informazioni di materie prime che si voglio no visualizzare
+ 		 */
+ 		raw_data = MindsphereServiceClient.getRawData(date, asset, "RawMaterialsData", 2000, authorization);
 		
 		//test utilizzo chiamata developer account
 		//String stringa_di_ritorno_chiamata_MS = MindsphereServiceClient.getTimeSeriesAsObject("7cb21d4c9b724be5b38c2c9695d9b3c8", "demobox");

@@ -2,10 +2,10 @@ package com.ccs.model;
 
 public class ErrorDataModel {
 	
-	public int error_code = -1;
+	public String error_code = "-1";
 	public String timestamp = "";
 	
-	public void setErrorCode(int error_code) {
+	public void setErrorCode(String error_code) {
 		this.error_code = error_code;
 	}
 	
@@ -13,7 +13,7 @@ public class ErrorDataModel {
 		this.timestamp = timestamp;
 	}
 	
-	public int getErrorCode() {
+	public String getErrorCode() {
 		return this.error_code;
 	}
 	

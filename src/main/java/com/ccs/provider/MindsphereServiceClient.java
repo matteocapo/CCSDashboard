@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.ccs.model.ErrorDataModel;
 import com.ccs.model.IntermediateOeesModel;
 import com.ccs.model.ListAndInfo;
+import com.ccs.model.RawDataModel;
 import com.ccs.util.DateProp;
 import java.util.Date;
 import java.util.HashMap;
@@ -393,7 +394,7 @@ public class MindsphereServiceClient {
 			
 			if(responseArray.getJSONObject(i).getInt("OEE") == 0) {
 				ErrorDataModel temp = new ErrorDataModel();
-				temp.setErrorCode(responseArray.getJSONObject(i).getInt("CodeStop"));
+				temp.setErrorCode(responseArray.getJSONObject(i).getString("CodeStop"));
 				temp.setTimestamp(responseArray.getJSONObject(i).getString("_time"));
 				error_code[j] = temp;
 				j++;
@@ -456,7 +457,7 @@ public class MindsphereServiceClient {
 			
 			if(responseArray.getJSONObject(i).getInt("OEE") == 0) {
 				ErrorDataModel temp = new ErrorDataModel();
-				temp.setErrorCode(responseArray.getJSONObject(i).getInt("CodeStop"));
+				temp.setErrorCode(responseArray.getJSONObject(i).getString("CodeStop"));
 				temp.setTimestamp(responseArray.getJSONObject(i).getString("_time"));
 				error_code[j] = temp;
 				j++;
@@ -718,7 +719,7 @@ public class MindsphereServiceClient {
 			
 			if(responseArray.getJSONObject(i).getInt("OEE") == 0) {
 				ErrorDataModel temp = new ErrorDataModel();
-				temp.setErrorCode(responseArray.getJSONObject(i).getInt("CodeStop"));
+				temp.setErrorCode(responseArray.getJSONObject(i).getString("CodeStop"));
 				temp.setTimestamp(responseArray.getJSONObject(i).getString("_time"));
 				error_code[j] = temp;
 				j++;
@@ -980,7 +981,7 @@ public class MindsphereServiceClient {
 		intermediateOees.setOeeNamesArr(oeeNamesArr);
 	}
 	
-	public static ErrorDataModel[] getStopCodeFromList(ListAndInfo timeseries_list_info) {
+	public static ErrorDataModel[] getStopCodeFromList(ListAndInfo timeseries_list_info, Map<String, String> allarmi_da_file) {
 		
 		int grandezza_array = 0;
 		
@@ -1023,7 +1024,11 @@ public class MindsphereServiceClient {
 					
 					if(list.get(i).getData().get("OEE").hashCode() == 0) {
 						ErrorDataModel temp = new ErrorDataModel();
-						temp.setErrorCode(list.get(i).getData().get("CodeStop").hashCode());
+						if(allarmi_da_file.isEmpty()) {
+							temp.setErrorCode(list.get(i).getData().get("CodeStop").toString());
+						} else {
+							temp.setErrorCode(list.get(i).getData().get("CodeStop").toString()+ ": " + (allarmi_da_file.get(list.get(i).getData().get("CodeStop").toString())));
+						}
 						temp.setTimestamp(list.get(i).getTimeString());
 						error_code[j] = temp;
 						j++;
@@ -1281,6 +1286,7 @@ public class MindsphereServiceClient {
    	 	System.out.println("collegamento stabilito");    
 	    return array_asset;		
 	}
+	
 	public static Map<String, String> ListaAllarmi(String auth, String asset){
 		
 		Map<String, String> allarmi = new HashMap<String, String>();
@@ -1311,19 +1317,120 @@ public class MindsphereServiceClient {
 		        allarmi.put(keyValue[0], keyValue[1]);
 		    }
 		    
-		    System.out.println("maybe ha fatto");
+		   //System.out.println("maybe ok");
 		    
 
-		    System.out.println("allarme 31: "+ allarmi.get("31"));
+		    //System.out.println("allarme 31: "+ allarmi.get("31"));
+	    
+		} catch (MindsphereException e) {
+		    // Exception handling
+			System.out.println(e);
+			System.out.println("non ho letto");
+			return allarmi;
+		}
+		System.out.println("ho letto");
+		return allarmi;
+	}
+	
+	public static RawDataModel getRawData(String date, String credentialId, String tableName, int max_visual, String auth) {
+		
+		RawDataModel raw_data = new RawDataModel();
+		
+		//trasformo la data in un formato mindsphere like
+		String dates[] = new String[2];
+		
+		System.out.println("ora che arriva dalla form:"+ date);
+		
+		if(date.substring(4, 5).equals("-")) {
+			dates[0] = date.substring(0, 24);
+			dates[1] = date.substring(25, 49);
+		}else {
+			dates = DateProp.toMindSphereFormat(date);
+		}
+		
+		//dates = DateProp.toMindSphereFormat(date);
+		
+		System.out.println("ora inizio:"+ dates[0]);
+		System.out.println("ora fine: "+ dates[1]);
+
+		
+	    MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+
+	    //MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
+	    RestClientConfig config = RestClientConfig.builder().build();
+	    
+	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+
+	    List<TimeseriesData> timeseriesList = null;
+	    
+	    try {
+	    	
+	    	//chiamata dall'SDK per ricevere tutte le info dal db
+	    	timeseriesList = timeseriesClient.getTimeseries(credentialId , tableName, dates[0], dates[1], max_visual, null);
+	    	
+	    	//set scarti totali e oee
+	    	if(!(timeseriesList == null)) {
+	    		System.out.println("dati ricevuti con successo (lista non vuota)");
+	    	} else {
+	    		System.out.println("dati ricevuti (lista vuota)");
+	    	}
+	    	
+	    } catch (MindsphereException e) {
+	    	System.out.println(e);
+	    	System.out.println(e.getErrorMessage());
+	    	System.out.println(e.getHttpStatus());
+	    	System.out.println("errore nel collegamento");
+	    }
+	    
+	    System.out.println("collegamento stabilito");    
+	
+	    
+	    
+		return raw_data;
+	}
+	
+	public static Map<String, String> ListaMateriali (String auth, String asset){
+		
+		Map<String, String> mappa_svolgitore_materiale = new HashMap<String, String>();
+		
+		List<String>[] materiali_svolgitori;
+		String lista_materiali_svolgitori = "";
+		String lista_svolgitori = "";
+		
+		//MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
+				
+		MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+		
+		RestClientConfig config = RestClientConfig.builder().build();
+
+		
+		FileservicesClient fileservicesClient = FileservicesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+
+		FileReaderResponse fileReaderResponse;
+		
+		try {
+			
+		    fileReaderResponse = fileservicesClient.readFile(asset, "raw_material.txt"); 
 		    
+		    lista_materiali_svolgitori = lista_materiali_svolgitori + fileReaderResponse.getFileContent();  
+		    
+		    String[] pairs = lista_materiali_svolgitori.split("\n");
+		    for (int i=0;i<pairs.length;i++) {
+		        String pair = pairs[i];
+		        String[] keyValue = pair.split(";");
+		        mappa_svolgitore_materiale.put(keyValue[0], keyValue[1]);
+		    }
+		    
+		   // mappa_svolgitore_materiale.
 		    
 		    
 		} catch (MindsphereException e) {
 		    // Exception handling
 			System.out.println(e);
 			System.out.println("non ho letto");
+			return mappa_svolgitore_materiale;
 		}
 		System.out.println("ho letto");
-		return allarmi;
+		return mappa_svolgitore_materiale;
 	}
 }

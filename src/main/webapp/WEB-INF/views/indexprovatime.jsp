@@ -78,7 +78,7 @@
 				                <li class="active">
 					                	<a>
 					                        <i class="pe-7s-graph2"></i>
-					                        <p>${food.key}<input type="radio" id="${food.key}" name="asset" value="${food.value}" style="vertical-align: text-bottom;" form = "indexprovatime" checked></p>
+					                        <p>${food.key}<input type="radio" id="${food.key}" name="asset" value="${food.value}" style="float: right;margin-top: 8px;" form = "indexprovatime" checked></p>
 					                    </a>
 					             </li>
 					         </label>     

@@ -36,6 +36,7 @@
 
 </head>
 <body>
+			
 <div class="wrapper">
 
     <div class="sidebar" data-color="blue" data-image="${pageContext.request.contextPath}/assets/img/sidebar-6.JPG">
@@ -76,7 +77,23 @@
                 	class="pe-7s-bell"
                 	class="pe-7s-rocket"
             	-->
-            </ul>
+            	</ul>
+            	<ul class="nav">
+	                <li class="active">
+	                    <a style="position: fixed; margin-left: 23px;">
+	                      <p>
+	                    	<div class="btn-group btn-group-toggle" data-toggle="buttons">
+								 <label class="btn btn-secondary active">
+								 	<input type="radio" name="options" id="option1" autocomplete="off" onchange = "showPerformance()" checked>Perform.
+								 </label>
+								 <label class="btn btn-secondary">
+								 	<input type="radio" name="options" id="option2" autocomplete="off" onchange = "showRawMaterial()">Raw Mat.
+								 </label>
+							</div>
+	                      </p>
+	                    </a>
+	                </li>
+	            </ul>		
     	</div>
     </div>
 
@@ -185,7 +202,7 @@
 
         <div class="content">
             <div class="container-fluid">
-                <div class="row">
+                <div class="row" id="performance">
                     <div class="col-md-2" id="min-w-oee">
                         <div class="card ">
                             <div class="header">
@@ -200,7 +217,7 @@
                             </div>
                         </div>
                     </div>
-                    
+                  
                     <div class="col-md-5">
                         <div class="card">
                             <div class="header">
@@ -240,9 +257,72 @@
                             	<h4 class="title">Stop list</h4>
                             	<div id="stopCodes">
 	                            	 <c:forEach items="${error_codice}" var="val">
-								    	<p class="category">Stop Code: <c:out value="${val.getErrorCode()}"/> occured at <c:out value="${val.getTimestamp()}"/></p>
+								    	<p class="category">Stop Code: <c:out value="${val.getErrorCode()}"/> <br> occured at <c:out value="${val.getTimestamp()}"/></p>
 									</c:forEach>
                             	</div>
+                            </div>
+                            <div class="footer">
+                                    <hr>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row" id="raw_material" style= "display : none;">
+                    <div class="col-md-2" id="min-w-oee">
+                        <div class="card ">
+                            <div class="header">
+                                <h4 class="title">Raw Material</h4>
+                                <p class="category">Raw Material consumption 1</p>
+                            </div>
+                            <div class="content" id="centering-oee">
+                            	<h4>Raw Material #2: used</h4>
+                            	<h4>Raw Material #2: scrap</h4>
+                            </div>
+                            <div class="footer">
+                                    <hr>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2" id="min-w-oee">
+                        <div class="card ">
+                            <div class="header">
+                                <h4 class="title">Raw Material</h4>
+                                <p class="category">Raw Material consumption 2</p>
+                            </div>
+                            <div class="content" id="centering-oee">
+                            	<h4>Raw Material #2: used</h4>
+                            	<h4>Raw Material #2: scrap</h4>
+                            </div>
+                            <div class="footer">
+                                    <hr>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2" id="min-w-oee">
+                        <div class="card ">
+                            <div class="header">
+                                <h4 class="title">Raw Material</h4>
+                                <p class="category">Raw Material consumption 3</p>
+                            </div>
+                            <div class="content" id="centering-oee">
+                            	<h4>Raw Material #3: used</h4>
+                            	<h4>Raw Material #2: scrap</h4>
+                            </div>
+                            <div class="footer">
+                                    <hr>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2" id="min-w-oee">
+                        <div class="card ">
+                            <div class="header">
+                                <h4 class="title">Raw Material</h4>
+                                <p class="category">Raw Material consumption 4</p>
+                            </div>
+                            <div class="content" id="centering-oee">
+                               	<h4>Raw Material #4: used</h4>
+                               	<h4>Raw Material #2: scap</h4>
                             </div>
                             <div class="footer">
                                     <hr>
@@ -406,20 +486,27 @@
 	    }
 	});
 	var itermediateOEEChart = new Chart(document.getElementById("intOEE"),
-			{"type":"horizontalBar",
-			"data":{
+			{"type":"line",
+			 "data":{
 				"labels":[${oees_name}],
 				"datasets":[{
 					"label":"OEEs %",
 					"data":[${oees_value}],
-					"fill":false,
-					"backgroundColor":[],
+					"fill":true,
+					"backgroundColor": "rgba(65, 158, 213, 0.6)",
 					"borderColor":[],
-						"borderWidth":1
-						}
+					"borderWidth":1
+					}
 				]
-		},
-		"options":{"scales":{"yAxes":[{"ticks":{"beginAtZero":true}}]}}}
+			},
+		  "options":{
+			"scales":{
+				"fill": "true",
+				"yAxes":[{"ticks":{"beginAtZero":true}}],
+				"xAxes":[{"ticks":{"display": false }}]
+			}
+		}
+		}
 	);
 	
 	<!-- Sezione di ingresso al singolo frame -->
@@ -503,7 +590,41 @@
 	});
 	</script>
 	-->
-	<!-- script odometro -->
+	<!-- script performance -->
 	<script type="text/javascript">
+		function showRawMaterial() {
+			  var x = document.getElementById("performance");
+			  if (x.style.display === "none") {
+			    x.style.display = "block";
+			  } else {
+			    x.style.display = "none";
+			  }
+			  
+			  var x = document.getElementById("raw_material");
+			  if (x.style.display === "none") {
+			    x.style.display = "block";
+			  } else {
+			    x.style.display = "none";
+			  }
+		}
+	</script>
+	
+	<!-- script Raw Material -->
+	<script type="text/javascript">
+		function showPerformance() {
+			  var x = document.getElementById("performance");
+			  if (x.style.display === "none") {
+			    x.style.display = "block";
+			  } else {
+			    x.style.display = "none";
+			  }
+			  
+			  var x = document.getElementById("raw_material");
+			  if (x.style.display === "none") {
+			    x.style.display = "block";
+			  } else {
+			    x.style.display = "none";
+			  }
+		}
 	</script>
 </html>
