@@ -55,13 +55,17 @@ import com.squareup.okhttp.Response;
 
 public class MindsphereServiceClient {
 	
-	//variabili standard da impostare
+	
+	//variabili standard da impostare DEPRECATE
 	String entity = "";
 	String propertysetname = "";
 	String limit = "";
 	String select = "";
 	private static String URL_TOKEN = "a930a23f-7838-4c00-b67f-eb21d3531d00";
 	
+	/*
+	 * DEPRECATE
+	 */
 	public static List<TimeseriesData> getLargeRangeV1(String[] fromTo) throws java.text.ParseException {
 	    
 		List<TimeseriesData> timeseriesData = null;
@@ -89,7 +93,9 @@ public class MindsphereServiceClient {
 	    
 	    return timeseriesData;
 	}
-	
+	/*
+	 * DEPRECATE
+	 */
 	public static int oeeMediaJson(String from, String to, ArrayList<Integer> oeeArr, ArrayList<String> oeeNamesArr) {
 		
 		int oeeMedia = 0;
@@ -134,7 +140,9 @@ public class MindsphereServiceClient {
 		//System.out.println(oeeMedia);
 		return oeeMedia;
 	}
-	
+	/*
+	 * DEPRECATE
+	 */
 	public static int[] prodottiEScartiJson(String from, String to) {
 		int[] dati = new int[2];
 		final int PezziScartati = 0;
@@ -176,7 +184,9 @@ public class MindsphereServiceClient {
 		
 		return dati;
 	}
-
+	/*
+	 * DEPRECATE
+	 */
 	public static String getTimeSeriesAsObject(String entity, String propertySetName) throws MindsphereException, IOException{
 		
 	    MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("itadev-service-credentials").clientSecret("012615b6-a16c-4aaf-86af-6da9060df9fa").tenant("itadev").build();
@@ -198,7 +208,9 @@ public class MindsphereServiceClient {
 
 	    return "Chiamata effettuata e dati di ritorno corretti";
 	}
-
+	/*
+	 * DEPRECATE
+	 */
 	public static void testApiSelfMade () throws IOException {
 		
 		OkHttpClient client = new OkHttpClient();
@@ -229,7 +241,9 @@ public class MindsphereServiceClient {
 		System.out.println(response2.body().string());
 	
 	}
-		
+	/*
+	 * DEPRECATE
+	 */
 	public static int testTokenUrlDataOee(String date) throws IOException {
 		
 		int oeeMedia = 0;
@@ -292,7 +306,9 @@ public class MindsphereServiceClient {
 		
 		return oeeMedia;		
 	}
-
+	/*
+	 * DEPRECATE
+	 */
 	public static int[] testTokenUrlDataProdottiEScarti(String date) throws IOException {
 		
 		int[] dati = new int[2];
@@ -346,7 +362,9 @@ public class MindsphereServiceClient {
 		
 		return dati;
 	}
-	
+	/*
+	 * DEPRECATE
+	 */
 	public static ErrorDataModel[] testTokenUrlGetStopCode(String date) throws IOException {
 		
 		String dateFormat[] = DateProp.toMindSphereFormat(date);
@@ -413,7 +431,9 @@ public class MindsphereServiceClient {
 		
 		return error_code;
 	}
-	
+	/*
+	 * DEPRECATE
+	 */
 	public static ErrorDataModel[] testJsonGetStopCode(String date) throws IOException {
 		
 		
@@ -476,7 +496,9 @@ public class MindsphereServiceClient {
 		
 		return error_code;
 	}
-
+	/*
+	 * DEPRECATE
+	 */
 	public static void dataInfoMs() throws IOException {
 		
 		OkHttpClient client = new OkHttpClient();
@@ -509,7 +531,9 @@ public class MindsphereServiceClient {
 		
 		
 	}
-	
+	/*
+	 * DEPRECATE
+	 */
 	public static String checkNewDataAlert(String date) throws MindsphereException, IOException, java.text.ParseException{
 				
 		//trasformo la data in un formato mindsphere like
@@ -572,10 +596,9 @@ public class MindsphereServiceClient {
 	    	return "no";
 	    }
 	}
-	
-	//Da qui iniziano le chiamate che vengono effettuate a mindsphere
-	
-	//Questa funzione al suo interno effettua 3 chiamate rest e serve per prendere gli OEE, pezzi prodotti e scartati
+	/*
+	 * DEPRECATE
+	 */
 	public static int[] oeeTotalScrapMSApi(String date, String credentialId, String tableName, int max_visual) throws MindsphereException, IOException{
 		
 		//array di interi che conterrà in prima posizione i pezzi scartati [0], in seconda i pezzi prodotti [1] e in terza l'oee medio [2]
@@ -645,8 +668,9 @@ public class MindsphereServiceClient {
 	    
 	    return oeeTotScrap;
 	}
-
-	
+	/*
+	 * DEPRECATE
+	 */	
 	public static ErrorDataModel[] stopcodeMSApi(String date, String credentialId, String tableName, int max_visual) throws MindsphereException, IOException {
 		
 		
@@ -739,22 +763,49 @@ public class MindsphereServiceClient {
 		return error_code;
 	}
 	
+	
+	
+	
+	
 	/* NUOVA GESTIONE DELLA LOGICA 
 	 * 
-	 * Da qui inizia la gestione della logica tramite l'utilizzo delle chiamate API a MindSphere che vengono effettuate nella servlet principale /indexprova
+	 * Tutte le funzioni definte di seguito sono state sviluppate e utilizzate a partire dal 27/03/2019.
+	 * Esse forniscono tutti gli strumenti per reperire e analizzare le informazioni da MS e renderle disponibili sul controller delle pagine.
 	 * 
+	 * Nello specifico tutte le funzioni sono usate nella pagina pricipale di visualizzazione.
 	 *  
 	 */
 	
 	
-	public static List<TimeseriesData> listMindsphere (String date, String credentialId, String tableName, int max_visual, String auth) throws MindsphereException, IOException{
-						
-		//trasformo la data in un formato mindsphere like
+	/* Nome:				listMindsphere
+	 * 
+	 * Parametri attuali:	String date,
+	 * 						String credential_id,
+	 * 						String table_name,
+	 * 						int max_visual, 
+	 * 						String auth
+	 * 
+	 * Tipo di ritorno:		List<TimeseriesData>
+	 * 
+	 * Descrizione: 		Questa funzione reperisce la lista da MS e la rende utilizzabile all'interno della logica di progetto.
+	 * 
+	 * N.B					Attenzione alla parte di autenticazione, essa viene definita in due modi differenti:
+	 * 						1) autenticazione tramite client secret e service credentials
+	 * 						2) autenticazione tramite login in base ai previlegi e al tipo di account utilizzato al momento del login
+	 * 						
+	 * 						solo uno di questi due metodi deve essere utilizzato per il corretto funzionamento, nello specifico la (1) può essere utilizzata in fase di testing
+	 * 						mentre la (2) deve essere usata obbligatoriamente nel normale utilizzo.
+	 * 						
+	 */
+	public static List<TimeseriesData> listMindsphere (String date, String credential_id, String table_name, int max_visual, String auth) throws MindsphereException, IOException{
 			
+		//dates conterrà due stringhe una per la data iniziale e una per la data finale
 		String dates[] = new String[2];
 		
-		System.out.println("ora che arriva dalla form:"+ date);
+		//System.out.println("ora che arriva dalla form:"+ date);
 		
+		
+		//Trasformazione della stringa date in formto MS-Like
 		if(date.substring(4, 5).equals("-")) {
 			dates[0] = date.substring(0, 24);
 			dates[1] = date.substring(25, 49);
@@ -762,15 +813,14 @@ public class MindsphereServiceClient {
 			dates = DateProp.toMindSphereFormat(date);
 		}
 		
-		//dates = DateProp.toMindSphereFormat(date);
-		
-		System.out.println("ora inizio:"+ dates[0]);
-		System.out.println("ora fine: "+ dates[1]);
+		//System.out.println("ora inizio:"+ dates[0]);
+		//System.out.println("ora fine: "+ dates[1]);
 
-		
+		//Parte dell'autenticazione a MS
 	    MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
 
 	    //MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
+	   
 	    RestClientConfig config = RestClientConfig.builder().build();
 	    
 	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
@@ -779,10 +829,10 @@ public class MindsphereServiceClient {
 	    
 	    try {
 	    	
-	    	//chiamata dall'SDK per ricevere tutte le info dal db
-	    	timeseriesList = timeseriesClient.getTimeseries(credentialId , tableName, dates[0], dates[1], max_visual, null);
+	    	//Chiamata dall'SDK per ricevere la lista dal Cloud DB
+	    	timeseriesList = timeseriesClient.getTimeseries(credential_id , table_name, dates[0], dates[1], max_visual, null);
 	    	
-	    	//set scarti totali e oee
+	    	//Test da abilitare nel caso in cui bisogna controllare la lista
 	    	if(!(timeseriesList == null)) {
 	    		System.out.println("dati ricevuti con successo (lista non vuota)");
 	    	} else {
@@ -801,208 +851,197 @@ public class MindsphereServiceClient {
 	    return timeseriesList;
 	}
 	
-	public static ListAndInfo listAndInfoMindsphere(List<TimeseriesData> timeseriesList, String[] from_to) {
+		
+	/* Nome:				listAndInfoMindsphere
+	 * 
+	 * Parametri attuali:	List<TimeseriesData> timeseries_list,
+	 * 						String[] from_to,				
+	 * 
+	 * Tipo di ritorno:		ListAndInfo
+	 * 
+	 * Descrizione: 		Questa funzione viene utilizzata per riempire l'oggetto della classe ListAndInfo, oggetto che oltre alla lista di
+	 * 						ritorno da MS contiene anche altre informazioni utili sulla lista.						
+	 */
+	public static ListAndInfo listAndInfoMindsphere(List<TimeseriesData> timeseries_list, String[] from_to) {
 		
 		ListAndInfo timeseries_list_info = new ListAndInfo();
 
-		if(!(timeseriesList == null)) {
+		if(!(timeseries_list == null)) {
 			
-			timeseries_list_info.setTimeseriesList(timeseriesList);
-			timeseries_list_info.setLunghezza_lista(timeseriesList.size());
+			timeseries_list_info.setTimeseriesList(timeseries_list);
+			timeseries_list_info.setLunghezza_lista(timeseries_list.size());
 			timeseries_list_info.set_data_iniziale_da_utente(from_to[0]);
 			timeseries_list_info.set_data_finale_da_utente(from_to[1]);
-			timeseries_list_info.setData_iniziale(timeseriesList.get(0).getTimeString());
-			timeseries_list_info.setData_finale(timeseriesList.get(timeseries_list_info.getLunghezza_lista()-1).getTimeString());
+			timeseries_list_info.setData_iniziale(timeseries_list.get(0).getTimeString());
+			timeseries_list_info.setData_finale(timeseries_list.get(timeseries_list_info.getLunghezza_lista()-1).getTimeString());
 	
 			
-			if(timeseriesList.get(0).getData().get("OEE").hashCode() == 0) {
+			if(timeseries_list.get(0).getData().get("OEE").hashCode() == 0) {
 				timeseries_list_info.setTipo_iniziale("stop");
 			} else {
 				timeseries_list_info.setTipo_iniziale("run");
 			}
 			
-			if(timeseriesList.get(timeseriesList.size()-1).getData().get("OEE").hashCode() == 0) {
+			if(timeseries_list.get(timeseries_list.size()-1).getData().get("OEE").hashCode() == 0) {
 				timeseries_list_info.setTipo_finale("stop");
 			} else {
 				timeseries_list_info.setTipo_finale("run");
 			}
+			//Messaggi di test
 			
-			System.out.println("");
-			System.out.println("Data iniziale: "+timeseries_list_info.getData_iniziale());
-			System.out.println("Data finale: "+timeseries_list_info.getData_finale());
-			System.out.println("Tipo iniziale: "+timeseries_list_info.getTipo_iniziale());
-			System.out.println("Tipo finale: "+timeseries_list_info.getTipo_finale());
-			System.out.println("Lunghezza lista: "+timeseries_list_info.getLunghezza_lista());
-			System.out.println("");
+			//System.out.println("");
+			//System.out.println("Data iniziale: "+timeseries_list_info.getData_iniziale());
+			//System.out.println("Data finale: "+timeseries_list_info.getData_finale());
+			//System.out.println("Tipo iniziale: "+timeseries_list_info.getTipo_iniziale());
+			//System.out.println("Tipo finale: "+timeseries_list_info.getTipo_finale());
+			//System.out.println("Lunghezza lista: "+timeseries_list_info.getLunghezza_lista());
+			//System.out.println("");
 
 		}
 		return timeseries_list_info;
 		
 	}
 	
+	
+	/* Nome:				oeeTotalScrapMSApi
+	 * 
+	 * Parametri attuali:	ListAndInfo timeseries_list_info
+	 * 
+	 * Tipo di ritorno:		int[]
+	 * 
+	 * Descrizione: 		Questa funzione restituisce un array composto da 3 interi che contiene i valori inerenti a:
+	 * 						1) totale dei pezzi scartati nella timeseries passata
+	 * 						2) totale dei pezzi prodotti nella timeseries passata
+	 * 						3) media ponderata in base al tempo di funzionamento degli OEE della timeseries passata				
+	 */
 	public static int[] oeeTotalScrapMSApi(ListAndInfo timeseries_list_info) throws MindsphereException, IOException{
 		
-		//array di interi che conterrà in prima posizione i pezzi scartati [0], in seconda i pezzi prodotti [1] e in terza l'oee medio [2]
-		    	
-		int contMedia = 0;
-		int[] oeeTotScrap = new int[3];
-		oeeTotScrap[0] = 0;
-		oeeTotScrap[1] = 0;
-		oeeTotScrap[2] = 0;
+		//Array di interi che conterrà in prima posizione i pezzi scartati [0], in seconda i pezzi prodotti [1] e in terza l'oee medio [2]
+		int[] oee_tot_scrap = new int[3];
+		
+		//Viene tutto inizializzato a 0 in maniera tale da poter restituire un'array coerente nel caso in vui la lista fosse vuota
+		int cont_media = 0;
+		oee_tot_scrap[0] = 0;
+		oee_tot_scrap[1] = 0;
+		oee_tot_scrap[2] = 0;
 		
 		List<TimeseriesData> timeseries_data = timeseries_list_info.getTimeseriesList();
 		
-    	//set scarti totali e oee
-		
+		//Qui vengono effettuati i controlli sulla lista contenuta all'interno del paramentro attuale timeseries_list_info
     	if(!(timeseries_data == null)) {
+    		//Controllo che la lista contenga almeno 3 elementi 
     		if(timeseries_data.size()>3) {
 	    		for (int i = 0; i < timeseries_data.size(); i++){
 					if(i == 0) {
-						//inizia il controllo sul primo elemento per capire da dove iniziare a calcolare l'oee
+						//Controllo sul primo elemento per capire da dove iniziare a calcolare l'oee
 						if(timeseries_data.get(0).getData().get("OEE").hashCode() == 0) {
-							//vado avanti di 3 perchè è il primo run utile		
+							//Mi sposto in avanti di 3 elementi dato che sono sicuro che il terzo sia il primo run utile
 							i = i + 3;
 						}else {
-							//vado avanti di 2 perchè è il primo run utile
+							//Mi sposto in avanti di 2 elementi dato che sono sicuro che il terzo sia il primo run utile
 							i = i + 2;
 						}
 					}
-					oeeTotScrap[0] =  oeeTotScrap[0] + timeseries_data.get(i).getData().get("PezziScartati").hashCode();
-					oeeTotScrap[1] = oeeTotScrap[1] + timeseries_data.get(i).getData().get("PezziProdotti").hashCode();	
+					//Riempimento dell'array
+					oee_tot_scrap[0] =  oee_tot_scrap[0] + timeseries_data.get(i).getData().get("PezziScartati").hashCode();
+					oee_tot_scrap[1] = oee_tot_scrap[1] + timeseries_data.get(i).getData().get("PezziProdotti").hashCode();	
+					
 					if(timeseries_data.get(i).getData().get("OEE").hashCode() > 0) {
-						contMedia = contMedia + timeseries_data.get(i).getData().get("RunTime").hashCode() + timeseries_data.get(i).getData().get("StopTime").hashCode();
-						oeeTotScrap[2] = oeeTotScrap[2] + timeseries_data.get(i).getData().get("OEE").hashCode() * (timeseries_data.get(i).getData().get("RunTime").hashCode() + timeseries_data.get(i).getData().get("StopTime").hashCode());	
+						cont_media = cont_media + timeseries_data.get(i).getData().get("RunTime").hashCode() + timeseries_data.get(i).getData().get("StopTime").hashCode();
+						oee_tot_scrap[2] = oee_tot_scrap[2] + timeseries_data.get(i).getData().get("OEE").hashCode() * (timeseries_data.get(i).getData().get("RunTime").hashCode() + timeseries_data.get(i).getData().get("StopTime").hashCode());	
 					}
 				}
-	    		oeeTotScrap[2] = oeeTotScrap[2]/contMedia;
+	    		oee_tot_scrap[2] = oee_tot_scrap[2]/cont_media;
     		}
     	}
-    	return oeeTotScrap;
+    	return oee_tot_scrap;
 	}
 	
-	public static void intermediateOees(List<TimeseriesData> list, IntermediateOeesModel intermediateOees) {
-		
-		/* se impostato a 1 = il primo era uno stop e posso prendere il primo tempo di run che è su i-2
-		 * se impostato a 2 = il primo era un run e posso prendere il primo tempo di run che è su i-2
-		 */
-		
-		int flag = 0;
-		
-		ArrayList<Integer> oeeArr = new ArrayList<Integer>();
-		ArrayList<String> oeeNamesArr = new ArrayList<String>();
-		
-		int contMedia = 0;
-		
-		if(!(list == null)) {
-			
-			for (int i = 0; i < list.size() - 1; i++){
-				/*
-				if(list.get(0).getData().get("OEE").hashCode() == 0) {
-					
-					//vado avanti di 3 perchè è il primo run utile		
-					i = i + 3;
-					flag = 1;
-				}else {
-					
-					//vado avanti di 2 perchè è il primo run utile
-					i = i + 2;
-					flag = 2;
-				}
-				*/
-				if(list.get(i).getData().get("OEE").hashCode()>0) {
-						oeeArr.add(contMedia, list.get(i).getData().get("OEE").hashCode());
-						if(i == list.size()|| (i == list.size() - 1 ) || (i == list.size() - 2) ) {
-							oeeNamesArr.add(contMedia, list.get(i).getTimeString() +" - "+list.get(i+1).getTimeString());
-						}else {
-							oeeNamesArr.add(contMedia, list.get(i).getTimeString() +" - "+list.get(i+2).getTimeString());
-						}
-						contMedia++;
-				}
-			}
-			
-			
-		} else {
-			oeeArr.add(0, 0);
-			oeeNamesArr.add(0, "null");
-		}
-		intermediateOees.setOeeArray(oeeArr);
-		intermediateOees.setOeeNamesArr(oeeNamesArr);
-	}
 	
-	public static void intermediateOeesModifica(ListAndInfo timeseries_list_info, IntermediateOeesModel intermediateOees) {
-		
-		/* se impostato a 1 = il primo era uno stop e posso prendere il primo tempo di run che è su i-2
-		 * se impostato a 2 = il primo era un run e posso prendere il primo tempo di run che è su i-2
-		 */
-		
-		int flag = 0;
+	/* Nome:				intermediateOees
+	 * 
+	 * Parametri attuali:	ListAndInfo timeseries_list_info, 
+	 * 						IntermediateOeesModel intermediate_oees
+	 * 
+	 * Tipo di ritorno:		void
+	 * 
+	 * Descrizione: 		Questa funzione riceve l'oggetto di tipo IntermediateOeesModel che al suo interno contiene due liste di stringhe
+	 * 						una che contiene gli OEE di ogni frame e l'altra che contiene la stringa della durata del frame, non restituisce nulla perchè
+	 * 						popola direttamente l'oggetto che riceve
+	 */	
+	public static void intermediateOees(ListAndInfo timeseries_list_info, IntermediateOeesModel intermediate_oees) {
 		
 		List <TimeseriesData> list = timeseries_list_info.getTimeseriesList();
 		
-		ArrayList<Integer> oeeArr = new ArrayList<Integer>();
-		ArrayList<String> oeeNamesArr = new ArrayList<String>();
+		ArrayList<Integer> oee_arr = new ArrayList<Integer>();
+		ArrayList<String> oee_names_arr = new ArrayList<String>();
 		
-		int contMedia = 0;
+		int cont_index = 0;
 		
 		if(!(list == null)) {
 			if(list.size()<4) {	
-				oeeArr.add(0, 0);
-				oeeNamesArr.add(0, "null");
-				
-			} else {
-				
-				for (int i = 0; i < list.size(); i++){
-					
+				oee_arr.add(0, 0);
+				oee_names_arr.add(0, "null");	
+			}else{
+				for (int i = 0; i < list.size(); i++){	
 					if(i == 0) {
 						if(list.get(0).getData().get("OEE").hashCode() == 0) {
-							
 							//vado avanti di 3 perchè è il primo run utile		
 							i = i + 3;
-							flag = 1;
-						}else {
-							
+						}else {	
 							//vado avanti di 2 perchè è il primo run utile
 							i = i + 2;
-							flag = 2;
 						}
 					}	
 					if(list.get(i).getData().get("OEE").hashCode()>0) {
-							oeeArr.add(contMedia, list.get(i).getData().get("OEE").hashCode());
-							oeeNamesArr.add(contMedia, list.get(i-2).getTimeString() +" - "+list.get(i).getTimeString());
-							contMedia++;
+							oee_arr.add(cont_index, list.get(i).getData().get("OEE").hashCode());
+							oee_names_arr.add(cont_index, list.get(i-2).getTimeString() +" - "+list.get(i).getTimeString());
+							cont_index++;
 					}
 				}
 			}	
-		} else {
-			oeeArr.add(0, 0);
-			oeeNamesArr.add(0, "null");
+		}else{
+			oee_arr.add(0, 0);
+			oee_names_arr.add(0, "null");
 		}
-		intermediateOees.setOeeArray(oeeArr);
-		intermediateOees.setOeeNamesArr(oeeNamesArr);
+		
+		intermediate_oees.setOeeArray(oee_arr);
+		intermediate_oees.setOeeNamesArr(oee_names_arr);
 	}
 	
+	
+	/* Nome:				getStopCodeFromList
+	 * 
+	 * Parametri attuali:	ListAndInfo timeseries_list_info, 
+	 * 						Map<String, String> allarmi_da_file
+	 * 
+	 * Tipo di ritorno:		ErrorDataModel[]
+	 * 
+	 * Descrizione: 		Riceve come di consueto l'oggetto di tipo ListAndInfo e inoltre riceve una mappa che è
+	 * 						popolata con le stringhe degli stop di errore (valore) e con il rispettivo codice (chiave).
+	 */	
 	public static ErrorDataModel[] getStopCodeFromList(ListAndInfo timeseries_list_info, Map<String, String> allarmi_da_file) {
 		
-		int grandezza_array = 0;
+		int grandezza_array_errori = 0;
 		
 		List<TimeseriesData> list = timeseries_list_info.getTimeseriesList();
 		
 		for (int i = 0; i < timeseries_list_info.getLunghezza_lista(); i++){
 			if((list.get(i).getData().get("OEE").hashCode() == 0)) {
-				grandezza_array++;				
+				grandezza_array_errori++;				
 			}
 		}
 		
-		//deve essere inizializzato dopo che si è contato il numero di errori contenuti nel json di ritorno
+		//Deve essere inizializzato dopo che si è contato il numero di errori contenuti nel json di ritorno
 		ErrorDataModel[] error_code ;
 		
-		if(grandezza_array == 0) {
+		if(grandezza_array_errori == 0) {
 			error_code  = new ErrorDataModel[0]; 
 		} else {
 			if(timeseries_list_info.getTipo_iniziale().equals("stop")) {
-				error_code  = new ErrorDataModel[grandezza_array-1]; 
+				error_code  = new ErrorDataModel[grandezza_array_errori-1]; 
 			} else {
-				error_code  = new ErrorDataModel[grandezza_array]; 
+				error_code  = new ErrorDataModel[grandezza_array_errori]; 
 			}
 		}
 		
@@ -1012,11 +1051,9 @@ public class MindsphereServiceClient {
 				for (int i = 0, j = 0; i < timeseries_list_info.getLunghezza_lista(); i++){
 					if(i == 0) {
 						if(list.get(0).getData().get("OEE").hashCode() == 0) {
-							
 							//vado avanti di 2 perchè è il primo run utile		
 							i = i + 2;
-						}else {
-							
+						}else{
 							//vado avanti di 1 perchè è il primo run utile
 							i = i + 1;
 						}
@@ -1029,7 +1066,7 @@ public class MindsphereServiceClient {
 						} else {
 							temp.setErrorCode(list.get(i).getData().get("CodeStop").toString()+ ": " + (allarmi_da_file.get(list.get(i).getData().get("CodeStop").toString())));
 						}
-						temp.setTimestamp(list.get(i).getTimeString());
+						temp.setTimestamp(DateProp.fromMSFormatToUser(list.get(i).getTimeString()));
 						error_code[j] = temp;
 						j++;
 					}
@@ -1039,15 +1076,36 @@ public class MindsphereServiceClient {
 		return error_code;
 	}
 	
+	
+	/* Nome:				checkNewDataAlert
+	 * 
+	 * Parametri attuali:	ListAndInfo timeseries_list_info, 
+	 * 						String asset, 
+	 * 						String auth
+	 * 
+	 * Tipo di ritorno:		String
+	 * 
+	 * Descrizione: 		Questa funzione viene utilizzata per conferire una nuova query all'utente, perchè dato che l'utente è libero di scegliere 
+	 * 						data e ora di inizio e fine monitoraggio, può capitare che l'utente possa spezzare un frame e quindi non reperire il 
+	 * 						giusto periodo di campionamento selezionato, per cui gli viene proposta la possibilità di ridefine i bound della ricerca
+	 * 						per poi poter inglobare eventuali frame spezzati precedenti o successivi al periodo selezionato.
+	 * 
+	 * N.B					Attenzione alla parte di autenticazione, essa viene definita in due modi differenti:
+	 * 						1) autenticazione tramite client secret e service credentials
+	 * 						2) autenticazione tramite login in base ai previlegi e al tipo di account utilizzato al momento del login
+	 * 						
+	 * 						solo uno di questi due metodi deve essere utilizzato per il corretto funzionamento, nello specifico la (1) può essere utilizzata in fase di testing
+	 * 						mentre la (2) deve essere usata obbligatoriamente nel normale utilizzo.
+	 */	
 	public static String checkNewDataAlert(ListAndInfo timeseries_list_info, String asset, String auth) throws java.text.ParseException, MindsphereException {
 			
 			
-		//flag inizio
+		//Flag di inizio 
 		int initflag = 0;
 		String newInit, goodInit = "";
 		
 		
-		//flag fine
+		//Flag di fine
 		int endflag = 0;
 		String newEnd, goodEnd = "";
 		
@@ -1065,72 +1123,51 @@ public class MindsphereServiceClient {
 			
 			List<TimeseriesData> init_date = null;
 			List<TimeseriesData> final_date = null;
-			
-			
+					
 			if(timeseries_list_info.getTipo_iniziale().equals("stop")) {
-				//if controlla se il primo elemento è uno stop. (è uno stop se ha oee = 0)
+				//Controlla se il primo elemento è uno stop. (è uno stop se ha oee = 0)
 				//Se si, chiedi di partire dal run precedente a calcolare il tutto e imposta l'initflag a 1
 				
-				initflag = 1;
-				
+				initflag = 1;				
 			}
 			
 			
 			if(timeseries_list_info.getTipo_finale().equals("stop")) {
-				//if controlla se l'ultimo elemento è un run. (è un run se ha oee > 0)
+				//if controlla se l'ultimo elemento è un stop. (è uno stop se ha oee = 0)
 				//se si, imposta l' endflag di fine a 1 e viene richiesto se inglobare anche lui
-				System.out.println("endflag di run: "+endflag);
-				
-				endflag = 1;
-				
+		
+				endflag = 1;		
 			}
 			
 			try {
-				
 				if(initflag == 1) {
-					//if initiflag == 1 
-					// calcolo il range del giorno precedente e vado a prendere l'ultimo elemento il quale siamo sicuri che sia un run e prendo il tempo di questo run
-					// il tempo del nuovo inizio lo salvo in una variabile d'appoggio
-					
-					//newInit = DateProp.previousDay(dates[0]);
-					
-					//timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[0], newInit, 100, "oee");
-					//mi prendo il tempo dell'ultimo valore (che siamo sicuri che sia un run)
-					//goodInit = "valore1";
+					//Calcolo il range del giorno precedente e vado a prendere l'ultimo elemento il quale siamo sicuri che sia un run e prendo il tempo di questo run
+					//il tempo del nuovo inizio lo salvo in una variabile d'appoggio
 					
 					newInit = DateProp.previousDay(timeseries_list_info.getData_inizialeDaUtente());
 					
-					//lista degli stop code
 					init_date = timeseriesClient.getTimeseries(asset , "FromRunToRun", newInit, timeseries_list_info.getData_inizialeDaUtente(), 2000, "OEE");
 					
 					int index;
 					
 					index = init_date.size();
-					System.out.println("grandezza lista di ritorno dalla prima chiamata: "+index);
+					//System.out.println("grandezza lista di ritorno dalla prima chiamata: "+index);
 
 					if(index>1) {
 						index = index -2;
 						goodInit =  goodInit + init_date.get(index).getTimeString();
-					} else {
+					}else{
 					goodInit =  goodInit + timeseries_list_info.getData_inizialeDaUtente();
 					}
-					System.out.println("nuovo elemento di partenza: "+goodInit);
+					//System.out.println("nuovo elemento di partenza: "+goodInit);
 				}
 				
 				if(endflag == 1) {
-					//if endflag == 1
 					//calcolo il range del giorno successivo e prendo il primo valore che possiedo, e sono sicuro che sia un valore di run
 					// il tempo della nuova fine lo salvo in una variabile d'appoggio
-					
-					//newEnd = DateProp.nextDay(dates[1]);
-					
-					//timeseriesDataOEE = timeseriesClient.getTimeseries("codice id della tabella di mindsphere", "nome della tabella di mindsphere", dates[1], newEnd, 100, "oee");
-					//mi prendo il tempo del primo valore (che siamo sicuri che sia un run)
-					//goodEnd = "valore2";
-					
+
 					newEnd = DateProp.nextDay(timeseries_list_info.getData_finaleDaUtente());
 					
-					//lista degli stop code
 					final_date = timeseriesClient.getTimeseries(asset , "FromRunToRun", timeseries_list_info.getData_finaleDaUtente(), newEnd, 2, "OEE");
 					
 					if((final_date.size() == 0) || (final_date.size() == 1)) {
@@ -1139,7 +1176,7 @@ public class MindsphereServiceClient {
 					} else {
 						goodEnd = goodEnd +  final_date.get(0).getTimeString();	
 					}
-					System.out.println("nuovo elemento di arrivo: "+goodEnd);
+					//System.out.println("nuovo elemento di arrivo: "+goodEnd);
 				}
 			} catch (MindsphereException e) {
 		    	System.out.println(e);
@@ -1148,7 +1185,7 @@ public class MindsphereServiceClient {
 		    }			
 			
 		    if((initflag == 1) && (endflag == 1)) {
-		    	//test da cacellare
+		    	/*
 		    	if(initflag == 1) {
 		    		System.out.println("Il primo valore è uno stop");
 		    	} else {
@@ -1160,12 +1197,12 @@ public class MindsphereServiceClient {
 		    	} else {
 		    		System.out.println("L'ultimo valore è uno stop");
 		    	}
-		    	//test da cacellare
+		    	*/
 		    	
 			    return DateProp.setMindshphereDate(goodInit) + "+" + DateProp.setMindshphereDate(goodEnd);
 		    }
 		    if((initflag == 1) && (endflag == 0)) {
-		    	//test da cacellare
+		    	/*
 		    	if(initflag == 1) {
 		    		System.out.println("Il primo valore è uno stop");
 		    	} else {
@@ -1177,12 +1214,12 @@ public class MindsphereServiceClient {
 		    	} else {
 		    		System.out.println("L'ultimo valore è uno stop");
 		    	}
-		    	//test da cacellare
+		    	*/
 		    	
 		    	 return DateProp.setMindshphereDate(goodInit) + "+" + timeseries_list_info.getData_finaleDaUtente();
 		    }
 		    if((initflag == 0) && (endflag == 1)) {
-		    	//test da cacellare
+		    	/*
 		    	if(initflag == 1) {
 		    		System.out.println("Il primo valore è uno stop");
 		    	} else {
@@ -1194,11 +1231,12 @@ public class MindsphereServiceClient {
 		    	} else {
 		    		System.out.println("L'ultimo valore è uno stop");
 		    	}
-		    	//test da cacellare
+		    	*/
 
 		    	 return timeseries_list_info.getData_inizialeDaUtente() + "+" + DateProp.setMindshphereDate(goodEnd);
 		    } 
 		    if ((initflag == 0) && (endflag == 0)){
+		    	/*
 		    	if(initflag == 1) {
 		    		System.out.println("Il primo valore è uno stop");
 		    	} else {
@@ -1210,22 +1248,31 @@ public class MindsphereServiceClient {
 		    	} else {
 		    		System.out.println("L'ultimo valore è uno stop");
 		    	}
-		    	System.out.println();
+		    	*/
 		    	return "correct_data";
-		    }else {
+		    }else{
 		    	return "correct_data";
 		    }
 		}
 	}
 
-	/* GESTIONE DELLA LOGICA PER LA GENERAZIONE AUTOMATICA DEGLI ASSET E VISUALIZZAZIONE DEI NOMI E CODICI 
-	 * 
-	 * Da qui inizia la gestione della logica tramite l'utilizzo delle chiamate API a MindSphere che vengono effettuate nella servlet principale /indexprovatime
-	 * 
-	 *  
-	 */
 	
-	//Funziona che restituisce un'array di 2 ArrayList che contengono uno i valori degli asset id e l'altro i nomi degli asset id
+	/* Nome:				reciveAsset
+	 * 
+	 * Parametri attuali:	String auth
+	 * 
+	 * Tipo di ritorno:		ArrayList<String>[]
+	 * 
+	 * Descrizione: 		Questa funziona restituisce un'array di 2 ArrayList che contengono uno i valori degli assets id e l'altro i nomi degli assets id inerenti
+	 * 						solamente agli assets che sono visualizzabili dall'utente che si è loggato tramite credenziali Siemens.
+	 * 
+	 * N.B					Attenzione alla parte di autenticazione, essa viene definita in due modi differenti:
+	 * 						1) autenticazione tramite client secret e service credentials
+	 * 						2) autenticazione tramite login in base ai previlegi e al tipo di account utilizzato al momento del login
+	 * 						
+	 * 						solo uno di questi due metodi deve essere utilizzato per il corretto funzionamento, nello specifico la (1) può essere utilizzata in fase di testing
+	 * 						mentre la (2) deve essere usata obbligatoriamente nel normale utilizzo.
+	 */	
 	public static ArrayList<String>[] reciveAsset(String auth) {
 		
 		ArrayList<String> array_asset [] = new ArrayList[2];
@@ -1234,8 +1281,8 @@ public class MindsphereServiceClient {
 		
 		ArrayList<String> list_asset_name = new ArrayList<String>();
 		
-		try {
-		
+		try {			
+					
 			//MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
 		   
 			MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
@@ -1248,29 +1295,37 @@ public class MindsphereServiceClient {
 		    
 		    List<AssetResource> asset_resource = null;
 	    
-	    	 assets = assetClient.getAssets();
-	    	 asset_resource = assets.getEmbedded().getAssets();
-	    	 if(asset_resource.size() == 0) {
-	    		 list_asset_id.add("empity list");
-	    		 list_asset_name.add("empity list");
-	    	 }
-	    	 for(int i = 0; i < asset_resource.size(); i++) {
-	    		 if(!(asset_resource.get(i).getVariables().isEmpty())) {
-	    			 if(asset_resource.get(i).getVariables().get(0).getName().equals("ccs_type")) {
-		    			 list_asset_id.add(asset_resource.get(i).getAssetId());
-		    			 list_asset_name.add(asset_resource.get(i).getName());
-		    		 }
-	    		 }
-	    	 }
-	    	 
-	    	 array_asset [0] = list_asset_id;
-	    	 array_asset [1] = list_asset_name;
-	    	 
-	    } catch (MindsphereException e) {
+			assets = assetClient.getAssets();
+			asset_resource = assets.getEmbedded().getAssets();
+			
+			if(asset_resource.size() == 0) {
+				list_asset_id.add("empity list");
+				list_asset_name.add("empity list");
+			}
+			
+			/*
+			 * ATTENZIONE l'attributo "ccs_type" è fondamentale perchè definisce che il tipo di asset registrato su MS "DEVE" essere visualizzato
+			 * dall'utente perchè è un asset creato per immagazzinare dati
+			 * Nel caso in cui questo attributo mancasse sulla tabella definida su MS, le informazioni inerenti a quella tabella non vengono visualizzate
+			 */
+			
+			for(int i = 0; i < asset_resource.size(); i++) {
+				if(!(asset_resource.get(i).getVariables().isEmpty())) {
+					if(asset_resource.get(i).getVariables().get(0).getName().equals("ccs_type")) {
+						list_asset_id.add(asset_resource.get(i).getAssetId());
+						list_asset_name.add(asset_resource.get(i).getName());
+					}
+				}
+			}
+			 
+			 array_asset [0] = list_asset_id;
+			 array_asset [1] = list_asset_name;
+ 
+	    }catch (MindsphereException e) {
 	    	System.out.println(e);
 	    	System.out.println(e.getErrorMessage());
 	    	System.out.println(e.getHttpStatus());
-	    	System.out.println("errore nel collegamento");
+	    	//System.out.println("errore nel collegamento");
 	    	
 	    	list_asset_id.add("empity list");
    		 	list_asset_name.add("empity list");
@@ -1283,10 +1338,37 @@ public class MindsphereServiceClient {
 	    array_asset [0] = list_asset_id;
    	 	array_asset [1] = list_asset_name;
 	    
-   	 	System.out.println("collegamento stabilito");    
+   	 	//System.out.println("collegamento stabilito");    
 	    return array_asset;		
 	}
 	
+	
+	/* Nome:				ListaAllarmi
+	 * 
+	 * Parametri attuali:	String auth, 
+	 * 						String asset
+	 * 
+	 * Tipo di ritorno:		Map<String, String>
+	 * 
+	 * Descrizione: 		Questa funzione genera una mappa che contiene come chiave il codice di errore e come valore il testo inerente al codice di errore,
+	 * 						Questa funzione è legata strettamente ad un file che deve essere contenuto all'interno dell'asset della macchina dal nome AlarmList.txt, che contiene la lista
+	 * 						di tutti gli allarmi della macchina legata all'asset.
+	 * 
+	 * Tipologia del file:  AlarmList.txt
+	 * 
+	 * 						"#CODICE STOP";"NOME DELLO STOP"
+	 * 						"#CODICE STOP";"NOME DELLO STOP"
+	 * 						"#CODICE STOP";"NOME DELLO STOP"
+	 * 						"#CODICE STOP";"NOME DELLO STOP"
+	 * 						"#CODICE STOP";"NOME DELLO STOP"
+	 *	
+	 * N.B					Attenzione alla parte di autenticazione, essa viene definita in due modi differenti:
+	 * 						1) autenticazione tramite client secret e service credentials
+	 * 						2) autenticazione tramite login in base ai previlegi e al tipo di account utilizzato al momento del login
+	 * 						
+	 * 						solo uno di questi due metodi deve essere utilizzato per il corretto funzionamento, nello specifico la (1) può essere utilizzata in fase di testing
+	 * 						mentre la (2) deve essere usata obbligatoriamente nel normale utilizzo.
+	 */	
 	public static Map<String, String> ListaAllarmi(String auth, String asset){
 		
 		Map<String, String> allarmi = new HashMap<String, String>();
@@ -1305,7 +1387,7 @@ public class MindsphereServiceClient {
 		FileReaderResponse fileReaderResponse;
 		
 		try {
-			
+			//Il nome di questo file deve coincidere strettamente con il file caricato su MS
 		    fileReaderResponse = fileservicesClient.readFile(asset, "AlarmList.txt"); 
 		    
 		    alarm_list = alarm_list + fileReaderResponse.getFileContent();  
@@ -1316,22 +1398,35 @@ public class MindsphereServiceClient {
 		        String[] keyValue = pair.split(";");
 		        allarmi.put(keyValue[0], keyValue[1]);
 		    }
-		    
-		   //System.out.println("maybe ok");
-		    
-
-		    //System.out.println("allarme 31: "+ allarmi.get("31"));
 	    
 		} catch (MindsphereException e) {
-		    // Exception handling
 			System.out.println(e);
-			System.out.println("non ho letto");
+			System.out.println("File non letto");
 			return allarmi;
 		}
-		System.out.println("ho letto");
 		return allarmi;
 	}
 	
+	
+	/* Nome:				getRawData
+	 * 
+	 * Parametri attuali:	String date, 
+	 * 						String credentialId, 
+	 * 						String tableName, 
+	 * 						int max_visual, 
+	 * 						String auth
+	 * 
+	 * Tipo di ritorno:		RawDataModel
+	 * 
+	 * Descrizione: 		DEPRECATA, FUNZIONE DI TEST
+	 * 
+	 * N.B					Attenzione alla parte di autenticazione, essa viene definita in due modi differenti:
+	 * 						1) autenticazione tramite client secret e service credentials
+	 * 						2) autenticazione tramite login in base ai previlegi e al tipo di account utilizzato al momento del login
+	 * 						
+	 * 						solo uno di questi due metodi deve essere utilizzato per il corretto funzionamento, nello specifico la (1) può essere utilizzata in fase di testing
+	 * 						mentre la (2) deve essere usata obbligatoriamente nel normale utilizzo.
+	 */	
 	public static RawDataModel getRawData(String date, String credentialId, String tableName, int max_visual, String auth) {
 		
 		RawDataModel raw_data = new RawDataModel();
@@ -1389,20 +1484,62 @@ public class MindsphereServiceClient {
 		return raw_data;
 	}
 	
-	public static Map<String, String> ListaMateriali (String auth, String asset){
+	
+	/* Nome:				ListaMateriali
+	 * 
+	 * Parametri attuali:	String date, 
+	 * 						String auth, 
+	 * 						String asset
+	 * 
+	 * Tipo di ritorno:		RawDataModel[]
+	 * 
+	 * Descrizione: 		Questa è la funzione che gestisce la parte del consumo di materie prime, nello specifico è legata ad un file registrato su MS all'interno dell'asset
+	 * 						il file deve avere il seguente nome: "raw_materials.txt".
+	 * 						
+	 * 						Essa restituisce un array di tipo RawDataModel che contiene i valori dei materiali usati e scartati
+	 * 						la funzione effettua la prima chiamata a MS che torna la lista delle materie prime consumate per svolgitore/dosatore,
+	 * 						successivamente effettua la chiamata per prendere il file raw_materials che contiene tutte le materie prime utilizzate sui rispettivi svolgitori/dosatori
+	 * 						infine cerco la relazione tra i dati che ricevo dalla lista e i dati che riprendo dal file.
+	 * 
+	 * Tipologia del file:  AlarmList.txt
+	 * 
+	 * 						"Raw Material_1";"unwinding_code_1";"unwinding_code_2";"unwinding_code_3";"unwinding_code_4"
+	 * 						"Raw Material_2";"unwinding_code_5";"unwinding_code_6"
+	 * 						"Raw Material_3";"unwinding_code_7";"unwinding_code_8";"unwinding_code_9"
+	 * 						"Raw Material_4";"unwinding_code_10";"unwinding_code_11"
+	 * 						"Raw Material_5";"unwinding_code_12"
+	 * 
+	 * N.B					Attenzione alla parte di autenticazione, essa viene definita in due modi differenti:
+	 * 						1) autenticazione tramite client secret e service credentials
+	 * 						2) autenticazione tramite login in base ai previlegi e al tipo di account utilizzato al momento del login 
+	 * 						
+	 * 						solo uno di questi due metodi deve essere utilizzato per il corretto funzionamento, nello specifico la (1) può essere utilizzata in fase di testing
+	 * 						mentre la (2) deve essere usata obbligatoriamente nel normale utilizzo.
+	 */	
+	public static RawDataModel[] ListaMateriali (String date, String auth, String asset) throws MindsphereException, IOException{
 		
-		Map<String, String> mappa_svolgitore_materiale = new HashMap<String, String>();
+		//Modello di ritorno
+		RawDataModel[] return_model;
 		
-		List<String>[] materiali_svolgitori;
+		//Mapping tra svolgitore e materia prima
+		int[] svol_dis; 
+		int len_svol_dis = 0;
+		
+		//Hash map tra codice svolgitore/dispenser e tipo di materia prima
+		HashMap<String, Integer> hash_map = new HashMap<String, Integer>();
+
+		//Chiamata per la ricezione della lista dei raw material dalla tabella RawMaterials
+		List<TimeseriesData> timeseriesList_raw_materials = listMindsphere(date, asset, "RawMaterialsData", 2000, auth);
+		
+		List<String[]> liste_materiali = new ArrayList<String[]>();
+		
 		String lista_materiali_svolgitori = "";
-		String lista_svolgitori = "";
 		
 		//MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
 				
 		MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
 		
 		RestClientConfig config = RestClientConfig.builder().build();
-
 		
 		FileservicesClient fileservicesClient = FileservicesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
 
@@ -1410,27 +1547,62 @@ public class MindsphereServiceClient {
 		
 		try {
 			
-		    fileReaderResponse = fileservicesClient.readFile(asset, "raw_material.txt"); 
+		    fileReaderResponse = fileservicesClient.readFile(asset, "raw_materials.txt"); 
 		    
 		    lista_materiali_svolgitori = lista_materiali_svolgitori + fileReaderResponse.getFileContent();  
 		    
+		    //Split per riga del file contenente le materie prime e gli svolgitori associati
 		    String[] pairs = lista_materiali_svolgitori.split("\n");
-		    for (int i=0;i<pairs.length;i++) {
-		        String pair = pairs[i];
-		        String[] keyValue = pair.split(";");
-		        mappa_svolgitore_materiale.put(keyValue[0], keyValue[1]);
+		    
+		    return_model = new RawDataModel[pairs.length];
+		    
+		    //Split per colonna ogni riga
+		    for (int i=0;i<pairs.length;i++) { 			    	
+		    	String[] raw = pairs[i].split(";");    	
+		    	liste_materiali.add(raw);
 		    }
 		    
-		   // mappa_svolgitore_materiale.
+		    for(int i=0;i<liste_materiali.size();i++) {		    	
+		    	len_svol_dis += liste_materiali.get(i).length -1;
+		       	RawDataModel info_raw = new RawDataModel(); 	
+		    	info_raw.setName(liste_materiali.get(i)[0]);
+		    	return_model[i] = info_raw;
+		    	//System.out.println("Lista delle tipologie di materiali" + liste_materiali.get(i)[0]);
+		    }
+		    
+		    svol_dis = new int[len_svol_dis];
+				    
+		    int k=0;
+	    	for(int i=0; i<liste_materiali.size(); i++) {
+		    	for(int j=1; j<liste_materiali.get(i).length; j++) {
+		    		svol_dis[k] = i;
+		    		hash_map.put(liste_materiali.get(i)[j], k);
+		    		k++;
+		    	}
+		    }
 		    
 		    
-		} catch (MindsphereException e) {
+		//ERRORE!
+	    	if(timeseriesList_raw_materials == null) {
+	    		System.out.println("non ho letto");
+				return return_model;
+	    	}else {
+	    		if(!(timeseriesList_raw_materials.isEmpty())) {
+	    			for(int i=0; i<timeseriesList_raw_materials.size(); i++) {
+			    		return_model[svol_dis[hash_map.get(timeseriesList_raw_materials.get(i).getData().get("CodiceSvolgitore").toString())]].addMaterialeConsumato(timeseriesList_raw_materials.get(i).getData().get("MaterialeConsumato").hashCode());
+			    		return_model[svol_dis[hash_map.get(timeseriesList_raw_materials.get(i).getData().get("CodiceSvolgitore").toString())]].addMaterialeScartato(timeseriesList_raw_materials.get(i).getData().get("MaterialeSprecato").hashCode());
+			    	}	
+	    		}		
+	    	}	    		    
+		}catch (MindsphereException e) {
 		    // Exception handling
 			System.out.println(e);
+			System.out.println(e.getErrorMessage());
 			System.out.println("non ho letto");
-			return mappa_svolgitore_materiale;
+		    return_model = new RawDataModel[1];
+			return return_model;
 		}
 		System.out.println("ho letto");
-		return mappa_svolgitore_materiale;
+		return return_model;
 	}
 }

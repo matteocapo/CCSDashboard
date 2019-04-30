@@ -119,3 +119,17 @@
 #centering-oee {
 	text-align: center;
 }
+
+#stopTable {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+#stopTable th, #stopTable td {
+  text-align: left;
+  padding: 8px;
+}
+
+#stopTable tr:nth-child(even){background-color: #f2f2f2}

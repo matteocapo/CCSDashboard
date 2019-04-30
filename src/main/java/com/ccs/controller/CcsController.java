@@ -141,6 +141,8 @@ public class CcsController {
 		String authorization = "";
 		String alert_val = "";
 	
+		RawDataModel[] raw_data_model;
+				
 	    authorization = authorization + request.getHeader("authorization");
 				
 		List<TimeseriesData> timeseriesList_performance = null;	
@@ -199,7 +201,7 @@ public class CcsController {
 		oeeTotScrap = MindsphereServiceClient.oeeTotalScrapMSApi(timeseries_list_performance_info);
 		
 		/*chiamata alla funzione che rende disponibili i dati inerenti agli oee intermedi con lista dei range di funzionamento con rispettivo oee*/
-		MindsphereServiceClient.intermediateOeesModifica(timeseries_list_performance_info, intermediateOees);
+		MindsphereServiceClient.intermediateOees(timeseries_list_performance_info, intermediateOees);
 		
 		if(intermediateOees.getOeeArray().size() > 0) {
 			oees_name = oees_name.concat("'" + intermediateOees.getOeeNamesArr().get(0) + "'");
@@ -249,11 +251,10 @@ public class CcsController {
 		
  		System.out.println("Nuovo range di date da selezionare: " + MindsphereServiceClient.checkNewDataAlert(timeseries_list_performance_info, asset, authorization));
  		
- 		
  		/*
  		 * funzione per il reperimento delle informazioni di materie prime che si voglio no visualizzare
  		 */
- 		raw_data = MindsphereServiceClient.getRawData(date, asset, "RawMaterialsData", 2000, authorization);
+ 		//raw_data = MindsphereServiceClient.getRawData(date, asset, "RawMaterialsData", 2000, authorization);
 		
 		//test utilizzo chiamata developer account
 		//String stringa_di_ritorno_chiamata_MS = MindsphereServiceClient.getTimeSeriesAsObject("7cb21d4c9b724be5b38c2c9695d9b3c8", "demobox");
@@ -266,6 +267,9 @@ public class CcsController {
 		//ErrorDataModel[] error_code = MindsphereServiceClient.testGetStopCodeStaticJson(date);
 		
 		//MindsphereServiceClient.getLargeRangeV1(fromTo);
+ 		
+ 		//test Lista materiali
+ 		raw_data_model = MindsphereServiceClient.ListaMateriali(date, authorization, asset);
 				
 		
 		ModelAndView mv = new ModelAndView("indexprova");
@@ -321,6 +325,8 @@ public class CcsController {
 		} else {
 			mv.addObject("testalert", alert_val);
 		}
+		
+		mv.addObject("raw_data_model", raw_data_model);
 		
 		//mv.addObject("testalert", testalert);
 		

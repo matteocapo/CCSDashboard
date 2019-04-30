@@ -223,4 +223,10 @@ public class DateProp {
 		return  dt + ".000" + date.substring(19, 20);
 	}
 	
+	public static String fromMSFormatToUser(String date) {
+		//String date format : 2018-11-29T15:07:51Z
+		//output : 			   2018-11-29 15:07:51 
+		return date.substring(0, 10) + " " + date.substring(11, 19);
+	}
+	
 }

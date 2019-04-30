@@ -2,8 +2,8 @@ package com.ccs.model;
 
 public class RawDataModel {
 	String nome;
-	float materiale_consumato;
-	float materiale_scartato;
+	float materiale_consumato = 0;
+	float materiale_scartato = 0;
 	
 	public void setName(String nome) {
 		this.nome = nome;
@@ -15,6 +15,14 @@ public class RawDataModel {
 	
 	public void setMaterialeScartato(float materiale_scartato) {
 		this.materiale_scartato = materiale_scartato;
+	}
+	
+	public void addMaterialeConsumato(float materiale_consumato) {
+		this.materiale_consumato += materiale_consumato;		
+	}
+	
+	public void addMaterialeScartato(float materiale_scartato) {
+		this.materiale_scartato += materiale_scartato;
 	}
 	
 	public float getMaterialeConsumato() {

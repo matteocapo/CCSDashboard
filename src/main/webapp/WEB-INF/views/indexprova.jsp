@@ -206,14 +206,16 @@
                     <div class="col-md-2" id="min-w-oee">
                         <div class="card ">
                             <div class="header">
-                                <h4 class="title">OEE</h4>
+                                <h4 class="title">OEE
+                                	<button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right;"><i class="fa fa-minus"></i></button>
+                                </h4>
                                 <p class="category">Overall Equipment Effectiveness</p>
                             </div>
                             <div class="content" id="centering-oee">
                             	<div class="GaugeMeter gaugeMeter" id="PreviewGaugeMeter_2" data-percent="${oee}" data-append="%" data-size="200" data-theme="Red-Gold-Green" data-back="RGBa(0,0,0,.1)" data-animate_gauge_colors="1" data-animate_text_colors="1" data-width="15" data-label="OEE" data-style="Arch" data-label_color="#FFF" data-id="PreviewGaugeMeter_2" style="width: 200px;"></div>
                             </div>
                             <div class="footer">
-                                    <hr>
+                                   <!-- <hr> -->
                             </div>
                         </div>
                     </div>
@@ -221,36 +223,71 @@
                     <div class="col-md-5">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Intermediate OEEs</h4>
+                                <h4 class="title">Intermediate OEEs
+                                	 <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right;"><i class="fa fa-minus"></i></button>
+			                    </h4>           	
                             </div>
                             <div class="content">
                                 <!-- <div id="chartHours" class="ct-chart"></div>  -->
-                                <div id="" class="content">
                                 	<canvas id="intOEE" width="100%" height="100%"></canvas>
-                                </div>
                                 <div class="footer">
-                                    <hr>
+                                    <!-- <hr> -->
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="col-md-3">
+                       <div class="card">
+                           <div class="header">
+                           		<h4 class="title">Stop list
+                                	<button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right;"><i class="fa fa-minus"></i></button>
+                           		</h4>
+                           </div>
+                           <div id="" class="content">
+                           		<table id=stopTable>
+                           			<tr>
+								      <th>Stop Code</th>
+								      <th>Time</th>
+								    </tr>
+                           		</table>
+                           		<div id="stopCodes"> 		
+	                           		<table id=stopTable>
+	                           			
+	                           			<c:forEach items="${error_codice}" var="val">
+		                           			<tr>
+										      <td><c:out value="${val.getErrorCode()}"/></td>
+										      <td><c:out value="${val.getTimestamp()}"/></td>
+										    </tr>
+										</c:forEach>
+								  	</table>
+		                    	</div>
+		                   </div>
+                           <div class="footer">
+                                <hr>
+                           </div>
+                       </div>
+                   </div>
 
                     <div class="col-md-5">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Pieces & discard pieces</h4>
+                                <h4 class="title">Pieces & discard pieces
+                                	<button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right;"><i class="fa fa-minus"></i></button>
+                                </h4>
                             </div>
                             <div class="content">
                                 <!-- <div id="chartHours" class="ct-chart"></div>  -->
                                 <div id="" class="content">
-                                	<canvas id="popChart" width="600" height="400"></canvas>
+                                	<canvas id="popChart" width="100%" height="100%"></canvas>
                                 </div>
                                 <div class="footer">
-                                    <hr>
+                                    <!-- <hr> -->
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- 
                     <div class="col-md-3">
                         <div class="card">
                             <div class="header">
@@ -262,73 +299,33 @@
                             	</div>
                             </div>
                             <div class="footer">
-                                    <hr>
+                            	<hr>
                             </div>
                         </div>
                     </div>
+                    -->
                 </div>
                 
                 <div class="row" id="raw_material" style= "display : none;">
-                    <div class="col-md-2" id="min-w-oee">
-                        <div class="card ">
-                            <div class="header">
-                                <h4 class="title">Raw Material</h4>
-                                <p class="category">Raw Material consumption 1</p>
-                            </div>
-                            <div class="content" id="centering-oee">
-                            	<h4>Raw Material #2: used</h4>
-                            	<h4>Raw Material #2: scrap</h4>
-                            </div>
-                            <div class="footer">
-                                    <hr>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2" id="min-w-oee">
-                        <div class="card ">
-                            <div class="header">
-                                <h4 class="title">Raw Material</h4>
-                                <p class="category">Raw Material consumption 2</p>
-                            </div>
-                            <div class="content" id="centering-oee">
-                            	<h4>Raw Material #2: used</h4>
-                            	<h4>Raw Material #2: scrap</h4>
-                            </div>
-                            <div class="footer">
-                                    <hr>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2" id="min-w-oee">
-                        <div class="card ">
-                            <div class="header">
-                                <h4 class="title">Raw Material</h4>
-                                <p class="category">Raw Material consumption 3</p>
-                            </div>
-                            <div class="content" id="centering-oee">
-                            	<h4>Raw Material #3: used</h4>
-                            	<h4>Raw Material #2: scrap</h4>
-                            </div>
-                            <div class="footer">
-                                    <hr>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2" id="min-w-oee">
-                        <div class="card ">
-                            <div class="header">
-                                <h4 class="title">Raw Material</h4>
-                                <p class="category">Raw Material consumption 4</p>
-                            </div>
-                            <div class="content" id="centering-oee">
-                               	<h4>Raw Material #4: used</h4>
-                               	<h4>Raw Material #2: scap</h4>
-                            </div>
-                            <div class="footer">
-                                    <hr>
-                            </div>
-                        </div>
-                    </div>
+                	<c:forEach items="${raw_data_model}" var="val">
+                		<div class="col-md-2" id="min-w-oee">
+	                        <div class="card ">
+	                            <div class="header">
+	                                                            	<button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right;"><i class="fa fa-minus"></i></button>
+	                            
+	                                <h4 class="title">${val.getName()}</h4>
+	                                <p class="category">Raw Material consumption</p>
+	                            </div>
+	                            <div class="content" id="centering-oee">
+	                            	<h4>Used: ${val.getMaterialeConsumato()} m</h4>
+	                            	<h4>Scrap: ${val.getMaterialeScartato()} m</h4>
+	                            </div>
+	                            <div class="footer">
+	                                    <!-- <hr> -->
+	                            </div>
+	                        </div>
+	                    </div>
+					</c:forEach>
                 </div>
             </div>
         </div>
@@ -447,10 +444,12 @@
 	</script> -->
 	
 	
-	<script>
+	<script type="text/javascript">
+
 	Chart.scaleService.updateScaleDefaults('linear', {
 	    ticks: {
-	        min: 0
+	        min: 0,
+	        max: Math.max(${produzioni}, ${scarti}) + 10000
 	    }
 	});
 	new Chart(document.getElementById("popChart"),
@@ -458,7 +457,7 @@
 			 "data":{
 				 "labels":["Total", "Scrap"],
 				 "datasets":[{
-					"label":"Pieces",
+					"label":"Total",
 					"data":[${produzioni}, ${scarti}],
 					"fill":false,
 					"backgroundColor":[
@@ -473,8 +472,17 @@
 						}
 				]
 		},
-		"options":{"scales":{"yAxes":[{"ticks":{"beginAtZero":true}}]}}}
-	);</script>
+		"options":{
+			"responsive": true,
+			"showScale": true,
+			"legend": { display: false },
+			"scales":{
+				"yAxes":[{"ticks":{"beginAtZero":true}}]
+				}
+			}
+		}
+	);
+	</script>
 	
 	<!-- Grafico OEE intermedi -->
 	
@@ -482,7 +490,7 @@
 	Chart.scaleService.updateScaleDefaults('linear', {
 	    ticks: {
 	        min: 0,
-	        max: 100
+	        max: 150
 	    }
 	});
 	var itermediateOEEChart = new Chart(document.getElementById("intOEE"),
@@ -609,6 +617,35 @@
 		}
 	</script>
 	
+	<!-- scripts collapse -->
+	<script type="text/javascript">
+	$(".header").click(function () {
+		
+	    $header = $(this);
+	    //getting the next element
+	    $content = $header.next();
+	    //open up the content needed - toggle the slide- if visible, slide up, if not slidedown.
+	    $content.slideToggle(500, function () {
+	        //execute this after slideToggle is done
+	        //change text of header based on visibility of content div
+	        $header.text(function () {
+	            //change text based on condition
+	            
+	            //return $content.is(":visible") ? "Collapse" : "Expand";
+	        });
+	    });
+
+	});
+	</script>
+	
+	<script type="text/javascript">
+	$(".header").click(function () {
+		$(this).find("i").toggleClass('fa fa-plus');
+		$(this).find("i").toggleClass('fa fa-minus');
+	});
+	</script>
+	
+	
 	<!-- script Raw Material -->
 	<script type="text/javascript">
 		function showPerformance() {
@@ -626,5 +663,6 @@
 			    x.style.display = "none";
 			  }
 		}
+		
 	</script>
 </html>
