@@ -28,8 +28,8 @@
 
 
     <!--     Fonts and icons     -->
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="${pageContext.request.contextPath}/assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
     
     <!-- 	date	 -->
@@ -191,15 +191,15 @@
 
         <div class="content">
             <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-5">
+                <div class="row">               
+                    <div class="center-block col-md-5" style="float:none;">
                         <div class="card">
                           <div class="header">
                                 <h4 class="title">Choose interval time for get datas</h4>
                             </div>
                             <div class="content">
 	                            <form action="${pageContext.request.contextPath}/indexprova" method="get" id="indexprovatime">
-	                            	<input class="form-control" type="text" name="datetimes"/>
+	                            	<input class="form-control" type="text" name="datetimes" readonly="true"/>
 	                                <div class="footer">
 	                                    <hr>
 	                                    <input type="submit" value="Submit interval time"/>
@@ -329,6 +329,8 @@
 	    startDate: moment().startOf('hour'),
 	    endDate: moment().startOf('hour').add(32, 'hour'),
 	    timePicker24Hour: true,
+	    ignoreReadonly: true,
+	    allowInputToggle: true,
 	    locale: {
 	      format: 'M/DD/YYYY hh:mm A '
 	    }

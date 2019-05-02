@@ -28,8 +28,8 @@
 
 
     <!--     Fonts and icons     -->
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="${pageContext.request.contextPath}/assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
     
     <!-- css grafo time series -->
@@ -207,7 +207,7 @@
                         <div class="card ">
                             <div class="header">
                                 <h4 class="title">OEE
-                                	<button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right;"><i class="fa fa-minus"></i></button>
+                                	<button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right; border-color: transparent;"><i class="fa fa-minus"></i></button>
                                 </h4>
                                 <p class="category">Overall Equipment Effectiveness</p>
                             </div>
@@ -224,8 +224,9 @@
                         <div class="card">
                             <div class="header">
                                 <h4 class="title">Intermediate OEEs
-                                	 <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right;"><i class="fa fa-minus"></i></button>
-			                    </h4>           	
+                                	 <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right; border-color: transparent;"><i class="fa fa-minus"></i></button>
+			                    </h4>    
+			                    <p class="category">OEEs trend</p>             	
                             </div>
                             <div class="content">
                                 <!-- <div id="chartHours" class="ct-chart"></div>  -->
@@ -241,7 +242,7 @@
                        <div class="card">
                            <div class="header">
                            		<h4 class="title">Stop list
-                                	<button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right;"><i class="fa fa-minus"></i></button>
+                                	<button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right; border-color: transparent;"><i class="fa fa-minus"></i></button>
                            		</h4>
                            </div>
                            <div id="" class="content">
@@ -272,9 +273,10 @@
                     <div class="col-md-5">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Pieces & discard pieces
-                                	<button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right;"><i class="fa fa-minus"></i></button>
+                                <h4 class="title">Total & scrap pieces
+                                	<button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right; border-color: transparent;"><i class="fa fa-minus"></i></button>
                                 </h4>
+                                <p class="category">Sum of total and scrap pieces</p>
                             </div>
                             <div class="content">
                                 <!-- <div id="chartHours" class="ct-chart"></div>  -->
@@ -311,7 +313,7 @@
                 		<div class="col-md-2" id="min-w-oee">
 	                        <div class="card ">
 	                            <div class="header">
-	                                                            	<button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right;"><i class="fa fa-minus"></i></button>
+	                                <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right; border-color: transparent;"><i class="fa fa-minus"></i></button>
 	                            
 	                                <h4 class="title">${val.getName()}</h4>
 	                                <p class="category">Raw Material consumption</p>

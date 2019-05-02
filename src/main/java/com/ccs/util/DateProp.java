@@ -229,4 +229,110 @@ public class DateProp {
 		return date.substring(0, 10) + " " + date.substring(11, 19);
 	}
 	
+	public static String fromDateToFormatSwhow(String date) {
+		//String date format : 
+		//					   2018-11-27T13:42:50.000Z 2018-11-29T15:00:00.000Z 
+		//					   or 
+		//					   11/27/2018 02:00 PM - 11/29/2018 03:00 PM
+		
+		//output : 			   2018-11-29 15:07:51 - 2018-11-29 15:00:00
+		
+		//Controllo il tipo di stringa in maniera tale da discriminare se sia del primo o del secondo tipo
+		
+		//AGGIIUNGERE ALTRI DUE ELSE IF IN CASCATA PER LA GESTIONE DEGLI ALTRI DUE POSSIBILI TEMPI
+		System.out.println(date);
+		
+		if((date.subSequence(2, 3).equals("/")) && (date.subSequence(25, 26).equals("/"))){
+			
+			String date1 = date.substring(6, 10) + "-" + date.substring(0, 2) + "-" + date.substring(3, 5) + " ";
+			
+			String date2 = date.substring(29, 33) + "-" + date.substring(23, 25) + "-" + date.substring(26, 28) + " ";
+			
+			//prima parte			
+			if(date.substring(17, 19).equals("AM")) {
+				if(date.substring(11, 13).equals("12")) {
+					date1 = date1 + "00";
+				}else {
+					date1 = date1 + date.substring(11, 13);
+				}
+			}else {
+				if(date.substring(11, 13).equals("12")) {
+					date1 = date1 + date.substring(11, 13);
+				} else {
+					int h = Integer.valueOf(date.substring(11, 13)) + 12;
+					date1 = date1 + h;
+				}
+			}
+			
+			date1 = date1 + ":" + date.substring(14, 16);
+			
+			System.out.println("prima parte della data formattata: "+date1);
+			//seconda parte
+			
+			if(date.substring(40, 41).equals("A")) {
+				if(date.substring(34, 36).equals("12")) {
+					date2 = date2 + "00";
+				}else {
+					date2 = date2 + date.substring(34, 36);
+				}
+			}else {
+				if(date.substring(34, 36).equals("12")) {
+					date2 = date2 + date.substring(34, 36);
+				} else {
+					int h = Integer.valueOf(date.substring(34, 36)) + 12;
+					date2 = date2 + h;
+				}
+			}
+			date2 = date2 + ":" + date.substring(37, 39);
+			
+			return date1 + " - " + date2;
+		} else if ((date.subSequence(1, 2).equals("/")) && (date.subSequence(23, 24).equals("/"))) {
+			
+			String date1 = date.substring(5, 9) + "-" + date.substring(0, 1) + "-" + date.substring(2, 4) + " ";
+			
+			String date2 = date.substring(27, 31) + "-" + date.substring(22, 23) + "-" + date.substring(24, 26) + " ";
+			
+			//prima parte			
+			if(date.substring(16, 18).equals("AM")) {
+				if(date.substring(10, 12).equals("12")) {
+					date1 = date1 + "00";
+				}else {
+					date1 = date1 + date.substring(10, 12);
+				}
+			}else {
+				if(date.substring(10, 12).equals("12")) {
+					date1 = date1 + date.substring(10, 12);
+				} else {
+					int h = Integer.valueOf(date.substring(10, 12)) + 12;
+					date1 = date1 + h;
+				}
+			}
+			
+			date1 = date1 + ":" + date.substring(13, 15);
+			
+			System.out.println("prima parte della data formattata: "+date1);
+			//seconda parte
+			
+			if(date.substring(38, 39).equals("A")) {
+				if(date.substring(32, 34).equals("12")) {
+					date2 = date2 + "00";
+				}else {
+					date2 = date2 + date.substring(32, 34);
+				}
+			}else {
+				if(date.substring(32, 34).equals("12")) {
+					date2 = date2 + date.substring(32, 34);
+				} else {
+					int h = Integer.valueOf(date.substring(32, 34)) + 12;
+					date2 = date2 + h;
+				}
+			}
+			date2 = date2 + ":" + date.substring(34, 36);
+			
+			return date1 + " - " + date2;
+			} else {
+				return date.substring(0, 10) + " " + date.substring(11, 19) + " - " + date.substring(25, 35) + " " + date.substring(36, 41);
+			}
+	}
+	
 }
