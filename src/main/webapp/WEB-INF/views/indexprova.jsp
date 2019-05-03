@@ -83,11 +83,13 @@
 	                    <a style="position: fixed; margin-left: 23px;">
 	                      <p>
 	                    	<div class="btn-group btn-group-toggle" data-toggle="buttons">
-								 <label class="btn btn-secondary active">
-								 	<input type="radio" name="options" id="option1" autocomplete="off" onchange = "showPerformance()" checked>Perform.
+								 <label class="btn btn-secondary active" style ="height: 40px; width: 90.55px; padding-left: 5px; padding-right: 5px;">
+								 	<input type="radio" name="options" id="option1" autocomplete="off" onchange = "showPerformance()" checked>
+								 		<marquee behavior="alternate" direction="left" scrollamount="1">Performance</marquee>
 								 </label>
-								 <label class="btn btn-secondary">
-								 	<input type="radio" name="options" id="option2" autocomplete="off" onchange = "showRawMaterial()">Raw Mat.
+								 <label class="btn btn-secondary" style ="height: 40px; width: 94.33px; padding-left: 5px; padding-right: 5px;">
+								 	<input type="radio" name="options" id="option2" autocomplete="off" onchange = "showRawMaterial()">
+								 		<marquee behavior="alternate" direction="left" scrollamount="1">Raw Materials</marquee>
 								 </label>
 							</div>
 	                      </p>

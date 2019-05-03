@@ -315,8 +315,8 @@ public class CcsController {
 		mv.addObject("min5", "320");
 		mv.addObject("min6", "350");
 		
-		//mv.addObject("date", DateProp.fromDateToFormatSwhow(date));
-		mv.addObject("date", date);
+		mv.addObject("date", DateProp.fromDateToFormatSwhow(date));
+		//mv.addObject("date", date);
 
 		mv.addObject("error_codice", error_code);
 		mv.addObject("asset", asset);

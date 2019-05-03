@@ -239,9 +239,9 @@ public class DateProp {
 		
 		//Controllo il tipo di stringa in maniera tale da discriminare se sia del primo o del secondo tipo
 		
-		//AGGIIUNGERE ALTRI DUE ELSE IF IN CASCATA PER LA GESTIONE DEGLI ALTRI DUE POSSIBILI TEMPI
 		System.out.println(date);
 		
+		// tutte e due i mesi a cifra doppia
 		if((date.subSequence(2, 3).equals("/")) && (date.subSequence(25, 26).equals("/"))){
 			
 			String date1 = date.substring(6, 10) + "-" + date.substring(0, 2) + "-" + date.substring(3, 5) + " ";
@@ -285,7 +285,9 @@ public class DateProp {
 			}
 			date2 = date2 + ":" + date.substring(37, 39);
 			
-			return date1 + " - " + date2;
+			return date1 + "  " + date2;
+			
+			//tutti e due i mesi a cifra singola
 		} else if ((date.subSequence(1, 2).equals("/")) && (date.subSequence(23, 24).equals("/"))) {
 			
 			String date1 = date.substring(5, 9) + "-" + date.substring(0, 1) + "-" + date.substring(2, 4) + " ";
@@ -327,11 +329,105 @@ public class DateProp {
 					date2 = date2 + h;
 				}
 			}
-			date2 = date2 + ":" + date.substring(34, 36);
+			date2 = date2 + ":" + date.substring(35, 37);
 			
-			return date1 + " - " + date2;
-			} else {
-				return date.substring(0, 10) + " " + date.substring(11, 19) + " - " + date.substring(25, 35) + " " + date.substring(36, 41);
+			return date1 + "  " + date2;
+			
+			//primo mese a cifra singola secondo mese a cifra doppia
+			}else if((date.subSequence(1, 2).equals("/")) && (date.subSequence(24, 25).equals("/"))){
+
+				String date1 = date.substring(5, 9) + "-" + date.substring(0, 1) + "-" + date.substring(2, 4) + " ";
+				
+				String date2 = date.substring(28, 32) + "-" + date.substring(25, 27) + "-" + date.substring(22, 24) + " ";
+				
+				//prima parte			
+				if(date.substring(16, 18).equals("AM")) {
+					if(date.substring(10, 12).equals("12")) {
+						date1 = date1 + "00";
+					}else {
+						date1 = date1 + date.substring(10, 12);
+					}
+				}else {
+					if(date.substring(10, 12).equals("12")) {
+						date1 = date1 + date.substring(10, 12);
+					} else {
+						int h = Integer.valueOf(date.substring(10, 12)) + 12;
+						date1 = date1 + h;
+					}
+				}
+				
+				date1 = date1 + ":" + date.substring(13, 15);
+				
+				System.out.println("prima parte della data formattata: "+date1);
+				//seconda parte
+				
+				if(date.substring(39, 40).equals("A")) {
+					if(date.substring(33, 35).equals("12")) {
+						date2 = date2 + "00";
+					}else {
+						date2 = date2 + date.substring(33, 35);
+					}
+				}else {
+					if(date.substring(33, 35).equals("12")) {
+						date2 = date2 + date.substring(33, 35);
+					} else {
+						int h = Integer.valueOf(date.substring(33, 35)) + 12;
+						date2 = date2 + h;
+					}
+				}
+				date2 = date2 + ":" + date.substring(36, 38);
+				
+				return date1 + "  " + date2;
+
+				
+			//primo mese cifra doppia secondo mese cifra singola
+			}else if((date.subSequence(2, 3).equals("/")) && (date.subSequence(24, 25).equals("/"))) {
+				
+				String date1 = date.substring(6, 10) + "-" + date.substring(0, 2) + "-" + date.substring(3, 5) + " ";
+				
+				String date2 = date.substring(28, 32) + "-" + date.substring(23, 24) + "-" + date.substring(23, 24) + " ";
+				
+				//prima parte			
+				if(date.substring(17, 19).equals("AM")) {
+					if(date.substring(11, 13).equals("12")) {
+						date1 = date1 + "00";
+					}else {
+						date1 = date1 + date.substring(11, 13);
+					}
+				}else {
+					if(date.substring(11, 13).equals("12")) {
+						date1 = date1 + date.substring(10, 12);
+					} else {
+						int h = Integer.valueOf(date.substring(11, 13)) + 12;
+						date1 = date1 + h;
+					}
+				}
+				
+				date1 = date1 + ":" + date.substring(14, 16);
+				
+				System.out.println("prima parte della data formattata: "+date1);
+				//seconda parte
+				
+				if(date.substring(39, 40).equals("A")) {
+					if(date.substring(33, 35).equals("12")) {
+						date2 = date2 + "00";
+					}else {
+						date2 = date2 + date.substring(33, 35);
+					}
+				}else {
+					if(date.substring(33, 35).equals("12")) {
+						date2 = date2 + date.substring(33, 35);
+					} else {
+						int h = Integer.valueOf(date.substring(33, 35)) + 12;
+						date2 = date2 + h;
+					}
+				}
+				date2 = date2 + ":" + date.substring(36, 38);
+				
+				return date1 + "  " + date2;
+				
+			}else {
+				return date.substring(0, 10) + " " + date.substring(11, 19) + "  " + date.substring(25, 35) + " " + date.substring(36, 41);
 			}
 	}
 	
