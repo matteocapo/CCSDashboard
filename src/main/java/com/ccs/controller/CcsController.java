@@ -171,6 +171,7 @@ public class CcsController {
 
 		
 		System.out.println("in controller");
+		System.out.println("data dopo controller: " + date);
 		
 		if (!date.equals("World")) {
 			if(date.substring(4, 5).equals("-")) {

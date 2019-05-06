@@ -116,7 +116,7 @@ public class DateProp {
 			
 			//System.out.println(To.getDate());
 
-		}else {
+		}else if(date.substring(25, 26).equals("/")) {
 			//Set Year
 			To.setYear(date.substring(second_date+YEARs, second_date+YEARs+5));
 			//Set Month
@@ -141,6 +141,59 @@ public class DateProp {
 			}
 			//Set Minutes
 			To.setMinutes(date.substring(second_date + MINUTEs, second_date + MINUTEs + 2));
+		} else if((date.substring(24, 25).equals("/")) && (date.substring(1, 2).equals("/"))) {
+			
+			//Set Year
+			To.setYear(date.substring(28, 33));
+			//Set Month
+			To.setMonth(date.substring(22, 24));
+			//Set Day
+			To.setDay(date.substring(25, 27));
+			//Set Hours
+			if (date.substring(39,40).equals("P")) {
+				if(( Integer.parseInt(date.substring(33, 35))) == 12) {
+					Integer newHours = ( Integer.parseInt(date.substring(33, 35)));
+					To.setHours(newHours.toString());
+				} else {
+					Integer newHours = ( Integer.parseInt(date.substring(33, 35)) + 12 );
+					To.setHours(newHours.toString());
+				}	
+			} else {
+				if(date.substring(33, 35).equals("12")) {
+					To.setHours("00");	
+				} else {
+					To.setHours(date.substring(33, 35));
+				}
+			}
+			//Set Minutes
+			To.setMinutes(date.substring(36, 38));
+			
+		} else if((date.substring(24, 25).equals("/")) && (date.substring(2, 3).equals("/"))){
+			
+			//Set Year
+			To.setYear(date.substring(28, 33));
+			//Set Month
+			To.setMonth("0" + date.substring(23, 24));
+			//Set Day
+			To.setDay(date.substring(25, 27));
+			//Set Hours
+			if (date.substring(39,40).equals("P")) {
+				if(( Integer.parseInt(date.substring(33, 35))) == 12) {
+					Integer newHours = ( Integer.parseInt(date.substring(33, 35)));
+					To.setHours(newHours.toString());
+				} else {
+					Integer newHours = ( Integer.parseInt(date.substring(33, 35)) + 12 );
+					To.setHours(newHours.toString());
+				}	
+			} else {
+				if(date.substring(33, 35).equals("12")) {
+					To.setHours("00");	
+				} else {
+					To.setHours(date.substring(33, 35));
+				}
+			}
+			//Set Minutes
+			To.setMinutes(date.substring(36, 38));			
 		}
 		
 		returnDate[0] = From.getDate();
@@ -285,7 +338,7 @@ public class DateProp {
 			}
 			date2 = date2 + ":" + date.substring(37, 39);
 			
-			return date1 + "  " + date2;
+			return date1 + " -> " + date2;
 			
 			//tutti e due i mesi a cifra singola
 		} else if ((date.subSequence(1, 2).equals("/")) && (date.subSequence(23, 24).equals("/"))) {
@@ -331,7 +384,7 @@ public class DateProp {
 			}
 			date2 = date2 + ":" + date.substring(35, 37);
 			
-			return date1 + "  " + date2;
+			return date1 + " -> " + date2;
 			
 			//primo mese a cifra singola secondo mese a cifra doppia
 			}else if((date.subSequence(1, 2).equals("/")) && (date.subSequence(24, 25).equals("/"))){
@@ -377,7 +430,7 @@ public class DateProp {
 				}
 				date2 = date2 + ":" + date.substring(36, 38);
 				
-				return date1 + "  " + date2;
+				return date1 + " -> " + date2;
 
 				
 			//primo mese cifra doppia secondo mese cifra singola
@@ -424,10 +477,10 @@ public class DateProp {
 				}
 				date2 = date2 + ":" + date.substring(36, 38);
 				
-				return date1 + "  " + date2;
+				return date1 + " -> " + date2;
 				
 			}else {
-				return date.substring(0, 10) + " " + date.substring(11, 19) + "  " + date.substring(25, 35) + " " + date.substring(36, 41);
+				return date.substring(0, 10) + " " + date.substring(11, 19) + " -> " + date.substring(25, 35) + " " + date.substring(36, 41);
 			}
 	}
 	
