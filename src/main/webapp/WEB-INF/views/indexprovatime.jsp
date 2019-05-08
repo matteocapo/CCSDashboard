@@ -1,5 +1,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -50,17 +52,35 @@
 
     	<div class="sidebar-wrapper">
             <div class="logo">
-            <a>
-             
-            <img src="${pageContext.request.contextPath}/assets/img/28_main_r.png" class ="simple-text">
-           <!-- 
-                <a href="http://www.creative-tim.com" class="simple-text">
-                    Creative Tim
-                </a>
-             -->
-            </a>
+	            <a>
+	            	<img src="${pageContext.request.contextPath}/assets/img/28_main_r.png" class ="simple-text">
+		           	<!--
+		                <a href="http://www.creative-tim.com" class="simple-text">
+		                    Creative Tim
+		                </a>
+		             -->
+	            </a>
             </div>
-
+            <c:if test="${assets.size() > 1}">
+            	<ul class="nav">
+	                <li class="active">
+	                    <a style="position: inherit; margin-left: 23px; margin-right: 23px;">
+	                      <p>
+	                    	<div class="btn-group btn-group-toggle" data-toggle="buttons">
+								 <label class="btn btn-secondary active" style ="height: 40px; width: 90.55px; padding-left: 5px; padding-right: 5px;">
+								 	<input type="radio" name="options" id="option1" autocomplete="off" onchange = "showSingleMachine()" checked>
+								 		<marquee behavior="alternate" direction="left" scrollamount="1">Single Machine</marquee>
+								 </label>
+								 <label class="btn btn-secondary" style ="height: 40px; width: 94.33px; padding-left: 5px; padding-right: 5px;">
+								 	<input type="radio" name="options" id="option2" autocomplete="off" onchange = "showCompareMachines()">
+								 		<marquee behavior="alternate" direction="left" scrollamount="1">Compare Machines</marquee>
+								 </label>
+							</div>
+	                      </p>
+	                    </a>
+	                </li>
+	            </ul>
+		    </c:if>
             <ul class="nav">
                 <li class="active">
                     <a href="${pageContext.request.contextPath}">
@@ -69,21 +89,20 @@
                     </a>
                 </li>
              </ul>
-             
-             <c:forEach items="${assets}" var="food">
-             	 
-	             	<ul class="nav">
-
-	             			<label class="block" for="${food.key}">
-				                <li class="active">
-					                	<a>
-					                        <i class="pe-7s-graph2"></i>
-					                        <p>${food.key}<input type="radio" id="${food.key}" name="asset" value="${food.value}" style="float: right;margin-top: 8px;" form = "indexprovatime" checked></p>
-					                    </a>
-					             </li>
-					         </label>     
-		             </ul>
-		     </c:forEach>
+             <div id ="lateral-assets">
+	             <c:forEach items="${assets}" var="food"> 
+		             	<ul class="nav">
+		             			<label class="block" for="${food.key}">
+					                <li class="active">
+						                	<a>
+						                        <i class="pe-7s-graph2"></i>
+						                        <p>${food.key}<input type="radio" id="${food.key}" name="asset" value="${food.value}" style="float: right;margin-top: 8px;" form = "indexprovatime" checked></p>
+						                    </a>
+						             </li>
+						        </label>     
+			             </ul>
+			     </c:forEach>
+		     </div>
              
             <!-- 
             <c:forEach items="${asset_name}" var="val_name">
@@ -188,29 +207,72 @@
             </div>
         </nav>
 
-
-        <div class="content">
+		<div class="content">
             <div class="container-fluid">
-                <div class="row">               
-                    <div class="center-block col-md-5" style="float:none;">
-                        <div class="card">
-                          <div class="header">
-                                <h4 class="title">Choose interval time for get datas</h4>
-                            </div>
-                            <div class="content">
-	                            <form action="${pageContext.request.contextPath}/indexprova" method="get" id="indexprovatime">
-	                            	<input class="form-control" type="text" name="datetimes" readonly>
+            	<div id="single-machine">
+	                <div class="row">               
+	                    <div class="center-block col-md-5" style="float:none;">
+	                        <div class="card">
+	                          <div class="header">
+	                                <h4 class="title">Choose interval time for get datas</h4>
+	                            </div>
+	                            <div class="content">
+		                            <form action="${pageContext.request.contextPath}/indexprova" method="get" id="indexprovatime">
+		                            	<input class="form-control" type="text" name="datetimes" readonly>
+		                                <div class="footer">
+		                                    <hr>
+		                                    <input type="submit" value="Submit interval time"/>
+		                                </div>
+		                            </form>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+           		</div>
+           		<div id="compare-machines" style="display:none;">
+	                <div class="row">               
+	                    <div class="center-block col-md-5" style="float:none;">
+	                        <div class="card">
+	                          <div class="header">
+	                                <h4 class="title">Choose the machines to compare</h4>
+	                            </div>
+		                            <div class="content">
+			                            <c:forEach items="${assets}" var="food"> 
+			                            	<div>
+				                            	<input type="checkbox" id="${food.value}" name="${food.value}" value="${food.value}" form="indexprovatime2">
+											  	<label for="${food.value}">${food.key}</label>
+									        </div>
+										</c:forEach>
 	                                <div class="footer">
 	                                    <hr>
-	                                    <input type="submit" value="Submit interval time"/>
 	                                </div>
-	                            </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	                <div class="row">               
+	                    <div class="center-block col-md-5" style="float:none;">
+	                        <div class="card">
+	                          <div class="header">
+	                                <h4 class="title">Choose interval time for get machine perfomance datas</h4>
+	                            </div>
+	                            <div class="content">
+		                            <form action="${pageContext.request.contextPath}/comparemachines" method="get" id="indexprovatime2" onsubmit="return numAssets()">
+		                            	<input class="form-control" type="text" name="datetimes" readonly>
+		                                <div class="footer">
+		                                    <hr>
+		                                    <input type="submit" value="Submit interval time"/>
+		                                </div>
+		                            </form>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+           		</div>
+       		</div>
+		</div>
+		
+        
 
 
         <footer class="footer">
@@ -336,6 +398,76 @@
 	    }
 	  });
 	});
+	</script>
+	
+	<!-- script Raw Material -->
+	<script type="text/javascript">
+		function showSingleMachine() {
+			  var x = document.getElementById("single-machine");
+			  var y = document.getElementById("lateral-assets");
+			  
+			  if(y.style.display === "none"){
+				y.style.display = "block";
+			  } else {
+			    y.style.display = "none";
+			  }
+			  
+			  if (x.style.display === "none") {
+			    x.style.display = "block";
+			  } else {
+			    x.style.display = "none";
+			  }
+			  
+			  var x = document.getElementById("compare-machines");
+			  if (x.style.display === "none") {
+			    x.style.display = "block";
+			  } else {
+			    x.style.display = "none";
+			  }
+		}	
+	</script>
+	
+	<!-- script performance -->
+	<script type="text/javascript">
+		function showCompareMachines() {
+			  var x = document.getElementById("single-machine");
+			  var y = document.getElementById("lateral-assets");
+			  
+			  if(y.style.display === "none"){
+				y.style.display = "block";
+			  } else {
+			    y.style.display = "none";
+			  }
+			  
+			  if (x.style.display === "none") {
+			    x.style.display = "block";
+			  } else {
+			    x.style.display = "none";
+			  }
+			  
+			  var x = document.getElementById("compare-machines");
+			  if (x.style.display === "none") {
+			    x.style.display = "block";
+			  } else {
+			    x.style.display = "none";
+			  }
+		}
+	</script>
+	
+	<!-- script per la gestione del numero di assets -->
+	<script type="text/javascript">
+		function numAssets() {
+			var x = 0;
+			<c:forEach items="${assets}" var="food"> 
+				if (document.getElementById("${food.value}").checked){
+					x = x+1;
+				}        	
+			</c:forEach>
+			if(x<2){
+				alert("Please, select al least 2 machines");
+			    return false;
+			}
+		}
 	</script>
 	
 		

@@ -1,4 +1,5 @@
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>  
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
 <!doctype html>
 <html lang="en">
 <head>
@@ -25,27 +26,20 @@
     <!--  CSS for Demo Purpose, don't include it in your project     -->
     <link href="${pageContext.request.contextPath}/assets/css/demo.css" rel="stylesheet" />
 
+
     <!--     Fonts and icons     -->
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="${pageContext.request.contextPath}/assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
     
-    <!-- 	date	 -->
-	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-	
-	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-	<link href="http://propeller.in/components/typography/css/typography.css" rel="stylesheet">
-	<link href="http://propeller.in/components/textfield/css/textfield.css" rel="stylesheet">
-	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link href="http://propeller.in/components/icons/css/google-icons.css" rel="stylesheet">
-	<link href="http://propeller.in/components/datetimepicker/css/bootstrap-datetimepicker.css" rel="stylesheet">
-	<link href="http://propeller.in/components/datetimepicker/css/pmd-datetimepicker.css" rel="stylesheet">
-    
+    <!-- css grafo time series -->
+
 </head>
 <body>
-
+			
 <div class="wrapper">
-    <div class="sidebar" data-color="azure" data-image="${pageContext.request.contextPath}/assets/img/sidebar-5.jpg">
+
+    <div class="sidebar" data-color="blue" data-image="${pageContext.request.contextPath}/assets/img/sidebar-6.JPG">
 
     <!--
 
@@ -57,7 +51,8 @@
     	<div class="sidebar-wrapper">
             <div class="logo">
             <a>
-            <img src="${pageContext.request.contextPath}/assets/img/28_main.jpg" class ="simple-text" height="140" width="230">
+            
+            <img src="${pageContext.request.contextPath}/assets/img/28_main_r.png" class ="simple-text">
             <!-- 
                 <a href="http://www.creative-tim.com" class="simple-text">
                     Creative Tim
@@ -68,17 +63,39 @@
 
             <ul class="nav">
                 <li class="active">
-                    <a href="${pageContext.request.contextPath}">
-                        <i class="pe-7s-note"></i>
+                    <a href="${pageContext.request.contextPath}/">
+                        <i class="pe-7s-date"></i>
                         <p>Set interval time</p>
                     </a>
                 </li>
-             </ul>
+                <!-- classi che definiscono i loghi:
+                	class="pe-7s-user"
+                	class="pe-7s-note2"
+                	class="pe-7s-news-paper"
+                	class="pe-7s-science"
+                	class="pe-7s-map-marker"
+                	class="pe-7s-bell"
+                	class="pe-7s-rocket"
+            	-->
+            	</ul>
     	</div>
     </div>
 
     <div class="main-panel">
-        <nav class="navbar navbar-default navbar-fixed">
+    <c:choose>
+    	<c:when test="${testalert == 'no'}">
+    	</c:when>
+   		<c:otherwise>
+       	 	<div class="bs-example">
+    			<div class="alert alert-warning">
+        			<a href="#" class="close" data-dismiss="alert">&times;</a>
+        			<strong>Warning!</strong> update the correct oee click <a href="${pageContext.request.contextPath}/indexprova?asset=${asset}&datetimes=${testalert}">here</a>.
+    			</div>
+			</div>
+    	</c:otherwise>
+	</c:choose>
+    
+	        <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
@@ -87,7 +104,8 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Ccs Dashboard</a>
+                    <a class="navbar-brand">Ccs Dashboard</a>
+                    <a class="navbar-brand">${date}</a>
                 </div>
                 <div class="collapse navbar-collapse">
                 
@@ -168,29 +186,27 @@
 
         <div class="content">
             <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-5">
-                        <div class="card">
-                          <div class="header">
-                                <h4 class="title">Choose interval time for get datas</h4>
-                            </div>
-                            <div class="content">
-                            <form action="${pageContext.request.contextPath}/indexprova" method="get">
-                            	<div class="row">
-									<div class="col-sm-6">
-										<input type="datetime-local" id="from">
-										<br><br>
-										<input type="datetime-local" id="to" onclick="myFunction()">									
-									</div>
-								</div>   
-                                <div class="footer">
-                                    <hr>
-                                    <input type="submit" value="Submit interval time"/>
-                                </div>
-                            </form>
-                            </div>
-                        </div>
-                    </div>
+                
+                <div class="row" id="classification">
+                	<c:forEach items="${raw_data_model}" var="val">
+                		<div class="col-md-2" id="min-w-oee">
+	                        <div class="card ">
+	                            <div class="header">
+	                                <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right; border-color: transparent;"><i class="fa fa-minus"></i></button>
+	                            
+	                                <h4 class="title">${val.getName()}</h4>
+	                                <p class="category">Raw Material consumption</p>
+	                            </div>
+	                            <div class="content" id="centering-oee">
+	                            	<h4>Used: ${val.getMaterialeConsumato()} m</h4>
+	                            	<h4>Scrap: ${val.getMaterialeScartato()} m</h4>
+	                            </div>
+	                            <div class="footer">
+	                                    <!-- <hr> -->
+	                            </div>
+	                        </div>
+	                    </div>
+					</c:forEach>
                 </div>
             </div>
         </div>
@@ -241,6 +257,7 @@
 
     <!--   Core JS Files   -->
     <script src="${pageContext.request.contextPath}/assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/assets/js/GaugeMeter.js" type="text/javascript"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/bootstrap.min.js" type="text/javascript"></script>
 
 	<!--  Charts Plugin -->
@@ -259,13 +276,7 @@
 	<script src="${pageContext.request.contextPath}/assets/js/demo.js"></script>
 	
 	<!-- charts -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
-		
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-	
-	<!-- 	send date -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>	
 	
 
 	<script type="text/javascript">
@@ -283,60 +294,92 @@
             //});
 
     	});
+    	
+    	$(".GaugeMeter").gaugeMeter();
 	</script>
 	
-	<!-- script data -->
-	<script>
-	$(function() {
-	  $('input[name="datetimes"]').daterangepicker({
-	    timePicker: true,
-	    startDate: moment().startOf('hour'),
-	    endDate: moment().startOf('hour').add(32, 'hour'),
-	    timePicker24Hour: true,
-	    locale: {
-	      format: 'M/DD/YYYY hh:mm A '
+	<!-- script primo istogramma
+	<script type="text/javascript">
+	/**
+	 * chart js 
+	 */
+	var popCanvas = document.getElementById("popChart");
+	var popCanvas = $("#popChart");
+	var popCanvas = document.getElementById("popChart").getContext("2d");
+	var barChart = new Chart(popCanvas, {
+		  type: 'bar',
+		  data:{
+		    labels: ["Total", "Discard"],
+		    datasets: [{
+		    	label: 'Pieces',
+		    	data: [${domenica}, ${lunedì}],
+		    	fill:false,
+		    	backgroundColor: [
+		        'rgba(255, 99, 132, 0.6)',
+		        'rgba(54, 162, 235, 0.6)'
+		        ]
+		    }]
+	
+		  }		
+		});
+	</script> -->
+	
+	
+	<!-- script grafo velocità
+	<script type="text/javascript">
+	var speedCanvas = document.getElementById("speedChart");
+
+	var speedData = {
+	  labels: ["10", "20", "30", "40", "50", "60"],
+	  datasets: [{
+	    label: "PPM",
+	    data: [${min1}, ${min2}, ${min3}, ${min4}, ${min1}, ${min6}],
+	  }]
+	};
+
+	var chartOptions = {
+	  legend: {
+	    display: true,
+	    position: 'top',
+	    labels: {
+	      boxWidth: 80,
+	      fontColor: 'black'
 	    }
-	  });
+	  }
+	};
+
+	var lineChart = new Chart(speedCanvas, {
+	  type: 'line',
+	  data: speedData,
+	  options: chartOptions
+	});
+	</script>
+	-->	
+	<!-- scripts collapse -->
+	<script type="text/javascript">
+	$(".header").click(function () {
+		
+	    $header = $(this);
+	    //getting the next element
+	    $content = $header.next();
+	    //open up the content needed - toggle the slide- if visible, slide up, if not slidedown.
+	    $content.slideToggle(500, function () {
+	        //execute this after slideToggle is done
+	        //change text of header based on visibility of content div
+	        $header.text(function () {
+	            //change text based on condition
+	            
+	            //return $content.is(":visible") ? "Collapse" : "Expand";
+	        });
+	    });
+
 	});
 	</script>
 	
-	<!-- jquery JS -->
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <!-- Bootstrap js -->
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <!-- Propeller textfield js --> 
-    <script type="text/javascript" src="http://propeller.in/components/textfield/js/textfield.js"></script>
-    <!-- Datepicker moment with locales -->
-    <script type="text/javascript" language="javascript" src="http://propeller.in/components/datetimepicker/js/moment-with-locales.js"></script>
-    <!-- Propeller Bootstrap datetimepicker -->
-    <script type="text/javascript" language="javascript" src="http://propeller.in/components/datetimepicker/js/bootstrap-datetimepicker.js"></script>
-    <script>
-		// Linked date and time picker 
-		// start date date and time picker 
-		$('#datepicker-start').datetimepicker();
-	
-		// End date date and time picker 
-		$('#datepicker-end').datetimepicker({
-			useCurrent: false 
-		});
-		
-		// start date picke on chagne event [select minimun date for end date datepicker]
-		$("#datepicker-start").on("dp.change", function (e) {
-			$('#datepicker-end').data("DateTimePicker").minDate(e.date);
-		});
-		// Start date picke on chagne event [select maxmimum date for start date datepicker]
-		$("#datepicker-end").on("dp.change", function (e) {
-			$('#datepicker-start').data("DateTimePicker").maxDate(e.date);
-		});
-    </script>
-    
-    <script type="text/javascript">
-	function myFunction() {
-	  var x = document.getElementById("to");
-	  var y = document.getElementById("from").value;
-	  x.setAttribute("min", y);
-	}
+	<script type="text/javascript">
+	$(".header").click(function () {
+		$(this).find("i").toggleClass('fa fa-plus');
+		$(this).find("i").toggleClass('fa fa-minus');
+	});
 	</script>
-	
-		
 </html>

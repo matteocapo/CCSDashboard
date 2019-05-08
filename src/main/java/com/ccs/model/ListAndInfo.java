@@ -2,6 +2,10 @@ package com.ccs.model;
 
 import java.util.List;
 
+/*
+ * Classe di gestione delle liste di run e stop ossia della lista di ritorno dalla tabella RunToRun di MindSphere
+ */
+
 import com.siemens.mindsphere.sdk.iot.timeseries.model.TimeseriesData;
 
 public class ListAndInfo {

@@ -4,6 +4,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+/*
+ * Classe che gestisce tutte le funzioni che vengono utilizzate per modificare e riformattare l'orario 
+ */
+
 public class DateProp {
 	
 	public static String[] toMindSphereFormat(String date) {

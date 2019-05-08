@@ -2,6 +2,10 @@ package com.ccs.model;
 
 import java.util.ArrayList;
 
+/*
+ * Questa classe viene utilizzata per gestire i due array che contegono gli OEE intermedi e i valori di inizio e fine del range al quale l'OEE si riferisce
+ */
+
 public class IntermediateOeesModel {
 	ArrayList<Integer>	oeeArray	=	null;
 	ArrayList<String>	oeeNamesArr	=	null;

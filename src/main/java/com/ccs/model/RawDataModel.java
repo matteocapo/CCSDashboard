@@ -1,5 +1,9 @@
 package com.ccs.model;
 
+/*
+ * Classe per la gestione del modello che tiene traccia delle materie prime consumate e utilizzate
+ */
+
 public class RawDataModel {
 	String nome;
 	float materiale_consumato = 0;
