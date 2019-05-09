@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.ccs.model.CompareModel;
 import com.ccs.model.ErrorDataModel;
 import com.ccs.model.IntermediateOeesModel;
 import com.ccs.model.ListAndInfo;
@@ -712,7 +713,6 @@ public class MindsphereServiceClient {
 	    
 	    System.out.println("collegamento stabilito e dati ricevuti");
 	    
-		String stringaRisposta;
 		int grandezza_array = 0;
 		
 		//System.out.println("inizio lettura json"); 
@@ -914,7 +914,7 @@ public class MindsphereServiceClient {
 	 * 						2) totale dei pezzi prodotti nella timeseries passata
 	 * 						3) media ponderata in base al tempo di funzionamento degli OEE della timeseries passata				
 	 */
-	public static int[] oeeTotalScrapMSApi(ListAndInfo timeseries_list_info) throws MindsphereException, IOException{
+	public static int[] oeeTotalScrapMSApi(List<TimeseriesData> timeseries_data) throws MindsphereException, IOException{
 		
 		//Array di interi che conterrà in prima posizione i pezzi scartati [0], in seconda i pezzi prodotti [1] e in terza l'oee medio [2]
 		int[] oee_tot_scrap = new int[3];
@@ -924,9 +924,7 @@ public class MindsphereServiceClient {
 		oee_tot_scrap[0] = 0;
 		oee_tot_scrap[1] = 0;
 		oee_tot_scrap[2] = 0;
-		
-		List<TimeseriesData> timeseries_data = timeseries_list_info.getTimeseriesList();
-		
+				
 		//Qui vengono effettuati i controlli sulla lista contenuta all'interno del paramentro attuale timeseries_list_info
     	if(!(timeseries_data == null)) {
     		//Controllo che la lista contenga almeno 3 elementi 
@@ -1605,4 +1603,92 @@ public class MindsphereServiceClient {
 		System.out.println("ho letto");
 		return return_model;
 	}
+	
+	
+	//*** LOGICA DI GESTIONE DELLA NUOVA SERVLET PER LA COSTRUZIONE DELLA PAGINA DI COMPARAZIONE ***//
+	public static CompareModel[] compareList(String[] assets_name, String[] assets_value, String auth, String date) throws MindsphereException, IOException{
+		
+		
+		CompareModel[] return_model = new CompareModel[assets_name.length];
+		
+		
+		//ates conterrà due stringhe una per la data iniziale e una per la data finale
+		String dates[] = new String[2];		
+		
+		//Trasformazione della stringa date in formto MS-Like
+		if(date.substring(4, 5).equals("-")) {
+			dates[0] = date.substring(0, 24);
+			dates[1] = date.substring(25, 49);
+		}else {
+			dates = DateProp.toMindSphereFormat(date);
+		}
+		
+		//Parte dell'autenticazione a MS
+	    MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+
+	    //MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
+	   
+	    RestClientConfig config = RestClientConfig.builder().build();
+	    
+	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
+	    
+	    for (int i=0; i<assets_name.length; i++) {
+	    	
+	    	CompareModel model = new CompareModel();
+			
+	    	//Array di interi che conterrà in prima posizione i pezzi scartati [0], in seconda i pezzi prodotti [1] e in terza l'oee medio [2]
+			int[] oeeTotScrap = new int[3];
+
+		    List<TimeseriesData> timeseriesList = null;
+		    
+		    try {
+		    	
+		    	//Chiamata dall'SDK per ricevere la lista dal Cloud DB
+		    	timeseriesList = timeseriesClient.getTimeseries(assets_value[i] , "FromRunToRun", dates[0], dates[1], 2000, null);
+		    			    	
+		    	//Test da abilitare nel caso in cui bisogna controllare la lista
+		    	if(!(timeseriesList == null)) {
+		    		
+		    		oeeTotScrap = MindsphereServiceClient.oeeTotalScrapMSApi(timeseriesList);
+		    		
+		    		model.setName(assets_name[i]);
+		    		model.setAsset(assets_value[i]);
+		    		model.setScrapPieces(oeeTotScrap[0]);
+		    		model.setTotPieces(oeeTotScrap[1]);
+		    		model.setOee(oeeTotScrap[2]);
+		    		
+		    		return_model[i] = model;
+		    		
+		    		System.out.println("dati ricevuti con successo (lista non vuota)");
+		    	} else {
+		    		
+		    		model.setName(assets_name[i]);
+		    		model.setAsset(assets_value[i]);
+		    		model.setScrapPieces(0);
+		    		model.setTotPieces(0);
+		    		model.setOee(0);
+		    		
+		    		return_model[i] = model;
+		    				
+		    		System.out.println("dati ricevuti (lista vuota)");
+		    	}
+			    System.out.println("collegamento stabilito");    
+	
+		    } catch (MindsphereException e) {
+		    	System.out.println(e);
+		    	System.out.println(e.getErrorMessage());
+		    	System.out.println(e.getHttpStatus());
+		    	System.out.println("errore nel collegamento, zona delle chiamate multiple seconda servlet");
+		    	
+		    	return_model[i] = model;
+		    }
+		    
+		
+	    };
+		
+	    System.out.println("Lunghezza array di ritorno: " + return_model.length);
+		
+		return return_model;
+	}
+
 }

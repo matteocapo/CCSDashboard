@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ccs.model.CompareModel;
 import com.ccs.model.ErrorDataModel;
 import com.ccs.model.IntermediateOeesModel;
 import com.ccs.model.ListAndInfo;
@@ -193,7 +194,7 @@ public class CcsController {
 		timeseries_list_performance_info = MindsphereServiceClient.listAndInfoMindsphere(timeseriesList_performance, fromTo);
 
 		/* chiamata alla funzione che rende disponibili i dati inerenti all'oee medio, pezzi prodotti e pezzi scartati*/
-		oeeTotScrap = MindsphereServiceClient.oeeTotalScrapMSApi(timeseries_list_performance_info);
+		oeeTotScrap = MindsphereServiceClient.oeeTotalScrapMSApi(timeseries_list_performance_info.getTimeseriesList());
 		
 		/*chiamata alla funzione che rende disponibili i dati inerenti agli oee intermedi con lista dei range di funzionamento con rispettivo oee*/
 		MindsphereServiceClient.intermediateOees(timeseries_list_performance_info, intermediateOees);
@@ -340,25 +341,24 @@ public class CcsController {
 		
 		
 		/* Definizione delle variabili */
-		
+
 		String[] headerNames = request.getQueryString().split("&datetimes")[0].split("&");
 		
-		String[] assets = new String[headerNames.length];
+		String[] assets_value = new String[headerNames.length];
+		String[] assets_name = new String[headerNames.length];
+		
 		for(int i = 0; i < headerNames.length; i++) {
-			assets[i] = headerNames[i].split("=")[0];
+			assets_name[i] = headerNames[i].split("=")[0];
+			assets_value[i] = headerNames[i].split("=")[1];
 		}
 		
+		CompareModel [] comp_mod = new CompareModel[assets_name.length];
+
+		
 		String authorization = "";
-		String alert_val = "";
 					
 	    authorization = authorization + request.getHeader("authorization");
-				
-		List<TimeseriesData> timeseriesList_performance = null;	
-				
-		ListAndInfo timeseries_list_performance_info;
-		
-		int[] oeeTotScrap = new int[3];
-		
+								
 		String[] fromTo = new String[2];
 
 		
@@ -374,69 +374,18 @@ public class CcsController {
 		}
 
 			
-		/*nuova gestione della chiamata, 
-		 * 1) viene effettuata la chiamata a MS e tramite l'SDK viene ricevuta la lista contenete tutti i valori delle TS nel range selezionato, oppure la lista viene ritornata a null
-		 * 2) vengono effettuate le chiamate per la gestione e visualizzazione dei dati di produzione sulla dashboard
-		 */
-		
-		/* Prima chiamata che riceve in input la data (formattata come vuole mindsphere), l'ID univoco della tabella definita su mindsphere, il nome della tabella su mindsphere,
-		 *  e il numero massimo di valori che possono tornarne dalla query, in questo caso l'API ha un valore massimo di 2000 risultati di ritorno
-		 */
-		timeseriesList_performance = MindsphereServiceClient.listMindsphere(date, asset, "FromRunToRun", 2000, authorization);
-		
-		/* 
-		 * con questa funzione reperiamo tutte le informazioni sulla lista per utilizzi futuri
-		 */
-		timeseries_list_performance_info = MindsphereServiceClient.listAndInfoMindsphere(timeseriesList_performance, fromTo);
-
-		/* chiamata alla funzione che rende disponibili i dati inerenti all'oee medio, pezzi prodotti e pezzi scartati*/
-		oeeTotScrap = MindsphereServiceClient.oeeTotalScrapMSApi(timeseries_list_performance_info);
-		
-		
-		
-		/*
-		 * funzione che ritorna la lista degli allarmi da file all'interno di una hash map
-		 */
-		
-
-			
-		alert_val = MindsphereServiceClient.checkNewDataAlert(timeseries_list_performance_info, asset, authorization);
-		
-		
- 		System.out.println("Nuovo range di date da selezionare: " + MindsphereServiceClient.checkNewDataAlert(timeseries_list_performance_info, asset, authorization));
- 		
-				
-		
-		ModelAndView mv = new ModelAndView("comparemachines");
+		comp_mod = MindsphereServiceClient.compareList(assets_name, assets_value, authorization, date);
 	
-		// oee
-		mv.addObject("oee", oeeTotScrap[2]);
-
-		// scarti e produzioni
-		mv.addObject("produzioni", oeeTotScrap[1]);
-		mv.addObject("scarti", oeeTotScrap[0]);
-
-		// velocità ultima ora
-
-		mv.addObject("min1", "255");
-		mv.addObject("min2", "230");
-		mv.addObject("min3", "200");
-		mv.addObject("min4", "201");
-		mv.addObject("min5", "320");
-		mv.addObject("min6", "350");
+		ModelAndView mv = new ModelAndView("comparemachines");
 		
+		mv.addObject("asset_date", date);
+	
 		mv.addObject("date", DateProp.fromDateToFormatSwhow(date));
+
+		mv.addObject("compare_model", comp_mod);
 
 		mv.addObject("asset", asset);
 		
-		if(alert_val.equals("correct_data")) {
-			mv.addObject("testalert", "no");
-		} else {
-			mv.addObject("testalert", alert_val);
-		}
-		
-		
-
 		return mv;
 	}
 

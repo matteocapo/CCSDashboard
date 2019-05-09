@@ -81,20 +81,7 @@
     	</div>
     </div>
 
-    <div class="main-panel">
-    <c:choose>
-    	<c:when test="${testalert == 'no'}">
-    	</c:when>
-   		<c:otherwise>
-       	 	<div class="bs-example">
-    			<div class="alert alert-warning">
-        			<a href="#" class="close" data-dismiss="alert">&times;</a>
-        			<strong>Warning!</strong> update the correct oee click <a href="${pageContext.request.contextPath}/indexprova?asset=${asset}&datetimes=${testalert}">here</a>.
-    			</div>
-			</div>
-    	</c:otherwise>
-	</c:choose>
-    
+    <div class="main-panel">    
 	        <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -185,24 +172,25 @@
 
 
         <div class="content">
-            <div class="container-fluid">
-                
+            <div class="container-fluid">  
                 <div class="row" id="classification">
-                	<c:forEach items="${raw_data_model}" var="val">
+                	<c:forEach items="${compare_model}" var="val">
                 		<div class="col-md-2" id="min-w-oee">
 	                        <div class="card ">
 	                            <div class="header">
 	                                <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right; border-color: transparent;"><i class="fa fa-minus"></i></button>
 	                            
 	                                <h4 class="title">${val.getName()}</h4>
-	                                <p class="category">Raw Material consumption</p>
+	                                <p class="category">Information</p>
 	                            </div>
 	                            <div class="content" id="centering-oee">
-	                            	<h4>Used: ${val.getMaterialeConsumato()} m</h4>
-	                            	<h4>Scrap: ${val.getMaterialeScartato()} m</h4>
+	                            	<h4><i>OEE: ${val.getOee()} %</i></h4>
+	                            	<h4><i>Total Pieces: ${val.getTotPieces()}</i></h4>
+	                            	<h4><i>Scrap Pieces: ${val.getScrapPieces()}</i></h4>
+	                            	<hr>
+	                            	<h5 style="color:blue;"><a href="${pageContext.request.contextPath}/indexprova?asset=${val.getAsset()}&datetimes=${asset_date}">Click here for more details!</a></h5>
 	                            </div>
-	                            <div class="footer">
-	                                    <!-- <hr> -->
+	                            <div class="footer">	                            		
 	                            </div>
 	                        </div>
 	                    </div>
@@ -382,4 +370,5 @@
 		$(this).find("i").toggleClass('fa fa-minus');
 	});
 	</script>
+	
 </html>

@@ -218,7 +218,7 @@
 	                            </div>
 	                            <div class="content">
 		                            <form action="${pageContext.request.contextPath}/indexprova" method="get" id="indexprovatime">
-		                            	<input class="form-control" type="text" name="datetimes" readonly>
+		                            	<input class="form-control" type="text" name="datetimes" style = "cursor: default;" readonly>
 		                                <div class="footer">
 		                                    <hr>
 		                                    <input type="submit" value="Submit interval time"/>
@@ -239,38 +239,38 @@
 		                            <div class="content">
 			                            <c:forEach items="${assets}" var="food"> 
 			                            	<div>
-				                            	<input type="checkbox" id="${food.value}" name="${food.value}" value="${food.value}" form="indexprovatime2">
+				                            	<input type="checkbox" id="${food.value}" name="${food.key}" value="${food.value}" form="indexprovatime2">
 											  	<label for="${food.value}">${food.key}</label>
 									        </div>
 										</c:forEach>
-	                                <div class="footer">
-	                                    <hr>
-	                                </div>
-	                            </div>
-	                        </div>
-	                    </div>
-	                </div>
-	                <div class="row">               
-	                    <div class="center-block col-md-5" style="float:none;">
-	                        <div class="card">
-	                          <div class="header">
-	                                <h4 class="title">Choose interval time for get machine perfomance datas</h4>
-	                            </div>
-	                            <div class="content">
-		                            <form action="${pageContext.request.contextPath}/comparemachines" method="get" id="indexprovatime2" onsubmit="return numAssets()">
-		                            	<input class="form-control" type="text" name="datetimes" readonly>
 		                                <div class="footer">
 		                                    <hr>
-		                                    <input type="submit" value="Submit interval time"/>
 		                                </div>
-		                            </form>
-	                            </div>
-	                        </div>
-	                    </div>
-	                </div>
-           		</div>
-       		</div>
-		</div>
+	                            	</div>
+	                       		</div>
+	                    	</div>
+	               		</div>
+		                <div class="row">               
+		                    <div class="center-block col-md-5" style="float:none;">
+		                        <div class="card">
+		                          <div class="header">
+		                                <h4 class="title">Choose interval time for get machine perfomance datas</h4>
+		                            </div>
+		                            <div class="content">
+			                            <form action="${pageContext.request.contextPath}/comparemachines" method="get" id="indexprovatime2" onsubmit="return numAssets()">
+			                            	<input class="form-control" type="text" name="datetimes" style = "cursor: default;" readonly>
+			                                <div class="footer">
+			                                    <hr>
+			                                    <input type="submit" value="Submit interval time"/>
+			                                </div>
+			                            </form>
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+           			</div>
+       			</div>
+			</div>
 		
         
 
