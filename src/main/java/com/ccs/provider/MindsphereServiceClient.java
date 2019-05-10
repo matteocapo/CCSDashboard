@@ -64,6 +64,8 @@ public class MindsphereServiceClient {
 	String select = "";
 	private static String URL_TOKEN = "a930a23f-7838-4c00-b67f-eb21d3531d00";
 	
+	public static int debug = 0;
+	
 	/*
 	 * DEPRECATE
 	 */
@@ -817,10 +819,15 @@ public class MindsphereServiceClient {
 		//System.out.println("ora fine: "+ dates[1]);
 
 		//Parte dell'autenticazione a MS
-	    MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+		 MindsphereCredentials credentials;
+		
+		if(debug == 1) {
+		   credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
 
-	    //MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
-	   
+		} else {
+			credentials = MindsphereCredentials.builder().authorization(auth).build();
+		}
+		
 	    RestClientConfig config = RestClientConfig.builder().build();
 	    
 	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
@@ -1111,10 +1118,16 @@ public class MindsphereServiceClient {
 			return "correct_data";
 		} else {
 			
-			MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+			//Parte dell'autenticazione a MS
+			 MindsphereCredentials credentials;
 			
-			//MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
+			if(debug == 1) {
+			   credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
 
+			} else {
+				credentials = MindsphereCredentials.builder().authorization(auth).build();
+			}
+			
 			RestClientConfig config = RestClientConfig.builder().build();
 			    
 			TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
@@ -1281,9 +1294,15 @@ public class MindsphereServiceClient {
 		
 		try {			
 					
-			//MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
-		   
-			MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+			//Parte dell'autenticazione a MS
+			 MindsphereCredentials credentials;
+			
+			if(debug == 1) {
+			   credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+
+			} else {
+				credentials = MindsphereCredentials.builder().authorization(auth).build();
+			}
 			
 			RestClientConfig config = RestClientConfig.builder().build();
 		    
@@ -1372,10 +1391,15 @@ public class MindsphereServiceClient {
 		Map<String, String> allarmi = new HashMap<String, String>();
 		
 		String alarm_list = "";
+		//Parte dell'autenticazione a MS
+		 MindsphereCredentials credentials;
 		
-		//MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
-				
-		MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+		if(debug == 1) {
+		   credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+
+		} else {
+			credentials = MindsphereCredentials.builder().authorization(auth).build();
+		}
 		
 		RestClientConfig config = RestClientConfig.builder().build();
 
@@ -1447,10 +1471,17 @@ public class MindsphereServiceClient {
 		System.out.println("ora fine: "+ dates[1]);
 
 		
-	    MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+		//Parte dell'autenticazione a MS
+		 MindsphereCredentials credentials;
+		
+		if(debug == 1) {
+		   credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
 
-	    //MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
-	    RestClientConfig config = RestClientConfig.builder().build();
+		} else {
+			credentials = MindsphereCredentials.builder().authorization(auth).build();
+		}
+		
+		RestClientConfig config = RestClientConfig.builder().build();
 	    
 	    TimeseriesClient timeseriesClient = TimeseriesClient.builder().mindsphereCredentials(credentials).restClientConfig(config).build();
 
@@ -1533,9 +1564,15 @@ public class MindsphereServiceClient {
 		
 		String lista_materiali_svolgitori = "";
 		
-		//MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
-				
-		MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+		//Parte dell'autenticazione a MS
+		 MindsphereCredentials credentials;
+		
+		if(debug == 1) {
+		   credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+
+		} else {
+			credentials = MindsphereCredentials.builder().authorization(auth).build();
+		}
 		
 		RestClientConfig config = RestClientConfig.builder().build();
 		
@@ -1624,7 +1661,14 @@ public class MindsphereServiceClient {
 		}
 		
 		//Parte dell'autenticazione a MS
-	    MindsphereCredentials credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+		 MindsphereCredentials credentials;
+		
+		if(debug == 1) {
+		   credentials = MindsphereCredentials.builder().clientId("ccsdev-service-credentials").clientSecret("62c6be6e-6a6b-5bf2-eece-f9a98652b127").tenant("ccsdev").build();
+
+		} else {
+			credentials = MindsphereCredentials.builder().authorization(auth).build();
+		}
 
 	    //MindsphereCredentials credentials = MindsphereCredentials.builder().authorization(auth).build();
 	   

@@ -3,7 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
 <!doctype html>
+
 <html lang="en">
+
 <head>
 	<meta charset="utf-8" />
 	<link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/img/favicon.ico">
@@ -37,10 +39,16 @@
     <!-- 	date	 -->
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 	
+	
 </head>
 <body>
+	
 
 <div class="wrapper">
+	<!-- 
+	<div id="_mdspcontent">
+	</div>			
+	 -->
     <div class="sidebar" data-color="blue" data-image="${pageContext.request.contextPath}/assets/img/sidebar-6.JPG">
 
     <!--
@@ -120,6 +128,7 @@
     </div>
 
     <div class="main-panel">
+    
         <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -363,6 +372,10 @@
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 	
+	<!-- MS OS bar-->
+    <script src="https://static.eu1.mindsphere.io/osbar/v4/js/main.min.js"></script>
+	
+	
 	<!-- 	send date -->
 	
 
@@ -468,6 +481,15 @@
 			    return false;
 			}
 		}
+	</script>
+	
+	<!-- script os bar -->
+	<script type="text/javascript">
+		_mdsp.init({
+		    title: "CCS Dashboard",
+		    appId: "_mdspcontent",
+		    appInfoPath: "${pageContext.request.contextPath}/assets/app-info.json"
+		});
 	</script>
 	
 		

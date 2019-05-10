@@ -32,11 +32,14 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="${pageContext.request.contextPath}/assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
     
-    <!-- css grafo time series -->
-
+   
 </head>
 <body>
-			
+	<!-- 
+	<div id="_mdspcontent">
+	</div>	
+	 -->		
+
 <div class="wrapper">
 
     <div class="sidebar" data-color="blue" data-image="${pageContext.request.contextPath}/assets/img/sidebar-6.JPG">
@@ -401,6 +404,8 @@
 	<!-- charts -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>	
 	
+	<!-- MS OS bar-->
+    <script src="https://static.eu1.mindsphere.io/osbar/v4/js/main.min.js"></script>
 
 	<script type="text/javascript">
     	$(document).ready(function(){
@@ -520,6 +525,7 @@
 		}
 		}
 	);
+	
 	
 	<!-- Sezione di ingresso al singolo frame -->
 	var e = jQuery.Event( "click" );
@@ -669,4 +675,14 @@
 		}
 		
 	</script>
+	
+	<!-- script os bar -->
+	<script type="text/javascript">
+		_mdsp.init({
+		    title: "CCS Dashboard",
+		    appId: "_mdspcontent",
+		    appInfoPath: "${pageContext.request.contextPath}/assets/app-info.json"
+		});
+	</script>
+	
 </html>

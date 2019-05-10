@@ -36,7 +36,10 @@
 
 </head>
 <body>
-			
+<!-- 
+<div id="_mdspcontent">
+</div>			
+-->	
 <div class="wrapper">
 
     <div class="sidebar" data-color="blue" data-image="${pageContext.request.contextPath}/assets/img/sidebar-6.JPG">
@@ -266,6 +269,10 @@
 	<!-- charts -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>	
 	
+	<!-- MS OS bar-->
+    <script src="https://static.eu1.mindsphere.io/osbar/v4/js/main.min.js"></script>
+	
+	
 
 	<script type="text/javascript">
     	$(document).ready(function(){
@@ -369,6 +376,15 @@
 		$(this).find("i").toggleClass('fa fa-plus');
 		$(this).find("i").toggleClass('fa fa-minus');
 	});
+	</script>
+	
+	<!-- script os bar -->
+	<script type="text/javascript">
+		_mdsp.init({
+		    title: "CCS Dashboard",
+		    appId: "_mdspcontent",
+		    appInfoPath: "${pageContext.request.contextPath}/assets/app-info.json"
+		});
 	</script>
 	
 </html>

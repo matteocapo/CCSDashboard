@@ -1,0 +1,14 @@
+{
+  "displayName": "CCS Dashboard",
+  "appVersion": "1.0.0",
+  "appCopyright": "© Cellulose Converting Solutions 2019",
+  "links": {
+    "default": [
+      {
+        "type": "WWW",
+        "name": "Cellulose Converting Solutions",
+        "value": "http://ccsol.it"
+      }
+    ]
+  }
+}
