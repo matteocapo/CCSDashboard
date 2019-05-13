@@ -64,7 +64,7 @@ public class MindsphereServiceClient {
 	String select = "";
 	private static String URL_TOKEN = "a930a23f-7838-4c00-b67f-eb21d3531d00";
 	
-	public static int debug = 0;
+	public static int debug = 1;
 	
 	/*
 	 * DEPRECATE
