@@ -320,8 +320,22 @@
 			                                <p class="category">Raw Material consumption</p>
 			                            </div>
 			                            <div class="content" id="centering-oee">
-			                            	<h4>Used: ${val.getMaterialeConsumato()} m</h4>
-			                            	<h4>Scrap: ${val.getMaterialeScartato()} m</h4>
+			                            	<h4>Used: ${val.getMaterialeConsumato()}  
+			                            		<c:if test = "${val.getUnita() > 0}">
+											        kg
+											    </c:if>    
+											    <c:if test = "${val.getUnita() == 0}">
+											        m
+											    </c:if>
+											</h4>
+			                            	<h4>Scrap: ${val.getMaterialeScartato()} 
+			                            		<c:if test = "${val.getUnita() > 0}">
+											        kg
+											    </c:if>    
+											    <c:if test = "${val.getUnita() == 0}">
+											        m
+											    </c:if>
+			                            	</h4>
 			                            </div>
 			                            <div class="footer">
 			                                    <!-- <hr> -->

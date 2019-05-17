@@ -1,31 +1,14 @@
 package com.ccs.provider;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.util.ResourceUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ccs.model.CompareModel;
 import com.ccs.model.ErrorDataModel;
@@ -33,11 +16,7 @@ import com.ccs.model.IntermediateOeesModel;
 import com.ccs.model.ListAndInfo;
 import com.ccs.model.RawDataModel;
 import com.ccs.util.DateProp;
-import java.util.Date;
 import java.util.HashMap;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import com.ccs.util.Provider;
 import com.siemens.mindsphere.sdk.auth.model.MindsphereCredentials;
 import com.siemens.mindsphere.sdk.core.RestClientConfig;
 import com.siemens.mindsphere.sdk.core.exception.MindsphereException;
@@ -66,36 +45,6 @@ public class MindsphereServiceClient {
 	
 	public static int debug = 1;
 	
-	/*
-	 * DEPRECATE
-	 */
-	public static List<TimeseriesData> getLargeRangeV1(String[] fromTo) throws java.text.ParseException {
-	    
-		List<TimeseriesData> timeseriesData = null;
-	    String fromUteData = fromTo[0];
-	    String toUteData = fromTo[1];
-	    
-	    String fromNew = DateProp.previousDay(fromTo[0]);
-	    String toNew = DateProp.nextDay(fromTo[1]);
-	    
-	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-	    Date fromUteDataFormatted = formatter.parse(fromUteData);
-	    Date toUteDataFormatted = formatter.parse(fromUteData);
-	    Date fromNewFormatted = formatter.parse(fromUteData);
-	    Date toNewFormatted = formatter.parse(fromUteData);
-	    
-	    List<TimeseriesData> lista = null;
-	   
-	    for(int i = 0; i < lista.size(); i++) {
-	    	//lista.get(i).getData();
-	    	//1) controllo gli indici della data immessa dall'utente
-	    	//2) controllo se devo prendermi gli indici per effettuare la correzione
-	    	//3) se devo prendermi gli indici della correzione li prendo e copio in un'altra lista che ritorna la funzione
-	    }
-	    
-	    
-	    return timeseriesData;
-	}
 	/*
 	 * DEPRECATE
 	 */
@@ -449,7 +398,6 @@ public class MindsphereServiceClient {
 			dateFormat = DateProp.toMindSphereFormat(date);
 		}
 		
-		String stringaRisposta;
 		int grandezza_array = 0;
 		
 		//System.out.println("inizio lettura json"); 
@@ -769,6 +717,13 @@ public class MindsphereServiceClient {
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
 	/* NUOVA GESTIONE DELLA LOGICA 
 	 * 
 	 * Tutte le funzioni definte di seguito sono state sviluppate e utilizzate a partire dal 27/03/2019.
@@ -777,6 +732,16 @@ public class MindsphereServiceClient {
 	 * Nello specifico tutte le funzioni sono usate nella pagina pricipale di visualizzazione.
 	 *  
 	 */
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	/* Nome:				listMindsphere
@@ -1624,6 +1589,12 @@ public class MindsphereServiceClient {
 	    	}else {
 	    		if(!(timeseriesList_raw_materials.isEmpty())) {
 	    			for(int i=0; i<timeseriesList_raw_materials.size(); i++) {
+	    				
+	    				if(timeseriesList_raw_materials.get(i).getData().get("SapConsumato").hashCode() == 1) {
+	    					return_model[svol_dis[hash_map.get(timeseriesList_raw_materials.get(i).getData().get("CodiceSvolgitore").toString())]].setUnita(1);
+	    				} else {
+	    					return_model[svol_dis[hash_map.get(timeseriesList_raw_materials.get(i).getData().get("CodiceSvolgitore").toString())]].setUnita(0);
+	    				}
 			    		return_model[svol_dis[hash_map.get(timeseriesList_raw_materials.get(i).getData().get("CodiceSvolgitore").toString())]].addMaterialeConsumato(timeseriesList_raw_materials.get(i).getData().get("MaterialeConsumato").hashCode());
 			    		return_model[svol_dis[hash_map.get(timeseriesList_raw_materials.get(i).getData().get("CodiceSvolgitore").toString())]].addMaterialeScartato(timeseriesList_raw_materials.get(i).getData().get("MaterialeSprecato").hashCode());
 			    	}	
@@ -1642,14 +1613,33 @@ public class MindsphereServiceClient {
 	}
 	
 	
-	//*** LOGICA DI GESTIONE DELLA NUOVA SERVLET PER LA COSTRUZIONE DELLA PAGINA DI COMPARAZIONE ***//
+	/* Nome:				compareList
+	 * 
+	 * Parametri attuali:	String[] assets_name,
+	 * 						String[] assets_value,
+	 * 						String auth, 
+	 * 						String date
+	 * 
+	 * Tipo di ritorno:		CompareModel[]
+	 * 
+	 * Descrizione: 		Questa funzione gestisce e reperisce le info inerenti agli asset (nomi e assets id) e ritorna una struttura compare model che contiene le info sull'OEE
+	 * 						pezzi prodotti e scartati.
+	 * 
+	 * N.B					Attenzione alla parte di autenticazione, essa viene definita in due modi differenti:
+	 * 						1) autenticazione tramite client secret e service credentials
+	 * 						2) autenticazione tramite login in base ai previlegi e al tipo di account utilizzato al momento del login 
+	 * 						
+	 * 						solo uno di questi due metodi deve essere utilizzato per il corretto funzionamento, nello specifico la (1) può essere utilizzata in fase di testing
+	 * 						mentre la (2) deve essere usata obbligatoriamente nel normale utilizzo.
+	 */		
+	
 	public static CompareModel[] compareList(String[] assets_name, String[] assets_value, String auth, String date) throws MindsphereException, IOException{
 		
 		
 		CompareModel[] return_model = new CompareModel[assets_name.length];
 		
 		
-		//ates conterrà due stringhe una per la data iniziale e una per la data finale
+		//dates conterrà due stringhe una per la data iniziale e una per la data finale
 		String dates[] = new String[2];		
 		
 		//Trasformazione della stringa date in formto MS-Like

@@ -5,9 +5,15 @@ package com.ccs.model;
  */
 
 public class RawDataModel {
+	
+	int unita = -1;
 	String nome;
 	float materiale_consumato = 0;
 	float materiale_scartato = 0;
+	
+	public void setUnita(int unita) {
+		this.unita = unita;
+	}
 	
 	public void setName(String nome) {
 		this.nome = nome;
@@ -35,6 +41,10 @@ public class RawDataModel {
 	
 	public float getMaterialeScartato() {
 		return this.materiale_scartato;
+	}
+	
+	public int getUnita() {
+		return this.unita;
 	}
 	
 	public String getName() {
