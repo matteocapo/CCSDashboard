@@ -310,6 +310,24 @@
 		                </div>
 		                
 		                <div class="row" id="raw_material" style= "display : none;">
+			                <div class="col-md-2" id="min-w-oee">
+				                        <div class="card ">
+				                            <div class="header">
+				                                <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" style = "background-color: transparent; color: coral; float: right; border-color: transparent;"><i class="fa fa-minus"></i></button>
+				                                <h4 class="title">SAP</h4>
+				                                <p class="category">Raw Material consumption</p>
+				                            </div>
+				                            <div class="content" id="centering-oee">
+				                            	<h4>Pieces produced: ${cellulose_data.getPezziProdotti()}</h4>
+				                            	<h4>Theoretical Pieces: ${cellulose_data.getPezziTeorici()}</h4>
+				                            	<h4>Calculated: ${cellulose_data.getKgReali()} kg </h4>
+				                            	<h4>Estimated: ${cellulose_data.getKgStimati ()}kg </h4>
+				                            </div>
+				                            <div class="footer">
+				                                    <!-- <hr> -->
+				                            </div>
+				                        </div>
+				                    </div>
 		                	<c:forEach items="${raw_data_model}" var="val">
 		                		<div class="col-md-2" id="min-w-oee">
 			                        <div class="card ">

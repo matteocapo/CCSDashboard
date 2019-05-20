@@ -10,6 +10,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.springframework.util.ResourceUtils;
 
+import com.ccs.model.CellulosaDataModel;
 import com.ccs.model.CompareModel;
 import com.ccs.model.ErrorDataModel;
 import com.ccs.model.IntermediateOeesModel;
@@ -1502,6 +1503,7 @@ public class MindsphereServiceClient {
 	 * 						"Raw Material_3";"unwinding_code_7";"unwinding_code_8";"unwinding_code_9"
 	 * 						"Raw Material_4";"unwinding_code_10";"unwinding_code_11"
 	 * 						"Raw Material_5";"unwinding_code_12"
+	 * 						"SAP";"0"
 	 * 
 	 * N.B					Attenzione alla parte di autenticazione, essa viene definita in due modi differenti:
 	 * 						1) autenticazione tramite client secret e service credentials
@@ -1612,6 +1614,55 @@ public class MindsphereServiceClient {
 		return return_model;
 	}
 	
+	
+	/* Nome:				InfoCellulosa
+	 * 
+	 * Parametri attuali:	String date, 
+	 * 						String auth, 
+	 * 						String asset
+	 * 
+	 * Tipo di ritorno:		CellulosaDataModel
+	 * 
+	 * Descrizione: 		Questa è la funzione che gestisce la parte del consumo di materie prime, nello specifico parliamo solamente di cellulosa
+	 * 						
+	 * N.B					Attenzione alla parte di autenticazione, essa viene definita in due modi differenti:
+	 * 						1) autenticazione tramite client secret e service credentials
+	 * 						2) autenticazione tramite login in base ai previlegi e al tipo di account utilizzato al momento del login 
+	 * 						
+	 * 						solo uno di questi due metodi deve essere utilizzato per il corretto funzionamento, nello specifico la (1) può essere utilizzata in fase di testing
+	 * 						mentre la (2) deve essere usata obbligatoriamente nel normale utilizzo.
+	 */	
+	public static CellulosaDataModel InfoCellulosa (String date, String auth, String asset) throws MindsphereException, IOException{
+		
+		//Modello di ritorno
+		CellulosaDataModel return_model = new CellulosaDataModel();
+		
+		//variabili temporane
+		float kg_reali = 0;
+		float kg_stimati = 0;
+		float pezzi_prodotti = 0;
+		float pezzi_teorici = 0;
+		
+		//Chiamata per la ricezione della lista dei raw material dalla tabella RawMaterials
+		List<TimeseriesData> timeseriesList_cellulose_data = listMindsphere(date, asset, "CelluloseData", 2000, auth);
+		
+		if(!(timeseriesList_cellulose_data == null)) {
+			for (int i = 0; i < timeseriesList_cellulose_data.size(); i++) {
+				kg_reali = timeseriesList_cellulose_data.get(i).getData().get("KgReali").hashCode();
+				kg_stimati = timeseriesList_cellulose_data.get(i).getData().get("KgStimati").hashCode();
+				pezzi_prodotti = timeseriesList_cellulose_data.get(i).getData().get("PezziProdotti").hashCode();
+				pezzi_teorici = timeseriesList_cellulose_data.get(i).getData().get("PezziTeorici").hashCode();	
+			}
+		}
+		
+		return_model.setPezziProdotti(pezzi_prodotti);
+		return_model.setPezziTeorici(pezzi_teorici);
+		return_model.setKgStimati(kg_stimati);
+		return_model.setKgReali(kg_reali);
+		
+		System.out.println("ho letto");
+		return return_model;
+	}
 	
 	/* Nome:				compareList
 	 * 

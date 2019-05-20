@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ccs.model.CellulosaDataModel;
 import com.ccs.model.CompareModel;
 import com.ccs.model.ErrorDataModel;
 import com.ccs.model.IntermediateOeesModel;
@@ -141,6 +142,8 @@ public class CcsController {
 		
 		RawDataModel raw_data = new RawDataModel();
 		
+		CellulosaDataModel cellulose_data = new CellulosaDataModel();
+		
 		ListAndInfo timeseries_list_performance_info;
 		
 		int[] oeeTotScrap = new int[3];
@@ -264,7 +267,7 @@ public class CcsController {
  		//test Lista materiali
  		raw_data_model = MindsphereServiceClient.ListaMateriali(date, authorization, asset);
 				
-		
+ 		cellulose_data = MindsphereServiceClient.InfoCellulosa(date, authorization, asset);
 		ModelAndView mv = new ModelAndView("indexprova");
 		
 		//mv.addObject("stringa", stringa_di_ritorno_chiamata_MS);
@@ -321,6 +324,8 @@ public class CcsController {
 		}
 		
 		mv.addObject("raw_data_model", raw_data_model);
+		
+		mv.addObject("cellulose_data", cellulose_data);
 		
 		//mv.addObject("testalert", testalert);
 		
